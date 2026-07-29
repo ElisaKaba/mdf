@@ -1,0 +1,23 @@
+.footer {
+  padding: 3rem 1rem;
+  background-color: var(--color-prune);
+  color: white;
+}
+
+.content {
+  width: min(100%, 1200px);
+  margin-inline: auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.content nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.content a {
+  color: white;
+}
