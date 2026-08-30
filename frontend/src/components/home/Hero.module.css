@@ -1,0 +1,10 @@
+.image {
+  position: absolute;
+  inset: 0 0 auto;
+  width: 100%;
+  height: 78%;
+  background-image: url("/frontend/public/images/Femmes-bandeau-nb.png");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+}

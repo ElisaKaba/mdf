@@ -1,0 +1,42 @@
+:root {
+  --color-prune: #4f263d;
+  --color-terracotta: #c76d52;
+  --color-pink: #e8c4c8;
+  --color-beige: #f3e7df;
+  --color-off-white: #fffaf5;
+  --color-text: #2f252b;
+
+  --background: var(--color-off-white);
+  --foreground: var(--color-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
