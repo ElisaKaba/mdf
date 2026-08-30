@@ -43,7 +43,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+
 frontend/node_modules/
 frontend/.next/
 
 cms/node_modules/
+cms/.cache/
+cms/build/
+cms/dist/
