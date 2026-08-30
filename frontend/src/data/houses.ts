@@ -1,0 +1,43 @@
+import type { House } from "@/types/house";
+
+export const houses: House[] = [
+  {
+    id: "urrugne",
+    slug: "urrugne",
+    name: "Maison des Femmes Urrugne",
+    city: "Urrugne",
+    logo: "/images/carre-vertical-200.png",
+    heroImage: "/images/femmes-bandeau-nb.png",
+    facebookUrl: "#",
+    instagramUrl: "#",
+    donationUrl: "#",
+    locales: ["fr", "eu"],
+    defaultLocale: "fr",
+  },
+  {
+    id: "bayonne",
+    slug: "bayonne",
+    name: "Maison des Femmes Bayonne",
+    city: "Bayonne",
+    logo: "/images/carre-vertical-200.png",
+    heroImage: "/images/femmes-bandeau-nb.png",
+    facebookUrl: "#",
+    instagramUrl: "#",
+    donationUrl: "#",
+    locales: ["fr", "eu"],
+    defaultLocale: "fr",
+  },
+  {
+    id: "saint-jean-de-luz",
+    slug: "saint-jean-de-luz",
+    name: "Maison des Femmes Saint-Jean-de-Luz",
+    city: "Saint-Jean-de-Luz",
+    logo: "/images/carre-vertical-200.png",
+    heroImage: "/images/femmes-bandeau-nb.png",
+    facebookUrl: "#",
+    instagramUrl: "#",
+    donationUrl: "#",
+    locales: ["fr", "eu"],
+    defaultLocale: "fr",
+  },
+];

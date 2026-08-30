@@ -1,0 +1,89 @@
+:root {
+  /* Couleurs principales */
+  --color-primary: #8f5a53;
+  --color-white: #ffffff;
+  --color-background: #f7f3f0;
+  --color-focus: #c99a94;
+
+  /* Couleurs de texte */
+  --color-text: #8F5A53;
+  --color-text-muted: #6f6561;
+
+  /* Bordures */
+  --color-border: #ded5d1;
+
+  /* Etats */
+  --color-success: #4f7a5b;
+  --color-error: #a33a3a;
+
+  /* Rayons */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  /* Espacements */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  /* Largeurs */
+  --container-width: 1200px;
+
+  /* Ombres */
+  --shadow-sm: 0 2px 8px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 0.12);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-beautifully-delicious), sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
