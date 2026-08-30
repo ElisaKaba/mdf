@@ -1,10 +1,163 @@
-.image {
-  position: absolute;
-  inset: 0 0 auto;
+.hero {
   width: 100%;
-  height: 78%;
-  background-image: url("/frontend/public/images/Femmes-bandeau-nb.png");
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  background-color: var(--color-background);
+}
+
+.header {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  padding: 1.5rem 2rem 1.25rem;
+}
+
+.logo {
+  width: min(100%, 500px);
+  height: auto;
+
+  object-fit: contain;
+}
+
+.intro {
+  max-width: 680px;
+
+  margin: 0;
+
+  color: var(--color-primary);
+
+  font-size: 1.15rem;
+  line-height: 1.5;
+
+  text-align: center;
+}
+
+.imageWrapper {
+  width: 100%;
+  max-height: 500px;
+
+  overflow: hidden;
+}
+
+.heroImage {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  max-height: 500px;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+.selectorSection {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1.25rem;
+
+  padding: 1.75rem 2rem 2rem;
+}
+
+.discoverButton {
+  min-width: 220px;
+}
+
+/* Tablette */
+@media (max-width: 1024px) {
+  .header {
+    padding: 1.25rem 1.5rem 1rem;
+  }
+
+  .logo {
+    width: min(100%, 420px);
+  }
+
+  .imageWrapper,
+  .heroImage {
+    max-height: 420px;
+  }
+
+  .selectorSection {
+    padding: 1.5rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+  }
+
+  .header {
+    padding: 1rem;
+  }
+
+  .logo {
+    width: min(100%, 300px);
+  }
+
+  .intro {
+    max-width: 340px;
+
+    font-size: 1rem;
+  }
+
+  .imageWrapper {
+    width: 100%;
+
+    max-height: none;
+  }
+
+  .heroImage {
+    width: 100%;
+    height: auto;
+
+    max-height: none;
+
+    object-fit: contain;
+  }
+
+  .selectorSection {
+    gap: 1rem;
+
+    padding: 1.5rem 1rem 2rem;
+  }
+
+  .discoverButton {
+    width: min(100%, 320px);
+    min-width: 0;
+  }
+}
+
+/* Petit mobile */
+@media (max-width: 420px) {
+  .logo {
+    width: min(100%, 250px);
+  }
+
+  .intro {
+    font-size: 0.95rem;
+  }
+
+  .selectorSection {
+    padding-inline: 0.75rem;
+  }
+
+  .discoverButton {
+    width: 100%;
+  }
 }

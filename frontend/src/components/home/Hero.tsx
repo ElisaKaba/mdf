@@ -1,37 +1,76 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+
+import Button from "@/components/ui/Button";
+import HouseSelector from "@/components/home/HouseSelector";
+
+import type { StrapiHouse } from "@/lib/strapi/houses";
+
 import styles from "./Hero.module.css";
 
-export default function Hero() {
+type HeroProps = {
+  houses?: StrapiHouse[];
+};
+
+export default function Hero({
+  houses = [],
+}: HeroProps) {
+  const [houseSlug, setHouseSlug] = useState("");
+
+  const selectedHouse = houses.find(
+    (house) => house.slug === houseSlug
+  );
+
   return (
-    <section className={styles.hero}>
-      <div className={styles.content}>
-        <p className={styles.eyebrow}>
-          Maison des Femmes — Emazteen Etxea
+    <main className={styles.hero}>
+      <header className={styles.header}>
+        <Image
+          src="/images/logo-horizontal-400.png"
+          alt="Maison des Femmes — Emazteen Etxea"
+          width={650}
+          height={160}
+          priority
+          className={styles.logo}
+        />
+
+        <p className={styles.intro}>
+          Un lieu d’accueil, d’écoute et d’action pour les femmes
+          du Pays Basque.
         </p>
+      </header>
 
-        <h1>
-          Un lieu d’accueil, d’écoute et d’accompagnement pour toutes les femmes
-        </h1>
-
-        <p className={styles.description}>
-          La Maison des Femmes accueille, informe et accompagne les femmes dans
-          un espace chaleureux, accessible et bienveillant.
-        </p>
-
-        <div className={styles.actions}>
-          <a href="#don" className={styles.primaryButton}>
-            Faire un don
-          </a>
-
-          <Link href="/actions" className={styles.secondaryButton}>
-            Découvrir nos actions
-          </Link>
-        </div>
+      <div className={styles.imageWrapper}>
+        <Image
+          src="/images/femmes-bandeau-nb.png"
+          alt=""
+          width={1600}
+          height={700}
+          priority
+          className={styles.heroImage}
+        />
       </div>
 
-      <div className={styles.imagePlaceholder}>
-        Image du bandeau
-      </div>
-    </section>
+      <section className={styles.selectorSection}>
+        <HouseSelector
+          houses={houses}
+          value={houseSlug}
+          onChange={setHouseSlug}
+        />
+
+        <Button
+          href={
+            selectedHouse
+              ? `/${selectedHouse.slug}/qui-sommes-nous`
+              : undefined
+          }
+          disabled={!selectedHouse}
+          className={styles.discoverButton}
+        >
+          Découvrir cette maison
+        </Button>
+      </section>
+    </main>
   );
 }
