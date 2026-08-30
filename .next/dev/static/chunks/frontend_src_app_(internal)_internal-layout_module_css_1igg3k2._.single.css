@@ -1,0 +1,155 @@
+/* [project]/frontend/src/app/(internal)/internal-layout.module.css [app-client] (css) */
+.internal-layout-module__dan_mG__layout {
+  background-color: var(--color-background);
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.internal-layout-module__dan_mG__body {
+  flex: 1;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.internal-layout-module__dan_mG__mainColumn {
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.internal-layout-module__dan_mG__houseHeader {
+  background-color: var(--color-background);
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-end;
+  gap: .75rem;
+  padding: 1.25rem 2rem;
+  display: flex;
+}
+
+.internal-layout-module__dan_mG__houseName {
+  color: var(--color-primary);
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.internal-layout-module__dan_mG__content {
+  flex: 1;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 2rem 4rem;
+  display: flex;
+  overflow: hidden visible;
+}
+
+.internal-layout-module__dan_mG__footer {
+  background-color: var(--color-white);
+  flex-shrink: 0;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  min-height: 64px;
+  margin-top: auto;
+  padding: .75rem 2rem;
+  display: flex;
+}
+
+.internal-layout-module__dan_mG__socials {
+  align-items: center;
+  gap: .75rem;
+  display: flex;
+}
+
+.internal-layout-module__dan_mG__socialLink {
+  transition: transform var(--transition-fast),
+    opacity var(--transition-fast);
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+}
+
+.internal-layout-module__dan_mG__socialLink:hover {
+  opacity: .8;
+  transform: translateY(-2px);
+}
+
+.internal-layout-module__dan_mG__socialIcon {
+  object-fit: contain;
+  width: 34px;
+  height: 34px;
+}
+
+@media (max-width: 1024px) {
+  .internal-layout-module__dan_mG__content {
+    padding: 2rem;
+  }
+
+  .internal-layout-module__dan_mG__houseHeader {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .internal-layout-module__dan_mG__layout {
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  .internal-layout-module__dan_mG__body, .internal-layout-module__dan_mG__mainColumn {
+    flex-direction: column;
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    overflow-x: hidden;
+  }
+
+  .internal-layout-module__dan_mG__houseHeader {
+    align-items: flex-start;
+    width: 100%;
+    padding: .75rem 1rem;
+  }
+
+  .internal-layout-module__dan_mG__houseName {
+    font-size: .9rem;
+  }
+
+  .internal-layout-module__dan_mG__content {
+    flex: 1;
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    display: block;
+    overflow: hidden visible;
+  }
+
+  .internal-layout-module__dan_mG__footer {
+    width: 100%;
+    min-height: auto;
+    margin-top: auto;
+    padding: .75rem 1rem;
+  }
+
+  .internal-layout-module__dan_mG__socialIcon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/*# sourceMappingURL=frontend_src_app_%28internal%29_internal-layout_module_css_1igg3k2._.single.css.map*/

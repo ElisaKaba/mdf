@@ -1,0 +1,25 @@
+/* [project]/frontend/src/app/beautifullydelicious_a449aea5.module.css [app-client] (css) */
+@font-face {
+  font-family: beautifullyDelicious;
+  src: url("../media/BDSans_Black-s.p.303mt82148nkj.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: beautifullyDelicious Fallback;
+  src: local(Arial);
+  ascent-override: 69.6%;
+  descent-override: 10.72%;
+  line-gap-override: 0.0%;
+  size-adjust: 149.43%;
+}
+
+.beautifullydelicious_a449aea5-module__f2ISoq__className {
+  font-family: beautifullyDelicious, beautifullyDelicious Fallback;
+}
+
+.beautifullydelicious_a449aea5-module__f2ISoq__variable {
+  --font-beautifully-delicious: "beautifullyDelicious", "beautifullyDelicious Fallback";
+}
+
+/*# sourceMappingURL=frontend_src_app_beautifullydelicious_a449aea5_module_css_1igg3k2._.single.css.map*/

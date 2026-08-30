@@ -1,0 +1,71 @@
+/* [project]/frontend/src/app/globals.css [app-client] (css) */
+:root {
+  --color-primary: #8f5a53;
+  --color-white: #fff;
+  --color-background: #f7f3f0;
+  --color-focus: #c99a94;
+  --color-text: #8f5a53;
+  --color-text-muted: #6f6561;
+  --color-border: #ded5d1;
+  --color-success: #4f7a5b;
+  --color-error: #a33a3a;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --container-width: 1200px;
+  --shadow-sm: 0 2px 8px #00000014;
+  --shadow-md: 0 8px 24px #0000001f;
+  --transition-fast: .15s ease;
+  --transition-normal: .25s ease;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-beautifully-delicious), sans-serif;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/*# sourceMappingURL=frontend_src_app_globals_css_1igg3k2._.single.css.map*/
