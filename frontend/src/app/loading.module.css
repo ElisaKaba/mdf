@@ -1,0 +1,119 @@
+.page {
+  width: 100%;
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem;
+
+  background-color: #f7f3f0;
+}
+
+.content {
+  width: 100%;
+  max-width: 520px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  text-align: center;
+}
+
+.logo {
+  width: min(100%, 360px);
+  height: auto;
+
+  margin-bottom: 2.5rem;
+
+  object-fit: contain;
+}
+
+.spinner {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 1.5rem;
+
+  border: 3px solid rgba(143, 90, 83, 0.2);
+  border-top-color: #8f5a53;
+  border-radius: 50%;
+
+  animation: spin 0.9s linear infinite;
+}
+
+.text {
+  margin: 0;
+
+  color: #8f5a53;
+
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.subtext {
+  max-width: 420px;
+
+  margin: 0.75rem 0 0;
+
+  color: #5f5552;
+
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+
+    border-color: #8f5a53;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 1.5rem;
+  }
+
+  .logo {
+    width: min(100%, 300px);
+
+    margin-bottom: 2rem;
+  }
+
+  .text {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .logo {
+    width: min(100%, 250px);
+  }
+
+  .spinner {
+    width: 36px;
+    height: 36px;
+  }
+
+  .text {
+    font-size: 1rem;
+  }
+
+  .subtext {
+    font-size: 0.9rem;
+  }
+}
