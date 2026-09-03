@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import type { Metadata, Viewport } from "next";
 
-const beautifullyDelicious = localFont({
-  src: "../fonts/BDSans-Black.woff2",
-  variable: "--font-beautifully-delicious",
-  display: "swap",
-});
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Maison des Femmes",
-  description: "Maison des Femmes — Emazteen Etxea",
+  description:
+    "Maison des Femmes — Emazteen Etxea",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -20,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={beautifullyDelicious.variable}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
