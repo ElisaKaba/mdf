@@ -86,10 +86,7 @@ export default function AboutDetail({
 
       <div className={styles.columns}>
         <article className={styles.column}>
-          <p className={styles.language}>
-            Français
-          </p>
-
+        
           <h1>{aboutFr.title}</h1>
 
           {aboutFr.summary && (
@@ -98,7 +95,7 @@ export default function AboutDetail({
             </p>
           )}
 
-          <div className={styles.description}>
+          <div className={`richText ${styles.description}`}>
             <Description
               content={aboutFr.description}
             />
@@ -106,10 +103,7 @@ export default function AboutDetail({
         </article>
 
         <article className={styles.column}>
-          <p className={styles.language}>
-            Euskara
-          </p>
-
+       
           {aboutEu ? (
             <>
               <h2>{aboutEu.title}</h2>

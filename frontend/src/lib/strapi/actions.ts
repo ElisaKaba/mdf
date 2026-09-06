@@ -2,6 +2,19 @@ import type { BlocksContent } from "@strapi/blocks-react-renderer";
 
 import { fetchStrapi } from "./client";
 
+export type StrapiActionImage = {
+  id: number;
+  documentId: string;
+
+  name?: string;
+  alternativeText?: string | null;
+
+  width?: number;
+  height?: number;
+
+  url: string;
+};
+
 export type StrapiAction = {
   id: number;
   documentId: string;
@@ -9,50 +22,25 @@ export type StrapiAction = {
   title: string;
   slug: string;
 
-  summary?: string;
-  description?: BlocksContent;
+  summary?: string | null;
 
-  category?:
-    | "atelier"
-    | "accompagnement"
-    | "prevention"
-    | "sensibilisation"
-    | "autre";
+  description?: BlocksContent | null;
+
+  category?: string | null;
+
+  displayOrder?: number | null;
 
   locale: string;
 
-  image?: {
-    id: number;
-    documentId: string;
-    name?: string;
-    alternativeText?: string;
-    caption?: string;
-    width?: number;
-    height?: number;
-    url: string;
-
-    formats?: {
-      thumbnail?: {
-        url: string;
-      };
-      small?: {
-        url: string;
-      };
-      medium?: {
-        url: string;
-      };
-      large?: {
-        url: string;
-      };
-    };
-  };
+  image?: StrapiActionImage[] | null;
 
   house?: {
     id: number;
     documentId: string;
+
     name: string;
     slug: string;
-  };
+  } | null;
 };
 
 type StrapiActionsResponse = {
@@ -64,6 +52,6 @@ export async function getActions(
 ): Promise<StrapiActionsResponse> {
   return fetchStrapi<StrapiActionsResponse>(
     "actions",
-    `?locale=${locale}&populate[house]=true&populate[image]=true`
+    `?locale=${locale}&populate=*`
   );
 }

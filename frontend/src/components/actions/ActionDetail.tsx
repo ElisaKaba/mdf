@@ -1,7 +1,10 @@
 import Image from "next/image";
 import { BlocksRenderer } from "@strapi/blocks-react-renderer";
 
-import type { StrapiAction } from "@/lib/strapi/actions";
+import type {
+  StrapiAction,
+  StrapiActionImage,
+} from "@/lib/strapi/actions";
 
 import styles from "./ActionDetail.module.css";
 
@@ -11,9 +14,12 @@ type ActionDetailProps = {
 };
 
 const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  "http://localhost:1337";
 
-function getStrapiMediaUrl(path?: string) {
+function getStrapiMediaUrl(
+  path?: string
+) {
   if (!path) {
     return undefined;
   }
@@ -28,38 +34,62 @@ function getStrapiMediaUrl(path?: string) {
   return `${STRAPI_URL}${path}`;
 }
 
+function ActionImage({
+  image,
+  fallbackAlt,
+}: {
+  image?: StrapiActionImage;
+  fallbackAlt: string;
+}) {
+  if (!image) {
+    return null;
+  }
+
+  const imageUrl =
+    getStrapiMediaUrl(image.url);
+
+  if (!imageUrl) {
+    return null;
+  }
+
+  return (
+    <div className={styles.imageWrapper}>
+      <Image
+        src={imageUrl}
+        alt={
+          image.alternativeText?.trim() ||
+          fallbackAlt
+        }
+        width={image.width ?? 600}
+        height={image.height ?? 800}
+        className={styles.image}
+      />
+    </div>
+  );
+}
+
 export default function ActionDetail({
   actionFr,
   actionEu,
 }: ActionDetailProps) {
-  const imageUrl = getStrapiMediaUrl(
-    actionFr.image?.url
-  );
+  const images =
+    actionFr.image ?? [];
+
+  const imageFr = images[0];
+  const imageEu = images[1];
 
   return (
     <section className={styles.wrapper}>
-      {imageUrl && (
-        <div className={styles.imageWrapper}>
-          <Image
-            src={imageUrl}
-            alt={
-              actionFr.image?.alternativeText?.trim() ||
-              actionFr.title
-            }
-            width={1200}
-            height={600}
-            className={styles.image}
-          />
-        </div>
-      )}
-
       <div className={styles.columns}>
         <article className={styles.column}>
-          <p className={styles.language}>
-            Français
-          </p>
+          <ActionImage
+            image={imageFr}
+            fallbackAlt={actionFr.title}
+          />
 
-          <h1>{actionFr.title}</h1>
+          <h1>
+            {actionFr.title}
+          </h1>
 
           {actionFr.summary && (
             <p className={styles.summary}>
@@ -68,40 +98,59 @@ export default function ActionDetail({
           )}
 
           {actionFr.description && (
-            <div className={styles.description}>
+            <div
+              className={`richText ${styles.description}`}
+            >
               <BlocksRenderer
-                content={actionFr.description}
+                content={
+                  actionFr.description
+                }
               />
             </div>
           )}
         </article>
 
         <article className={styles.column}>
-          <p className={styles.language}>
-            Euskara
-          </p>
+          <ActionImage
+            image={imageEu}
+            fallbackAlt={
+              actionEu?.title ??
+              actionFr.title
+            }
+          />
 
           {actionEu ? (
             <>
-              <h2>{actionEu.title}</h2>
+              <h2>
+                {actionEu.title}
+              </h2>
 
               {actionEu.summary && (
-                <p className={styles.summary}>
+                <p
+                  className={
+                    styles.summary
+                  }
+                >
                   {actionEu.summary}
                 </p>
               )}
 
               {actionEu.description && (
-                <div className={styles.description}>
+                <div
+                  className={`richText ${styles.description}`}
+                >
                   <BlocksRenderer
-                    content={actionEu.description}
+                    content={
+                      actionEu.description
+                    }
                   />
                 </div>
               )}
             </>
           ) : (
             <p className={styles.empty}>
-              Euskarazko edukia ez dago oraindik erabilgarri.
+              Euskarazko edukia ez dago
+              oraindik erabilgarri.
             </p>
           )}
         </article>

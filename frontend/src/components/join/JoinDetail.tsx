@@ -87,10 +87,7 @@ export default function JoinDetail({
 
       <div className={styles.columns}>
         <article className={styles.column}>
-          <p className={styles.language}>
-            Français
-          </p>
-
+   
           <h1>{joinFr.title}</h1>
 
           <div className={styles.description}>
@@ -101,15 +98,12 @@ export default function JoinDetail({
         </article>
 
         <article className={styles.column}>
-          <p className={styles.language}>
-            Euskara
-          </p>
 
           {joinEu ? (
             <>
               <h2>{joinEu.title}</h2>
 
-              <div className={styles.description}>
+              <div className={`richText ${styles.description}`}>
                 <Description
                   content={joinEu.description}
                 />

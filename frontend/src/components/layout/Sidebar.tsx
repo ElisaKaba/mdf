@@ -32,8 +32,12 @@ const navigationLinks = [
     href: "ressources",
   },
   {
-    label: "Nous rejoindre",
-    href: "nous-rejoindre",
+    label: "Partenaires",
+    href: "partenaires",
+  },
+  {
+    label: "Nous soutenir",
+    href: "nous-soutenir",
   },
   {
     label: "Contact",

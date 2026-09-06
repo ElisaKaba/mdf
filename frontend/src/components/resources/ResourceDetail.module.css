@@ -44,14 +44,6 @@
   overflow-wrap: anywhere;
 }
 
-.language {
-  margin: 0 0 0.75rem;
-
-  color: var(--color-text-muted);
-
-  font-size: 0.9rem;
-}
-
 .column h1,
 .column h2 {
   margin: 0 0 1rem;

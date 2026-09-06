@@ -12,12 +12,17 @@ import styles from "./Hero.module.css";
 
 type HeroProps = {
   houses?: StrapiHouse[];
+  slogan?: string;
+  ctaLabel?: string;
 };
 
 export default function Hero({
   houses = [],
+  slogan = "Un lieu d’accueil, d’écoute et d’action pour les femmes du Pays Basque.",
+  ctaLabel = "Découvrir nos actions",
 }: HeroProps) {
-  const [houseSlug, setHouseSlug] = useState("");
+  const [houseSlug, setHouseSlug] =
+    useState("");
 
   const selectedHouse = houses.find(
     (house) => house.slug === houseSlug
@@ -36,8 +41,7 @@ export default function Hero({
         />
 
         <p className={styles.intro}>
-          Un lieu d’accueil, d’écoute et d’action pour les femmes
-          du Pays Basque.
+          {slogan}
         </p>
       </header>
 
@@ -62,13 +66,13 @@ export default function Hero({
         <Button
           href={
             selectedHouse
-              ? `/${selectedHouse.slug}/qui-sommes-nous`
+              ? `/${selectedHouse.slug}/actions`
               : undefined
           }
           disabled={!selectedHouse}
           className={styles.discoverButton}
         >
-          Découvrir cette maison
+          {ctaLabel}
         </Button>
       </section>
     </main>

@@ -1,0 +1,38 @@
+{
+  "kind": "singleType",
+  "collectionName": "actions_pages",
+  "info": {
+    "singularName": "actions-page",
+    "pluralName": "actions-pages",
+    "displayName": "Actions Page"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "actionsTitle": {
+      "type": "string",
+      "default": "Que fait-on ?"
+    },
+    "actionsIntro": {
+      "type": "blocks"
+    },
+    "whereWeAreGoingTitle": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "whereWeAreGoing": {
+      "type": "blocks"
+    }
+  }
+}
