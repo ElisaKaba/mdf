@@ -1,5 +1,7 @@
 import AgendaPage from "@/components/events/AgendaPage";
+
 import { getEvents } from "@/lib/strapi/events";
+import { getAgendaPage } from "@/lib/strapi/agendaPage";
 import { mapStrapiEvent } from "@/lib/strapi/mapEvent";
 
 import type { Event } from "@/types/event";
@@ -29,9 +31,16 @@ export default async function AgendaRoute({
 }: AgendaRouteProps) {
   const { houseSlug } = await params;
 
-  const [responseFr, responseEu] = await Promise.all([
+  const [
+    responseFr,
+    responseEu,
+    agendaPageFrResponse,
+    agendaPageEuResponse,
+  ] = await Promise.all([
     getEvents("fr"),
     getEvents("eu"),
+    getAgendaPage("fr"),
+    getAgendaPage("eu"),
   ]);
 
   const eventsFr = sortEventsByDate(
@@ -56,6 +65,8 @@ export default async function AgendaRoute({
     <AgendaPage
       eventsFr={eventsFr}
       eventsEu={eventsEu}
+      agendaPageFr={agendaPageFrResponse.data}
+      agendaPageEu={agendaPageEuResponse.data}
     />
   );
 }

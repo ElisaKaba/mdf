@@ -3,64 +3,113 @@ import { z } from "zod";
 
 import { supabaseAdmin } from "@/lib/supabase/server";
 
-const contactSchema = z.object({
-  houseSlug: z
-    .string()
-    .min(1, "La Maison des Femmes est introuvable."),
+const subjectSchema = z.enum([
+  "volunteer",
+  "workshop",
+  "help",
+  "other",
+]);
 
-  firstName: z
-    .string()
-    .trim()
-    .min(2, "Le prénom doit contenir au moins 2 caractères.")
-    .max(80, "Le prénom est trop long."),
+const contactSchema = z
+  .object({
+    houseSlug: z
+      .string()
+      .min(1, "La Maison des Femmes est introuvable."),
 
-  lastName: z
-    .string()
-    .trim()
-    .min(2, "Le nom doit contenir au moins 2 caractères.")
-    .max(80, "Le nom est trop long."),
+    firstName: z
+      .string()
+      .trim()
+      .min(2, "Le prénom doit contenir au moins 2 caractères.")
+      .max(80, "Le prénom est trop long."),
 
-  email: z
-    .string()
-    .trim()
-    .min(1, "L’adresse e-mail est obligatoire.")
-    .email("Saisissez une adresse e-mail valide."),
+    lastName: z
+      .string()
+      .trim()
+      .min(2, "Le nom doit contenir au moins 2 caractères.")
+      .max(80, "Le nom est trop long."),
 
-  subject: z
-    .string()
-    .trim()
-    .min(3, "Le sujet doit contenir au moins 3 caractères.")
-    .max(150, "Le sujet est trop long."),
+    email: z
+      .string()
+      .trim()
+      .min(1, "L’adresse e-mail est obligatoire.")
+      .email("Saisissez une adresse e-mail valide."),
 
-  message: z
-    .string()
-    .trim()
-    .min(10, "Le message doit contenir au moins 10 caractères.")
-    .max(2000, "Le message ne peut pas dépasser 2000 caractères."),
+    subject: subjectSchema,
 
-  consent: z.literal(true, {
-    error:
-      "Vous devez accepter l’utilisation de vos données pour envoyer votre message.",
-  }),
-});
+    subjectDetails: z
+      .string()
+      .trim()
+      .max(150, "La précision du sujet est trop longue.")
+      .optional(),
+
+    message: z
+      .string()
+      .trim()
+      .min(10, "Le message doit contenir au moins 10 caractères.")
+      .max(2000, "Le message ne peut pas dépasser 2000 caractères."),
+
+    consent: z.literal(true, {
+      error:
+        "Vous devez accepter l’utilisation de vos données pour envoyer votre message.",
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.subject === "other" &&
+      !data.subjectDetails?.trim()
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["subjectDetails"],
+        message: "Précisez votre demande.",
+      });
+    }
+  });
+
+function getSubjectLabel(
+  subject: z.infer<typeof subjectSchema>,
+  subjectDetails?: string
+) {
+  switch (subject) {
+    case "volunteer":
+      return "Devenir bénévole";
+
+    case "workshop":
+      return "Proposer un atelier";
+
+    case "help":
+      return "Besoin d’aide";
+
+    case "other":
+      return subjectDetails?.trim()
+        ? `Autre : ${subjectDetails.trim()}`
+        : "Autre";
+  }
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const result = contactSchema.safeParse(body);
+    const result =
+      contactSchema.safeParse(body);
 
     if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
+      const fieldErrors: Record<
+        string,
+        string
+      > = {};
 
       for (const issue of result.error.issues) {
-        const field = issue.path[0];
+        const field =
+          issue.path[0];
 
         if (
           typeof field === "string" &&
           !fieldErrors[field]
         ) {
-          fieldErrors[field] = issue.message;
+          fieldErrors[field] =
+            issue.message;
         }
       }
 
@@ -76,28 +125,49 @@ export async function POST(request: Request) {
       );
     }
 
-    const contact = result.data;
+    const contact =
+      result.data;
 
-    const { error } = await supabaseAdmin
-      .from("contact_messages")
-      .insert({
-        house_slug: contact.houseSlug,
+    const subjectLabel =
+      getSubjectLabel(
+        contact.subject,
+        contact.subjectDetails
+      );
 
-        first_name: contact.firstName,
-        last_name: contact.lastName,
+    const { error } =
+      await supabaseAdmin
+        .from("contact_messages")
+        .insert({
+          house_slug:
+            contact.houseSlug,
 
-        email: contact.email,
+          first_name:
+            contact.firstName,
 
-        subject: contact.subject,
-        message: contact.message,
+          last_name:
+            contact.lastName,
 
-        consent: contact.consent,
+          email:
+            contact.email,
 
-        status: "new",
-      });
+          subject:
+            subjectLabel,
+
+          message:
+            contact.message,
+
+          consent:
+            contact.consent,
+
+          status:
+            "new",
+        });
 
     if (error) {
-      console.error("SUPABASE CONTACT ERROR :", error);
+      console.error(
+        "SUPABASE CONTACT ERROR :",
+        error
+      );
 
       return NextResponse.json(
         {
@@ -123,7 +193,10 @@ export async function POST(request: Request) {
       }
     );
   } catch (error) {
-    console.error("CONTACT ERROR :", error);
+    console.error(
+      "CONTACT ERROR :",
+      error
+    );
 
     return NextResponse.json(
       {

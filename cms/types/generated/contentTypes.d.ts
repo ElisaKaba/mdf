@@ -613,6 +613,51 @@ export interface ApiActionsPageActionsPage extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAgendaPageAgendaPage extends Struct.SingleTypeSchema {
+  collectionName: 'agenda_pages';
+  info: {
+    displayName: 'Agenda Page';
+    pluralName: 'agenda-pages';
+    singularName: 'agenda-page';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  pluginOptions: {
+    i18n: {
+      localized: true;
+    };
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::agenda-page.agenda-page'
+    >;
+    monthlyPlanning: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    > &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    planningTitle: Schema.Attribute.String &
+      Schema.Attribute.SetPluginOptions<{
+        i18n: {
+          localized: true;
+        };
+      }>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
@@ -1514,6 +1559,7 @@ declare module '@strapi/strapi' {
       'api::about-page.about-page': ApiAboutPageAboutPage;
       'api::action.action': ApiActionAction;
       'api::actions-page.actions-page': ApiActionsPageActionsPage;
+      'api::agenda-page.agenda-page': ApiAgendaPageAgendaPage;
       'api::event.event': ApiEventEvent;
       'api::house.house': ApiHouseHouse;
       'api::join.join': ApiJoinJoin;

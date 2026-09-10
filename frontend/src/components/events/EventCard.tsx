@@ -9,15 +9,22 @@ type EventCardProps = {
   locale: "fr" | "eu";
 };
 
-function formatDate(date: string, locale: "fr" | "eu") {
+function formatDate(
+  date: string,
+  locale: "fr" | "eu"
+) {
   return new Intl.DateTimeFormat(
-    locale === "fr" ? "fr-FR" : "eu-ES",
+    locale === "fr"
+      ? "fr-FR"
+      : "eu-ES",
     {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
     }
-  ).format(new Date(`${date}T00:00:00`));
+  ).format(
+    new Date(`${date}T00:00:00`)
+  );
 }
 
 function formatPrice(
@@ -25,11 +32,18 @@ function formatPrice(
   locale: "fr" | "eu"
 ) {
   if (event.pricingType === "free") {
-    return locale === "fr" ? "Gratuit" : "Doan";
+    return locale === "fr"
+      ? "Gratuit"
+      : "Doan";
   }
 
-  if (event.pricingType === "pay_what_you_want") {
-    return locale === "fr" ? "Prix libre" : "Prezio librea";
+  if (
+    event.pricingType ===
+    "pay_what_you_want"
+  ) {
+    return locale === "fr"
+      ? "Prix libre"
+      : "Prezio librea";
   }
 
   if (
@@ -37,7 +51,9 @@ function formatPrice(
     typeof event.price === "number"
   ) {
     return new Intl.NumberFormat(
-      locale === "fr" ? "fr-FR" : "eu-ES",
+      locale === "fr"
+        ? "fr-FR"
+        : "eu-ES",
       {
         style: "currency",
         currency: "EUR",
@@ -52,8 +68,16 @@ export default function EventCard({
   event,
   locale,
 }: EventCardProps) {
-  const timeSeparator = locale === "fr" ? "à" : "-";
-  const priceLabel = formatPrice(event, locale);
+  const timeSeparator =
+    locale === "fr" ? "à" : "-";
+
+  const priceLabel =
+    formatPrice(event, locale);
+
+  const registrationLabel =
+    locale === "fr"
+      ? "Sur inscription"
+      : "Izen-ematea beharrezkoa";
 
   return (
     <article className={styles.card}>
@@ -62,7 +86,10 @@ export default function EventCard({
         className={styles.link}
       >
         <p className={styles.date}>
-          {formatDate(event.startDate, locale)}
+          {formatDate(
+            event.startDate,
+            locale
+          )}
 
           {event.startTime && (
             <>
@@ -94,10 +121,25 @@ export default function EventCard({
           </p>
         )}
 
-        {priceLabel && (
-          <p className={styles.price}>
-            {priceLabel}
-          </p>
+        {(priceLabel ||
+          event.registrationRequired) && (
+          <div className={styles.meta}>
+            {priceLabel && (
+              <p className={styles.price}>
+                {priceLabel}
+              </p>
+            )}
+
+            {event.registrationRequired && (
+              <span
+                className={
+                  styles.registrationBadge
+                }
+              >
+                {registrationLabel}
+              </span>
+            )}
+          </div>
         )}
       </Link>
     </article>

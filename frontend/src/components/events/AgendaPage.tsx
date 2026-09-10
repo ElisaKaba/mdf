@@ -1,33 +1,82 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 import Pill from "@/components/ui/Pill";
-import type { Event, EventCategory } from "@/types/event";
 import EventCard from "@/components/events/EventCard";
+
+import type { Event, EventCategory } from "@/types/event";
+import type { StrapiAgendaPage } from "@/lib/strapi/agendaPage";
+
 import styles from "./AgendaPage.module.css";
 
 type AgendaPageProps = {
   eventsFr: Event[];
   eventsEu: Event[];
+
+  agendaPageFr?: StrapiAgendaPage | null;
+  agendaPageEu?: StrapiAgendaPage | null;
 };
 
-type Filter = "tous" | EventCategory;
-type Locale = "fr" | "eu";
+type Filter =
+  | "tous"
+  | EventCategory;
+
+type Locale =
+  | "fr"
+  | "eu";
+
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  "http://localhost:1337";
+
+function getMediaUrl(
+  path?: string | null
+) {
+  if (!path) {
+    return undefined;
+  }
+
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://")
+  ) {
+    return path;
+  }
+
+  return `${STRAPI_URL}${path}`;
+}
 
 export default function AgendaPage({
   eventsFr,
   eventsEu,
+  agendaPageFr,
+  agendaPageEu,
 }: AgendaPageProps) {
-  const [filter, setFilter] = useState<Filter>("tous");
-  const [locale, setLocale] = useState<Locale>("fr");
+  const [filter, setFilter] =
+    useState<Filter>("tous");
 
-  const events = locale === "fr" ? eventsFr : eventsEu;
+  const [locale, setLocale] =
+    useState<Locale>("fr");
+
+  const events =
+    locale === "fr"
+      ? eventsFr
+      : eventsEu;
+
+  const agendaPage =
+    locale === "fr"
+      ? agendaPageFr
+      : agendaPageEu;
 
   const filteredEvents =
     filter === "tous"
       ? events
-      : events.filter((event) => event.category === filter);
+      : events.filter(
+          (event) =>
+            event.category === filter
+        );
 
   const labels =
     locale === "fr"
@@ -38,7 +87,8 @@ export default function AgendaPage({
           permanences: "Permanences",
           events: "Événements",
           switchLanguage: "Euskaraz",
-          from: "à",
+          openPlanning:
+            "Ouvrir le planning",
         }
       : {
           title: "Agenda",
@@ -47,8 +97,30 @@ export default function AgendaPage({
           permanences: "Permanenteak",
           events: "Ekitaldiak",
           switchLanguage: "Français",
-          from: "-",
+          openPlanning:
+            "Egutegia ireki",
         };
+
+  const planning =
+    agendaPage?.monthlyPlanning;
+
+  const planningUrl =
+    getMediaUrl(planning?.url);
+
+  const isPdf =
+    planning?.mime ===
+      "application/pdf" ||
+    planning?.url
+      ?.toLowerCase()
+      .endsWith(".pdf");
+
+  const isImage =
+    planning?.mime
+      ?.toLowerCase()
+      .startsWith("image/") ||
+    /\.(png|jpg|jpeg|webp)$/i.test(
+      planning?.url ?? ""
+    );
 
   return (
     <section className={styles.agenda}>
@@ -57,10 +129,14 @@ export default function AgendaPage({
 
         <button
           type="button"
-          className={styles.languageButton}
+          className={
+            styles.languageButton
+          }
           onClick={() =>
             setLocale((current) =>
-              current === "fr" ? "eu" : "fr"
+              current === "fr"
+                ? "eu"
+                : "fr"
             )
           }
         >
@@ -68,40 +144,112 @@ export default function AgendaPage({
         </button>
       </div>
 
+      {planningUrl && (
+        <section
+          className={
+            styles.planningSection
+          }
+        >
+          <h2
+            className={
+              styles.planningTitle
+            }
+          >
+            {agendaPage?.planningTitle ??
+              (locale === "fr"
+                ? "Planning mensuel"
+                : "Hileko egutegia")}
+          </h2>
+
+          {isImage && (
+            <div
+              className={
+                styles.planningImageWrapper
+              }
+            >
+              <Image
+                src={planningUrl}
+                alt={
+                  planning?.alternativeText?.trim() ||
+                  agendaPage?.planningTitle ||
+                  labels.title
+                }
+                width={1200}
+                height={800}
+                className={
+                  styles.planningImage
+                }
+              />
+            </div>
+          )}
+
+          {isPdf && (
+            <a
+              href={planningUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={
+                styles.planningButton
+              }
+            >
+              {labels.openPlanning}
+            </a>
+          )}
+        </section>
+      )}
+
       <div className={styles.filters}>
         <Pill
           label={labels.all}
           active={filter === "tous"}
-          onClick={() => setFilter("tous")}
+          onClick={() =>
+            setFilter("tous")
+          }
         />
 
         <Pill
           label={labels.workshops}
-          active={filter === "atelier"}
-          onClick={() => setFilter("atelier")}
+          active={
+            filter === "atelier"
+          }
+          onClick={() =>
+            setFilter("atelier")
+          }
         />
 
         <Pill
-          label={labels.permanences}
-          active={filter === "permanence"}
-          onClick={() => setFilter("permanence")}
+          label={
+            labels.permanences
+          }
+          active={
+            filter === "permanence"
+          }
+          onClick={() =>
+            setFilter("permanence")
+          }
         />
 
         <Pill
           label={labels.events}
-          active={filter === "evenement"}
-          onClick={() => setFilter("evenement")}
+          active={
+            filter === "evenement"
+          }
+          onClick={() =>
+            setFilter("evenement")
+          }
         />
       </div>
 
       <div className={styles.events}>
-      {filteredEvents.map((event) => (
-  <EventCard
-    key={event.id}
-    event={event}
-    locale={locale}
-  />
-))}
+        {filteredEvents.map(
+          (event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              locale={locale}
+            />
+          )
+        )}
       </div>
     </section>
   );
