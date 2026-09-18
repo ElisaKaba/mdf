@@ -5,6 +5,11 @@ import {
   type StrapiJoin,
 } from "@/lib/strapi/join";
 
+import {
+  getHouses,
+  type StrapiHouse,
+} from "@/lib/strapi/houses";
+
 type SupportPageProps = {
   params: Promise<{
     houseSlug: string;
@@ -16,9 +21,14 @@ export default async function SupportPage({
 }: SupportPageProps) {
   const { houseSlug } = await params;
 
-  const [responseFr, responseEu] = await Promise.all([
+  const [
+    responseFr,
+    responseEu,
+    housesResponse,
+  ] = await Promise.all([
     getJoinContents("fr"),
     getJoinContents("eu"),
+    getHouses("fr"),
   ]);
 
   const joinFr = responseFr.data.find(
@@ -29,6 +39,11 @@ export default async function SupportPage({
   const joinEu = responseEu.data.find(
     (item: StrapiJoin) =>
       item.house?.slug === houseSlug
+  );
+
+  const house = housesResponse.data.find(
+    (item: StrapiHouse) =>
+      item.slug === houseSlug
   );
 
   if (!joinFr) {
@@ -47,6 +62,10 @@ export default async function SupportPage({
     <JoinDetail
       joinFr={joinFr}
       joinEu={joinEu}
+      houseSlug={houseSlug}
+      donationUrl={
+        house?.donationUrl ?? null
+      }
     />
   );
 }

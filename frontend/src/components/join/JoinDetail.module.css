@@ -1,6 +1,6 @@
 .wrapper {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1100px;
 
   margin-inline: auto;
   margin-bottom: 4rem;
@@ -29,13 +29,19 @@
   object-position: center;
 }
 
+/*
+ * Intro FR / EU
+ */
 .columns {
   width: 100%;
 
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
   gap: 3rem;
+
+  margin-bottom: 3rem;
 }
 
 .column {
@@ -44,21 +50,16 @@
   overflow-wrap: anywhere;
 }
 
-.language {
-  margin: 0 0 0.75rem;
-
-  color: var(--color-text-muted);
-
-  font-size: 0.9rem;
-}
-
 .column h1,
 .column h2 {
   margin: 0 0 1rem;
 
   color: var(--color-primary);
 
-  font-family: var(--font-beautifully-delicious), sans-serif;
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
   font-size: 1.8rem;
   font-weight: 400;
   line-height: 1.15;
@@ -88,12 +89,132 @@
   font-style: italic;
 }
 
+/*
+ * Une ligne = FR à gauche / EU à droite
+ */
+.supportRow {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 3rem;
+
+  margin-bottom: 2rem;
+}
+
+/*
+ * Carte soutien
+ */
+.supportCard {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 1.75rem;
+
+  background-color: var(--color-primary);
+  color: #ffffff;
+
+  border-radius: var(--radius-md);
+
+  box-shadow:
+    0 6px 18px
+    rgba(0, 0, 0, 0.06);
+}
+
+.supportCard h3 {
+  margin: 0 0 1rem;
+
+  color: #ffffff;
+
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.cardText {
+  flex: 1;
+
+  color: #ffffff;
+
+  line-height: 1.6;
+}
+
+.cardText p,
+.cardText li,
+.cardText strong,
+.cardText em {
+  color: #ffffff;
+}
+
+.cardText p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.cardText p:last-child {
+  margin-bottom: 0;
+}
+
+/*
+ * Boutons
+ */
+.cardButton {
+  width: fit-content;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 1.5rem;
+
+  padding:
+    0.65rem
+    1.1rem;
+
+  color: var(--color-primary);
+  background-color: #ffffff;
+
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.cardButton:hover {
+  color: #ffffff;
+  background-color: transparent;
+}
+
+.cardButton:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 4px;
+}
+
+/*
+ * TABLETTE
+ */
 @media (max-width: 1024px) {
   .imageWrapper {
     height: 170px;
   }
 
-  .columns {
+  .columns,
+  .supportRow {
     gap: 2rem;
   }
 
@@ -101,8 +222,22 @@
   .column h2 {
     font-size: 1.55rem;
   }
+
+  .supportCard {
+    padding: 1.5rem;
+  }
+
+  .supportCard h3 {
+    font-size: 1.35rem;
+  }
 }
 
+/*
+ * MOBILE
+ *
+ * On garde FR / EU côte à côte
+ * comme sur le reste du site.
+ */
 @media (max-width: 768px) {
   .wrapper {
     margin-bottom: 2rem;
@@ -114,10 +249,20 @@
     margin-bottom: 1.5rem;
   }
 
-  .columns {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .columns,
+  .supportRow {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
 
     gap: 1rem;
+  }
+
+  .columns {
+    margin-bottom: 2rem;
+  }
+
+  .supportRow {
+    margin-bottom: 1.25rem;
   }
 
   .column h1,
@@ -128,14 +273,38 @@
   .description {
     font-size: 0.92rem;
   }
+
+  .supportCard {
+    padding: 1rem;
+  }
+
+  .supportCard h3 {
+    font-size: 1.15rem;
+  }
+
+  .cardText {
+    font-size: 0.88rem;
+  }
+
+  .cardButton {
+    padding:
+      0.55rem
+      0.8rem;
+
+    font-size: 0.78rem;
+  }
 }
 
+/*
+ * PETIT MOBILE
+ */
 @media (max-width: 390px) {
   .imageWrapper {
     height: 130px;
   }
 
-  .columns {
+  .columns,
+  .supportRow {
     gap: 0.75rem;
   }
 
@@ -146,5 +315,27 @@
 
   .description {
     font-size: 0.85rem;
+  }
+
+  .supportCard {
+    padding: 0.8rem;
+  }
+
+  .supportCard h3 {
+    font-size: 1rem;
+  }
+
+  .cardText {
+    font-size: 0.8rem;
+  }
+
+  .cardButton {
+    width: 100%;
+
+    padding:
+      0.5rem
+      0.6rem;
+
+    font-size: 0.72rem;
   }
 }
