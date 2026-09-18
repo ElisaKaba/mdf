@@ -8,8 +8,16 @@
   gap: 1.5rem;
 }
 
+.formHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+}
+
 .form h1 {
-  margin: 0 0 0.5rem;
+  margin: 0;
 
   color: var(--color-primary);
 
@@ -19,6 +27,38 @@
 
   font-size: 2rem;
   font-weight: 400;
+}
+
+.languageButton {
+  flex-shrink: 0;
+
+  padding: 0.55rem 1rem;
+
+  color: var(--color-primary);
+  background-color: transparent;
+
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.languageButton:hover {
+  color: #ffffff;
+  background-color: var(--color-primary);
+}
+
+.languageButton:focus-visible {
+  outline: 3px solid rgba(143, 90, 83, 0.35);
+  outline-offset: 4px;
 }
 
 .row {
@@ -119,16 +159,13 @@
   background-repeat: no-repeat;
 }
 
-/*
- * Options de la liste
- */
 .field select option {
   color: #ffffff;
   background-color: var(--color-primary);
 }
 
 /*
- * Focus accessible
+ * FOCUS ACCESSIBLE
  */
 .field input:focus-visible,
 .field textarea:focus-visible,
@@ -138,7 +175,7 @@
 }
 
 /*
- * Erreurs de champs
+ * ERREURS DE CHAMPS
  */
 .fieldError {
   margin: 0.25rem 0 0;
@@ -150,7 +187,7 @@
 }
 
 /*
- * Consentement
+ * CONSENTEMENT
  */
 .consent {
   display: flex;
@@ -178,7 +215,7 @@
 }
 
 /*
- * Erreur globale
+ * ERREUR GLOBALE
  */
 .error {
   margin: 0;
@@ -195,7 +232,7 @@
 }
 
 /*
- * Succès
+ * SUCCÈS
  */
 .success {
   margin: 0;
@@ -212,7 +249,7 @@
 }
 
 /*
- * Bouton d'envoi
+ * BOUTON D'ENVOI
  */
 .submitButton {
   width: fit-content;
@@ -229,10 +266,15 @@
   font-weight: 600;
 
   cursor: pointer;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .submitButton:hover:not(:disabled) {
   opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .submitButton:disabled {
@@ -274,14 +316,30 @@
     padding-left: 0.9rem;
     padding-right: 2.5rem;
   }
+
+  .languageButton {
+    padding: 0.5rem 0.8rem;
+
+    font-size: 0.85rem;
+  }
 }
 
 /*
  * PETIT MOBILE
  */
 @media (max-width: 390px) {
+  .formHeader {
+    align-items: flex-start;
+  }
+
   .form h1 {
     font-size: 1.4rem;
+  }
+
+  .languageButton {
+    padding: 0.45rem 0.7rem;
+
+    font-size: 0.78rem;
   }
 
   .field label {
