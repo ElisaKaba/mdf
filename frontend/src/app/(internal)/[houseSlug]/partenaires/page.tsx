@@ -6,6 +6,10 @@ import {
   type StrapiPartner,
 } from "@/lib/strapi/partners";
 
+import {
+  getPartnersPage,
+} from "@/lib/strapi/partnersPage";
+
 import styles from "./page.module.css";
 
 type PartnersPageProps = {
@@ -117,27 +121,19 @@ function PartnerGroup({
       open
     >
       <summary
-        className={
-          styles.groupHeader
-        }
+        className={styles.groupHeader}
       >
         <div
-          className={
-            styles.groupTitles
-          }
+          className={styles.groupTitles}
         >
           <h2
-            className={
-              styles.groupTitle
-            }
+            className={styles.groupTitle}
           >
             {titleFr}
           </h2>
 
           <h2
-            className={
-              styles.groupTitle
-            }
+            className={styles.groupTitle}
           >
             {titleEu}
           </h2>
@@ -145,9 +141,7 @@ function PartnerGroup({
       </summary>
 
       <div
-        className={
-          styles.groupContent
-        }
+        className={styles.groupContent}
       >
         {partners.length > 0 ? (
           <div className={styles.cards}>
@@ -178,22 +172,30 @@ export default async function PartnersPage({
 }: PartnersPageProps) {
   const { houseSlug } = await params;
 
-  /*
-   * Une seule locale suffit ici :
-   * les informations partenaires
-   * sont identiques en FR et EU.
-   */
-  const responseFr =
-    await getPartners("fr");
+  const [
+    partnersResponse,
+    partnersPageResponse,
+  ] = await Promise.all([
+    getPartners("fr"),
+    getPartnersPage("fr"),
+  ]);
 
-  const partners =
-    sortPartners(
-      responseFr.data.filter(
-        (partner) =>
-          partner.house?.slug ===
-          houseSlug
-      )
-    );
+  const partners = sortPartners(
+    partnersResponse.data.filter(
+      (partner) =>
+        partner.house?.slug ===
+        houseSlug
+    )
+  );
+
+  const partnersPage =
+    partnersPageResponse.data;
+
+  const pageImage =
+    partnersPage?.partnersImg;
+
+  const imageUrl =
+    getMediaUrl(pageImage?.url);
 
   const worksWithUs =
     partners.filter(
@@ -218,28 +220,73 @@ export default async function PartnersPage({
 
   return (
     <section className={styles.wrapper}>
-      <div className={styles.pageHeadings}>
-        <h1 className={styles.pageTitle}>
+      {/* IMAGE BANDEAU */}
+      {imageUrl && (
+        <div
+          className={
+            styles.pageImageWrapper
+          }
+        >
+          <Image
+            src={imageUrl}
+            alt={
+              pageImage?.alternativeText?.trim() ||
+              "Partenaires de la Maison des Femmes"
+            }
+            width={
+              pageImage?.width ??
+              1200
+            }
+            height={
+              pageImage?.height ??
+              800
+            }
+            className={
+              styles.pageImage
+            }
+            priority
+          />
+        </div>
+      )}
+
+      {/* TITRES DE PAGE */}
+      <div
+        className={
+          styles.pageHeadings
+        }
+      >
+        <h1
+          className={
+            styles.pageTitle
+          }
+        >
           Partenaires
         </h1>
 
-        <h2 className={styles.pageTitle}>
+        <h2
+          className={
+            styles.pageTitle
+          }
+        >
           Partnerak
         </h2>
       </div>
 
+      {/* PARTENAIRES */}
       <PartnerGroup
         titleFr="On travaille avec eux"
         titleEu="Gurekin lan egiten dute"
         partners={worksWithUs}
       />
 
+      {/* FINANCEURS */}
       <PartnerGroup
         titleFr="Ils nous financent"
         titleEu="Finantzatzen gaituzte"
         partners={funders}
       />
 
+      {/* ARTISTES */}
       <PartnerGroup
         titleFr="Artistes"
         titleEu="Artistak"

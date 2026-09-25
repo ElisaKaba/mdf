@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import {
   BlocksRenderer,
   type BlocksContent,
@@ -13,6 +15,27 @@ type AboutPageProps = {
     houseSlug: string;
   }>;
 };
+
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  "http://localhost:1337";
+
+function getMediaUrl(
+  path?: string | null
+) {
+  if (!path) {
+    return undefined;
+  }
+
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://")
+  ) {
+    return path;
+  }
+
+  return `${STRAPI_URL}${path}`;
+}
 
 function sortAboutPages(
   pages: StrapiAboutPage[]
@@ -112,6 +135,19 @@ export default async function AboutPage({
     );
   }
 
+  /*
+   * L'image utilisée pour le bandeau
+   * vient de la première entrée FR
+   * selon displayOrder.
+   */
+  const pageImage =
+    pagesFr[0]?.image?.[0];
+
+  const imageUrl =
+    getMediaUrl(
+      pageImage?.url
+    );
+
   return (
     <section
       style={{
@@ -121,59 +157,116 @@ export default async function AboutPage({
         gap: "3rem",
       }}
     >
-      {pagesFr.map((pageFr) => {
-        const pageEu =
-          pagesEu.find(
-            (page) =>
-              page.documentId ===
-              pageFr.documentId
-          ) ??
-          pagesEu.find(
-            (page) =>
-              page.displayOrder ===
-              pageFr.displayOrder
-          );
+      {/* IMAGE BANDEAU */}
+      {imageUrl && (
+        <div
+          style={{
+            width: "100%",
+            height: "400px",
 
-        return (
-          <div
-            key={pageFr.documentId}
+            overflow: "hidden",
+
+            borderRadius:
+              "var(--radius-md)",
+          }}
+        >
+          <Image
+            src={imageUrl}
+            alt={
+              pageImage?.alternativeText?.trim() ||
+              "Maison des Femmes"
+            }
+            width={
+              pageImage?.width ??
+              1200
+            }
+            height={
+              pageImage?.height ??
+              800
+            }
             style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(2, minmax(0, 1fr))",
-              gap: "3rem",
-              width: "100%",
-              alignItems: "start",
-            }}
-          >
-            {/* FRANÇAIS */}
-            <AboutContent
-              page={pageFr}
-            />
+              display: "block",
 
-            {/* EUSKARA */}
-            <div>
-              {pageEu ? (
-                <AboutContent
-                  page={pageEu}
-                />
-              ) : (
-                <p
-                  style={{
-                    margin: 0,
-                    color:
-                      "var(--color-text-muted)",
-                    fontStyle: "italic",
-                  }}
-                >
-                  Euskarazko edukia ez dago
-                  oraindik erabilgarri.
-                </p>
-              )}
+              width: "100%",
+              height: "100%",
+
+              objectFit: "cover",
+              objectPosition:
+                "center",
+            }}
+            priority
+          />
+        </div>
+      )}
+
+      {/* CONTENUS */}
+      {pagesFr.map(
+        (pageFr) => {
+          const pageEu =
+            pagesEu.find(
+              (page) =>
+                page.documentId ===
+                pageFr.documentId
+            ) ??
+            pagesEu.find(
+              (page) =>
+                page.displayOrder ===
+                pageFr.displayOrder
+            );
+
+          return (
+            <div
+              key={
+                pageFr.documentId
+              }
+              style={{
+                display: "grid",
+
+                gridTemplateColumns:
+                  "repeat(2, minmax(0, 1fr))",
+
+                gap: "3rem",
+
+                width: "100%",
+
+                alignItems:
+                  "start",
+              }}
+            >
+              {/* FRANÇAIS */}
+              <AboutContent
+                page={pageFr}
+              />
+
+              {/* EUSKARA */}
+              <div>
+                {pageEu ? (
+                  <AboutContent
+                    page={pageEu}
+                  />
+                ) : (
+                  <p
+                    style={{
+                      margin: 0,
+
+                      color:
+                        "var(--color-text-muted)",
+
+                      fontStyle:
+                        "italic",
+                    }}
+                  >
+                    Euskarazko
+                    edukia ez dago
+                    oraindik
+                    erabilgarri.
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        }
+      )}
     </section>
   );
 }
