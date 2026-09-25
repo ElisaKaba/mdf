@@ -156,7 +156,7 @@ export default function JoinDetail({
 
   return (
     <section className={styles.wrapper}>
-      {imageUrl && (
+      {/* {imageUrl && (
         <div className={styles.imageWrapper}>
           <Image
             src={imageUrl}
@@ -174,7 +174,10 @@ export default function JoinDetail({
             priority
           />
         </div>
-      )}
+      )} */}
+      <div >
+      <img src={"/images/nous-soutenir.png"} alt="Soutien" className="localeSubImage"/>
+      </div>  
 
       {/* INTRODUCTION */}
       <div className={styles.columns}>

@@ -233,14 +233,14 @@ export default async function PartnersPage({
 
       {/* PARTENAIRES */}
       <PartnerGroup
-        titleFr="On travaille avec eux"
+        titleFr="On travaille avec elleux"
         titleEu="Gurekin lan egiten dute"
         partners={worksWithUs}
       />
 
       {/* FINANCEURS */}
       <PartnerGroup
-        titleFr="Ils nous financent"
+        titleFr="Iels nous financent"
         titleEu="Finantzatzen gaituzte"
         partners={funders}
       />

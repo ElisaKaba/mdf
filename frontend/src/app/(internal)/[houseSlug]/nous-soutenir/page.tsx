@@ -47,9 +47,10 @@ export default async function SupportPage({
   );
 
   if (!joinFr) {
-    return (
+    return (  
       <section>
-        <h1>Nous soutenir</h1>
+
+         <h1>Nous soutenir</h1>
 
         <p>
           Aucun contenu publié pour le moment.

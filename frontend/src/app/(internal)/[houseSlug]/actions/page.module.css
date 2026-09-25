@@ -2,52 +2,10 @@
   width: 100%;
   max-width: 1100px;
 
-  margin-inline: auto;
-  margin-bottom: 4rem;
+  margin: 0 auto 4rem;
 }
-
-/*
- * IMAGE DE PAGE
- */
-
-.pageImageWrapper {
-  width: 100%;
-  height: 360px;
-
-  margin-bottom: 3rem;
-
-  overflow: hidden;
-
-  border-radius: var(--radius-md);
-}
-
-.pageImage {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-  object-position: center;
-}
-
-/*
- * ACTION MISE EN AVANT
- */
-
-.featuredAction {
-  width: 100%;
-
-  margin-bottom: 3rem;
-}
-
-/*
- * BLOCS BILINGUES
- */
 
 .columns {
-  width: 100%;
-
   display: grid;
   grid-template-columns:
     repeat(2, minmax(0, 1fr));
@@ -59,8 +17,6 @@
 
 .languageColumn {
   min-width: 0;
-
-  overflow-wrap: anywhere;
 }
 
 .sectionTitle {
@@ -77,91 +33,71 @@
   line-height: 1.2;
 }
 
-/*
- * INTRO
- */
-
 .intro {
-  color: var(--color-text);
-
   line-height: 1.65;
-
-  overflow-wrap: anywhere;
 }
-
-.intro p {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.intro p:last-child {
-  margin-bottom: 0;
-}
-
-.intro ul,
-.intro ol {
-  margin: 1rem 0;
-
-  padding-left: 1.5rem;
-}
-
-.intro li {
-  margin-bottom: 0.5rem;
-}
-
-/*
- * AUTRES ACTIONS
- */
 
 .actionsList {
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 3rem;
+  margin-bottom: 4rem;
 }
 
-/*
- * TABLETTE
- */
+/* Action mise en avant */
+.featuredAction {
+  margin-bottom: 3rem;
+  padding: 2rem;
 
-@media (max-width: 1024px) {
-  .wrapper {
-    max-width: 100%;
-  }
+  background-color: var(--color-primary);
+  color: #ffffff;
 
-  .pageImageWrapper {
-    height: 320px;
+  border: 5px solid #ffffff;
+  border-radius: var(--radius-md);
 
-    margin-bottom: 2.5rem;
-  }
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
 
+/* Force tout le texte de l'action mise en avant en blanc */
+.featuredAction h1,
+.featuredAction h2,
+.featuredAction h3,
+.featuredAction h4,
+.featuredAction p,
+.featuredAction span,
+.featuredAction li,
+.featuredAction a {
+  color: #ffffff;
+}
+
+/* Texte riche Strapi dans l'action mise en avant */
+.featuredAction :global(.richText),
+.featuredAction :global(.richText p),
+.featuredAction :global(.richText li),
+.featuredAction :global(.richText a) {
+  color: #ffffff;
+}
+
+/* Liens éventuels */
+.featuredAction a {
+  text-decoration-color: #ffffff;
+}
+
+/* TABLETTE */
+@media (max-width: 900px) {
   .columns {
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .sectionTitle {
-    font-size: 1.55rem;
-  }
-}
-
-/*
- * MOBILE
- */
-
-@media (max-width: 768px) {
-  .wrapper {
-    margin-bottom: 2rem;
-  }
-
-  .pageImageWrapper {
-    height: 240px;
-
-    margin-bottom: 2rem;
+    font-size: 1.5rem;
   }
 
   .featuredAction {
+    padding: 1.5rem;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .wrapper {
     margin-bottom: 2rem;
   }
 
@@ -170,8 +106,6 @@
       repeat(2, minmax(0, 1fr));
 
     gap: 1rem;
-
-    margin-bottom: 2rem;
   }
 
   .sectionTitle {
@@ -182,20 +116,14 @@
     font-size: 0.92rem;
   }
 
-  .actionsList {
-    gap: 2rem;
+  .featuredAction {
+    padding: 1.25rem;
+    margin-bottom: 2rem;
   }
 }
 
-/*
- * PETIT MOBILE
- */
-
+/* PETIT MOBILE */
 @media (max-width: 390px) {
-  .pageImageWrapper {
-    height: 190px;
-  }
-
   .columns {
     gap: 0.75rem;
   }
@@ -206,5 +134,9 @@
 
   .intro {
     font-size: 0.85rem;
+  }
+
+  .featuredAction {
+    padding: 1rem;
   }
 }

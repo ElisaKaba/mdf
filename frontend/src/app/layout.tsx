@@ -14,6 +14,12 @@ const beautifullyDelicious = localFont({
   display: "swap",
 });
 
+const beautifullyDeliciousBold = localFont({
+  src: "../fonts/BDScript-Bold.woff2",
+  variable: "--font-beautifully-delicious-bold",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Maison des Femmes",
   description: "Maison des Femmes — Emazteen Etxea",

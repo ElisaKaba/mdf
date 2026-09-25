@@ -9,6 +9,7 @@ import {
   getAboutPages,
   type StrapiAboutPage,
 } from "@/lib/strapi/about";
+import { randomBytes } from "crypto";
 
 type AboutPageProps = {
   params: Promise<{
@@ -143,11 +144,11 @@ export default async function AboutPage({
   const pageImage =
     pagesFr[0]?.image?.[0];
 
-  const imageUrl =
+ const imageUrl =
     getMediaUrl(
-      pageImage?.url
-    );
-
+      
+    pageImage?.url
+     );
   return (
     <section
       style={{
@@ -158,8 +159,8 @@ export default async function AboutPage({
       }}
     >
       {/* IMAGE BANDEAU */}
-      {imageUrl && (
-        <div
+      {/* {imageUrl && (
+      
           style={{
             width: "100%",
             height: "400px",
@@ -169,13 +170,10 @@ export default async function AboutPage({
             borderRadius:
               "var(--radius-md)",
           }}
-        >
-          <Image
-            src={imageUrl}
-            alt={
-              pageImage?.alternativeText?.trim() ||
-              "Maison des Femmes"
-            }
+        > */}
+          <div>
+          <img src= "/images/qui-sommes-nous.png" alt="Maison des femmes" className="quiImg"
+            
             width={
               pageImage?.width ??
               1200
@@ -186,18 +184,17 @@ export default async function AboutPage({
             }
             style={{
               display: "block",
-
+                 
               width: "100%",
               height: "100%",
-
               objectFit: "cover",
               objectPosition:
                 "center",
             }}
-            priority
+        
           />
         </div>
-      )}
+      
 
       {/* CONTENUS */}
       {pagesFr.map(

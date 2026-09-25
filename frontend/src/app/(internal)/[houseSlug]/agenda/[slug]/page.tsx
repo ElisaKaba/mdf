@@ -178,6 +178,7 @@ export default async function EventDetailPage({
 
   return (
     <article className={styles.article}>
+    
       <div className={styles.backArea}>
         <Link
           href={`/${houseSlug}/agenda?lang=${locale}`}

@@ -214,14 +214,8 @@ export default function AgendaPage({
             labels.switchLanguage
           }
         </button>
+       
       </div>
-
-      {planningUrl && (
-        <section
-          className={
-            styles.planningSection
-          }
-        >
           <h2
             className={
               styles.planningTitle
@@ -232,8 +226,7 @@ export default function AgendaPage({
                 ? "Planning mensuel"
                 : "Hileko egutegia")}
           </h2>
-
-          {agendaPage?.description && (
+         {agendaPage?.description && (
             <div
               className={`richText ${styles.planningDescription}`}
             >
@@ -242,8 +235,33 @@ export default function AgendaPage({
                   agendaPage.description
                 }
               />
+   <div>
+        <img src={"/images/Visuel les journées du Matrimoine.png"} alt="MatrimoineFr" className="localeMatrimoineImg"/>
+      </div>
+       {agendaPage?.additionalInfo && (
+            <div
+              className={`richText ${styles.additionalInfo}`}
+            >
+              <BlocksRenderer
+                content={
+                  agendaPage.additionalInfo
+                }
+              />
             </div>
           )}
+
+            </div>
+          )}
+
+      {planningUrl && (
+        <section
+          className={
+            styles.planningSection
+          }
+        >
+      
+
+       
 
           {isImage && (
             <div
@@ -286,17 +304,7 @@ export default function AgendaPage({
             </a>
           )}
 
-          {agendaPage?.additionalInfo && (
-            <div
-              className={`richText ${styles.additionalInfo}`}
-            >
-              <BlocksRenderer
-                content={
-                  agendaPage.additionalInfo
-                }
-              />
-            </div>
-          )}
+         
         </section>
       )}
 
