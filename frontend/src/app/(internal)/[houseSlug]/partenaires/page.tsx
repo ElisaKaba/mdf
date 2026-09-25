@@ -6,9 +6,7 @@ import {
   type StrapiPartner,
 } from "@/lib/strapi/partners";
 
-import {
-  getPartnersPage,
-} from "@/lib/strapi/partnersPage";
+
 
 import styles from "./page.module.css";
 
@@ -174,10 +172,8 @@ export default async function PartnersPage({
 
   const [
     partnersResponse,
-    partnersPageResponse,
   ] = await Promise.all([
     getPartners("fr"),
-    getPartnersPage("fr"),
   ]);
 
   const partners = sortPartners(
@@ -187,15 +183,6 @@ export default async function PartnersPage({
         houseSlug
     )
   );
-
-  const partnersPage =
-    partnersPageResponse.data;
-
-  const pageImage =
-    partnersPage?.partnersImg;
-
-  const imageUrl =
-    getMediaUrl(pageImage?.url);
 
   const worksWithUs =
     partners.filter(
@@ -220,35 +207,7 @@ export default async function PartnersPage({
 
   return (
     <section className={styles.wrapper}>
-      {/* IMAGE BANDEAU */}
-      {imageUrl && (
-        <div
-          className={
-            styles.pageImageWrapper
-          }
-        >
-          <Image
-            src={imageUrl}
-            alt={
-              pageImage?.alternativeText?.trim() ||
-              "Partenaires de la Maison des Femmes"
-            }
-            width={
-              pageImage?.width ??
-              1200
-            }
-            height={
-              pageImage?.height ??
-              800
-            }
-            className={
-              styles.pageImage
-            }
-            priority
-          />
-        </div>
-      )}
-
+     
       {/* TITRES DE PAGE */}
       <div
         className={
