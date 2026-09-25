@@ -103,7 +103,9 @@ function SupportCard({
   return (
     <article className={styles.supportCard}>
       {title && (
-        <h3>{title}</h3>
+        <h3>
+          {title}
+        </h3>
       )}
 
       {content && (
@@ -245,33 +247,6 @@ export default function JoinDetail({
         )}
       </div>
 
-      {/* DEVENIR MÉCÈNE */}
-      <div className={styles.supportRow}>
-        <SupportCard
-          title={
-            joinFr.patronTitle
-          }
-          content={
-            joinFr.patronText
-          }
-          buttonLabel="Nous contacter"
-          href={contactUrl}
-        />
-
-        {joinEu && (
-          <SupportCard
-            title={
-              joinEu.patronTitle
-            }
-            content={
-              joinEu.patronText
-            }
-            buttonLabel="Harremanetan jarri"
-            href={contactUrl}
-          />
-        )}
-      </div>
-
       {/* SOUTIEN FINANCIER */}
       {donationUrl && (
         <div className={styles.supportRow}>
@@ -302,6 +277,33 @@ export default function JoinDetail({
           )}
         </div>
       )}
+
+      {/* DEVENIR MÉCÈNE */}
+      <div className={styles.supportRow}>
+        <SupportCard
+          title={
+            joinFr.patronTitle
+          }
+          content={
+            joinFr.patronText
+          }
+          buttonLabel="Nous contacter"
+          href={contactUrl}
+        />
+
+        {joinEu && (
+          <SupportCard
+            title={
+              joinEu.patronTitle
+            }
+            content={
+              joinEu.patronText
+            }
+            buttonLabel="Harremanetan jarri"
+            href={contactUrl}
+          />
+        )}
+      </div>
     </section>
   );
 }

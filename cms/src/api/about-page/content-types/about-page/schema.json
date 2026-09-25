@@ -69,6 +69,14 @@
       "relation": "manyToOne",
       "target": "api::house.house",
       "inversedBy": "about_pages"
+    },
+    "displayOrder": {
+      "type": "integer",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

@@ -12,21 +12,33 @@ import styles from "./Hero.module.css";
 
 type HeroProps = {
   houses?: StrapiHouse[];
+
   slogan?: string;
+
   ctaLabel?: string;
+
+  selectorLabel?: string;
+
+  selectorPlaceholder?: string;
 };
 
 export default function Hero({
   houses = [],
-  slogan = "Un lieu d’accueil, d’écoute et d’action pour les femmes du Pays Basque.",
-  ctaLabel = "Découvrir nos actions",
+  slogan = "",
+  ctaLabel = "",
+  selectorLabel = "",
+  selectorPlaceholder = "",
 }: HeroProps) {
-  const [houseSlug, setHouseSlug] =
-    useState("");
+  const [
+    houseSlug,
+    setHouseSlug,
+  ] = useState("");
 
-  const selectedHouse = houses.find(
-    (house) => house.slug === houseSlug
-  );
+  const selectedHouse =
+    houses.find(
+      (house) =>
+        house.slug === houseSlug
+    );
 
   return (
     <main className={styles.hero}>
@@ -45,22 +57,36 @@ export default function Hero({
         </p>
       </header>
 
-      <div className={styles.imageWrapper}>
+      <div
+        className={
+          styles.imageWrapper
+        }
+      >
         <Image
           src="/images/femmes-bandeau-nb.png"
           alt=""
           width={1600}
           height={700}
           priority
-          className={styles.heroImage}
+          className={
+            styles.heroImage
+          }
         />
       </div>
 
-      <section className={styles.selectorSection}>
+      <section
+        className={
+          styles.selectorSection
+        }
+      >
         <HouseSelector
           houses={houses}
           value={houseSlug}
           onChange={setHouseSlug}
+          label={selectorLabel}
+          placeholder={
+            selectorPlaceholder
+          }
         />
 
         <Button
@@ -69,8 +95,12 @@ export default function Hero({
               ? `/${selectedHouse.slug}/actions`
               : undefined
           }
-          disabled={!selectedHouse}
-          className={styles.discoverButton}
+          disabled={
+            !selectedHouse
+          }
+          className={
+            styles.discoverButton
+          }
         >
           {ctaLabel}
         </Button>

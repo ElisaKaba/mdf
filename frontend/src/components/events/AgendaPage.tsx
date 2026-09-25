@@ -1,13 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import {
+  useState,
+} from "react";
+import {
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
+import {
+  BlocksRenderer,
+} from "@strapi/blocks-react-renderer";
 
 import Pill from "@/components/ui/Pill";
 import EventCard from "@/components/events/EventCard";
 
-import type { Event, EventCategory } from "@/types/event";
-import type { StrapiAgendaPage } from "@/lib/strapi/agendaPage";
+import type {
+  Event,
+  EventCategory,
+} from "@/types/event";
+
+import type {
+  StrapiAgendaPage,
+} from "@/lib/strapi/agendaPage";
 
 import styles from "./AgendaPage.module.css";
 
@@ -54,11 +69,53 @@ export default function AgendaPage({
   agendaPageFr,
   agendaPageEu,
 }: AgendaPageProps) {
-  const [filter, setFilter] =
+  const router =
+    useRouter();
+
+  const searchParams =
+    useSearchParams();
+
+  const initialLocale: Locale =
+    searchParams.get("lang") === "eu"
+      ? "eu"
+      : "fr";
+
+  const [
+    filter,
+    setFilter,
+  ] =
     useState<Filter>("tous");
 
-  const [locale, setLocale] =
-    useState<Locale>("fr");
+  const [
+    locale,
+    setLocale,
+  ] =
+    useState<Locale>(
+      initialLocale
+    );
+
+  function changeLocale(
+    newLocale: Locale
+  ) {
+    setLocale(newLocale);
+
+    const params =
+      new URLSearchParams(
+        searchParams.toString()
+      );
+
+    params.set(
+      "lang",
+      newLocale
+    );
+
+    router.replace(
+      `?${params.toString()}`,
+      {
+        scroll: false,
+      }
+    );
+  }
 
   const events =
     locale === "fr"
@@ -75,7 +132,8 @@ export default function AgendaPage({
       ? events
       : events.filter(
           (event) =>
-            event.category === filter
+            event.category ===
+            filter
         );
 
   const labels =
@@ -84,9 +142,11 @@ export default function AgendaPage({
           title: "Agenda",
           all: "Tous",
           workshops: "Ateliers",
-          permanences: "Permanences",
+          permanences:
+            "Permanences",
           events: "Événements",
-          switchLanguage: "Euskaraz",
+          switchLanguage:
+            "Euskaraz",
           openPlanning:
             "Ouvrir le planning",
         }
@@ -94,9 +154,11 @@ export default function AgendaPage({
           title: "Agenda",
           all: "Guztiak",
           workshops: "Tailerrak",
-          permanences: "Permanenteak",
+          permanences:
+            "Permanenteak",
           events: "Ekitaldiak",
-          switchLanguage: "Français",
+          switchLanguage:
+            "Français",
           openPlanning:
             "Egutegia ireki",
         };
@@ -105,7 +167,9 @@ export default function AgendaPage({
     agendaPage?.monthlyPlanning;
 
   const planningUrl =
-    getMediaUrl(planning?.url);
+    getMediaUrl(
+      planning?.url
+    );
 
   const isPdf =
     planning?.mime ===
@@ -123,9 +187,15 @@ export default function AgendaPage({
     );
 
   return (
-    <section className={styles.agenda}>
-      <div className={styles.header}>
-        <h1>{labels.title}</h1>
+    <section
+      className={styles.agenda}
+    >
+      <div
+        className={styles.header}
+      >
+        <h1>
+          {labels.title}
+        </h1>
 
         <button
           type="button"
@@ -133,14 +203,16 @@ export default function AgendaPage({
             styles.languageButton
           }
           onClick={() =>
-            setLocale((current) =>
-              current === "fr"
+            changeLocale(
+              locale === "fr"
                 ? "eu"
                 : "fr"
             )
           }
         >
-          {labels.switchLanguage}
+          {
+            labels.switchLanguage
+          }
         </button>
       </div>
 
@@ -161,6 +233,18 @@ export default function AgendaPage({
                 : "Hileko egutegia")}
           </h2>
 
+          {agendaPage?.description && (
+            <div
+              className={`richText ${styles.planningDescription}`}
+            >
+              <BlocksRenderer
+                content={
+                  agendaPage.description
+                }
+              />
+            </div>
+          )}
+
           {isImage && (
             <div
               className={
@@ -168,14 +252,16 @@ export default function AgendaPage({
               }
             >
               <Image
-                src={planningUrl}
+                src={
+                  planningUrl
+                }
                 alt={
                   planning?.alternativeText?.trim() ||
                   agendaPage?.planningTitle ||
                   labels.title
                 }
-                width={1200}
-                height={800}
+                width={700}
+                height={500}
                 className={
                   styles.planningImage
                 }
@@ -185,30 +271,52 @@ export default function AgendaPage({
 
           {isPdf && (
             <a
-              href={planningUrl}
+              href={
+                planningUrl
+              }
               target="_blank"
               rel="noopener noreferrer"
               className={
                 styles.planningButton
               }
             >
-              {labels.openPlanning}
+              {
+                labels.openPlanning
+              }
             </a>
+          )}
+
+          {agendaPage?.additionalInfo && (
+            <div
+              className={`richText ${styles.additionalInfo}`}
+            >
+              <BlocksRenderer
+                content={
+                  agendaPage.additionalInfo
+                }
+              />
+            </div>
           )}
         </section>
       )}
 
-      <div className={styles.filters}>
+      <div
+        className={styles.filters}
+      >
         <Pill
           label={labels.all}
-          active={filter === "tous"}
+          active={
+            filter === "tous"
+          }
           onClick={() =>
             setFilter("tous")
           }
         />
 
         <Pill
-          label={labels.workshops}
+          label={
+            labels.workshops
+          }
           active={
             filter === "atelier"
           }
@@ -222,25 +330,35 @@ export default function AgendaPage({
             labels.permanences
           }
           active={
-            filter === "permanence"
+            filter ===
+            "permanence"
           }
           onClick={() =>
-            setFilter("permanence")
+            setFilter(
+              "permanence"
+            )
           }
         />
 
         <Pill
-          label={labels.events}
+          label={
+            labels.events
+          }
           active={
-            filter === "evenement"
+            filter ===
+            "evenement"
           }
           onClick={() =>
-            setFilter("evenement")
+            setFilter(
+              "evenement"
+            )
           }
         />
       </div>
 
-      <div className={styles.events}>
+      <div
+        className={styles.events}
+      >
         {filteredEvents.map(
           (event) => (
             <EventCard

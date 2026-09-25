@@ -2,30 +2,14 @@ import Link from "next/link";
 
 import type { Event } from "@/types/event";
 
+import { formatDate } from "@/lib/date";
+
 import styles from "./EventCard.module.css";
 
 type EventCardProps = {
   event: Event;
   locale: "fr" | "eu";
 };
-
-function formatDate(
-  date: string,
-  locale: "fr" | "eu"
-) {
-  return new Intl.DateTimeFormat(
-    locale === "fr"
-      ? "fr-FR"
-      : "eu-ES",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }
-  ).format(
-    new Date(`${date}T00:00:00`)
-  );
-}
 
 function formatPrice(
   event: Event,
@@ -64,6 +48,16 @@ function formatPrice(
   return null;
 }
 
+function cleanTime(
+  time?: string | null
+) {
+  if (!time) {
+    return null;
+  }
+
+  return time.slice(0, 5);
+}
+
 export default function EventCard({
   event,
   locale,
@@ -79,10 +73,19 @@ export default function EventCard({
       ? "Sur inscription"
       : "Izen-ematea beharrezkoa";
 
+  const startTime =
+    cleanTime(event.startTime);
+
+  const endTime =
+    cleanTime(event.endTime);
+
+  const detailUrl =
+    `/${event.houseSlug}/agenda/${event.slug}?lang=${locale}`;
+
   return (
     <article className={styles.card}>
       <Link
-        href={`/${event.houseSlug}/agenda/${event.slug}`}
+        href={detailUrl}
         className={styles.link}
       >
         <p className={styles.date}>
@@ -91,23 +94,26 @@ export default function EventCard({
             locale
           )}
 
-          {event.startTime && (
+          {startTime && (
             <>
               {" — "}
-              {event.startTime}
+              {startTime}
 
-              {event.endTime && (
+              {endTime && (
                 <>
                   {" "}
-                  {timeSeparator}{" "}
-                  {event.endTime}
+                  {timeSeparator}
+                  {" "}
+                  {endTime}
                 </>
               )}
             </>
           )}
         </p>
 
-        <h2>{event.title}</h2>
+        <h2>
+          {event.title}
+        </h2>
 
         {event.summary && (
           <p className={styles.summary}>

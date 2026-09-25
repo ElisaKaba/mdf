@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import {
   BlocksRenderer,
   type BlocksContent,
@@ -9,14 +10,17 @@ import type { StrapiAboutPage } from "@/lib/strapi/about";
 import styles from "./AboutDetail.module.css";
 
 type AboutDetailProps = {
-  aboutFr: StrapiAboutPage;
-  aboutEu?: StrapiAboutPage;
+  aboutFr: StrapiAboutPage[];
+  aboutEu: StrapiAboutPage[];
 };
 
 const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  "http://localhost:1337";
 
-function getMediaUrl(path?: string) {
+function getMediaUrl(
+  path?: string
+) {
   if (!path) {
     return undefined;
   }
@@ -32,15 +36,23 @@ function getMediaUrl(path?: string) {
 }
 
 function isBlocksContent(
-  description: StrapiAboutPage["description"]
-): description is BlocksContent {
-  return Array.isArray(description);
+  content:
+    | BlocksContent
+    | string
+    | null
+    | undefined
+): content is BlocksContent {
+  return Array.isArray(content);
 }
 
 function Description({
   content,
 }: {
-  content: StrapiAboutPage["description"];
+  content:
+    | BlocksContent
+    | string
+    | null
+    | undefined;
 }) {
   if (!content) {
     return null;
@@ -57,15 +69,31 @@ function Description({
   return <p>{content}</p>;
 }
 
+function getEuVersion(
+  pageFr: StrapiAboutPage,
+  aboutEu: StrapiAboutPage[]
+) {
+  return aboutEu.find(
+    (pageEu) =>
+      pageEu.slug === pageFr.slug
+  );
+}
+
 export default function AboutDetail({
   aboutFr,
   aboutEu,
 }: AboutDetailProps) {
-  const image = aboutFr.image?.[0];
+  const mainPage =
+    aboutFr.find(
+      (page) =>
+        page.slug === "qui-sommes-nous"
+    ) ?? aboutFr[0];
 
-  const imageUrl = getMediaUrl(
-    image?.url
-  );
+  const image =
+    mainPage.image?.[0];
+
+  const imageUrl =
+    getMediaUrl(image?.url);
 
   return (
     <section className={styles.wrapper}>
@@ -75,57 +103,105 @@ export default function AboutDetail({
             src={imageUrl}
             alt={
               image?.alternativeText?.trim() ||
-              aboutFr.title
+              mainPage.title
             }
-            width={image?.width ?? 1200}
-            height={image?.height ?? 600}
+            width={
+              image?.width ?? 1200
+            }
+            height={
+              image?.height ?? 600
+            }
             className={styles.image}
+            priority
           />
         </div>
       )}
 
-      <div className={styles.columns}>
-        <article className={styles.column}>
-        
-          <h1>{aboutFr.title}</h1>
+      <div className={styles.sections}>
+        {aboutFr.map((pageFr) => {
+          const pageEu =
+            getEuVersion(
+              pageFr,
+              aboutEu
+            );
 
-          {aboutFr.summary && (
-            <p className={styles.summary}>
-              {aboutFr.summary}
-            </p>
-          )}
+          return (
+            <div
+              key={pageFr.documentId}
+              className={styles.section}
+            >
+              <article
+                className={styles.column}
+              >
+                <h2>
+                  {pageFr.title}
+                </h2>
 
-          <div className={`richText ${styles.description}`}>
-            <Description
-              content={aboutFr.description}
-            />
-          </div>
-        </article>
+                {pageFr.summary && (
+                  <p
+                    className={
+                      styles.summary
+                    }
+                  >
+                    {pageFr.summary}
+                  </p>
+                )}
 
-        <article className={styles.column}>
-       
-          {aboutEu ? (
-            <>
-              <h2>{aboutEu.title}</h2>
+                <div
+                  className={`richText ${styles.description}`}
+                >
+                  <Description
+                    content={
+                      pageFr.description
+                    }
+                  />
+                </div>
+              </article>
 
-              {aboutEu.summary && (
-                <p className={styles.summary}>
-                  {aboutEu.summary}
-                </p>
-              )}
+              <article
+                className={styles.column}
+              >
+                {pageEu ? (
+                  <>
+                    <h2>
+                      {pageEu.title}
+                    </h2>
 
-              <div className={styles.description}>
-                <Description
-                  content={aboutEu.description}
-                />
-              </div>
-            </>
-          ) : (
-            <p className={styles.empty}>
-              Euskarazko edukia ez dago oraindik erabilgarri.
-            </p>
-          )}
-        </article>
+                    {pageEu.summary && (
+                      <p
+                        className={
+                          styles.summary
+                        }
+                      >
+                        {pageEu.summary}
+                      </p>
+                    )}
+
+                    <div
+                      className={`richText ${styles.description}`}
+                    >
+                      <Description
+                        content={
+                          pageEu.description
+                        }
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <p
+                    className={
+                      styles.empty
+                    }
+                  >
+                    Euskarazko edukia ez
+                    dago oraindik
+                    erabilgarri.
+                  </p>
+                )}
+              </article>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

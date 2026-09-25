@@ -56,7 +56,7 @@
 }
 
 /*
- * Planning mensuel
+ * PLANNING MENSUEL
  */
 
 .planningSection {
@@ -68,10 +68,12 @@
   background-color: #f7f3f0;
 
   border-radius: var(--radius-md);
+
+  box-sizing: border-box;
 }
 
 .planningTitle {
-  margin: 0 0 1.25rem;
+  margin: 0 0 1rem;
 
   color: var(--color-primary);
 
@@ -82,6 +84,45 @@
   font-size: 1.5rem;
   font-weight: 400;
 }
+
+/*
+ * DESCRIPTION AVANT L'AFFICHE
+ */
+
+.planningDescription {
+  width: 100%;
+  max-width: 750px;
+
+  margin: 0 0 1.5rem;
+
+  color: var(--color-text);
+
+  line-height: 1.6;
+}
+
+.planningDescription p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.planningDescription p:last-child {
+  margin-bottom: 0;
+}
+
+.planningDescription ul,
+.planningDescription ol {
+  margin: 0.75rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.planningDescription li {
+  margin-bottom: 0.4rem;
+}
+
+/*
+ * AFFICHE
+ */
 
 .planningImageWrapper {
   width: 100%;
@@ -98,11 +139,17 @@
   display: block;
 
   width: 100%;
-  max-width: 850px;
+  max-width: 560px;
   height: auto;
 
   object-fit: contain;
+
+  border-radius: var(--radius-md);
 }
+
+/*
+ * PDF
+ */
 
 .planningButton {
   display: inline-flex;
@@ -127,7 +174,49 @@
 }
 
 /*
- * Filtres
+ * COMPLÉMENT D'INFORMATIONS
+ */
+
+.additionalInfo {
+  max-width: 750px;
+
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.25rem;
+
+  color: var(--color-text);
+
+  background-color: #ffffff;
+
+  border: 1px solid rgba(143, 90, 83, 0.2);
+  border-radius: var(--radius-md);
+
+  line-height: 1.6;
+
+  box-sizing: border-box;
+}
+
+.additionalInfo p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.additionalInfo p:last-child {
+  margin-bottom: 0;
+}
+
+.additionalInfo ul,
+.additionalInfo ol {
+  margin: 0.75rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.additionalInfo li {
+  margin-bottom: 0.4rem;
+}
+
+/*
+ * FILTRES
  */
 
 .filters {
@@ -140,7 +229,7 @@
 }
 
 /*
- * Cartes événements
+ * CARTES ÉVÉNEMENTS
  */
 
 .events {
@@ -170,6 +259,10 @@
 
   .planningSection {
     padding: 1.25rem;
+  }
+
+  .planningImage {
+    max-width: 500px;
   }
 
   .events {
@@ -216,6 +309,23 @@
     font-size: 1.25rem;
   }
 
+  .planningDescription {
+    margin-bottom: 1.25rem;
+
+    font-size: 0.92rem;
+  }
+
+  .planningImage {
+    max-width: 420px;
+  }
+
+  .additionalInfo {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1rem;
+
+    font-size: 0.92rem;
+  }
+
   .filters {
     gap: 0.5rem;
   }
@@ -244,5 +354,17 @@
 
   .planningTitle {
     font-size: 1.1rem;
+  }
+
+  .planningDescription {
+    font-size: 0.85rem;
+  }
+
+  .planningImage {
+    max-width: 100%;
+  }
+
+  .additionalInfo {
+    font-size: 0.85rem;
   }
 }

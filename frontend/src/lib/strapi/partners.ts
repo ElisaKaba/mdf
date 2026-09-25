@@ -4,7 +4,8 @@ import { fetchStrapi } from "./client";
 
 export type PartnerCategory =
   | "works_with_us"
-  | "funders";
+  | "funders"
+  | "artists";
 
 export type StrapiPartner = {
   id: number;
@@ -49,6 +50,6 @@ export async function getPartners(
 ): Promise<StrapiPartnersResponse> {
   return fetchStrapi<StrapiPartnersResponse>(
     "partners",
-    `?locale=${locale}&populate=*`
+    `?locale=${locale}&populate=*&pagination[pageSize]=100`
   );
 }

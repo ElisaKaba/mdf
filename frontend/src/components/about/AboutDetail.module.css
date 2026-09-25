@@ -10,7 +10,7 @@
 
 .imageWrapper {
   width: 100%;
-  height: 150px;
+  height: 190px;
 
   margin-bottom: 2rem;
 
@@ -29,13 +29,33 @@
   object-position: center;
 }
 
-.columns {
+.sections {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3rem;
+}
+
+.section {
   width: 100%;
 
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
   gap: 3rem;
+
+  padding-bottom: 3rem;
+
+  border-bottom:
+    1px solid
+    rgba(143, 90, 83, 0.2);
+}
+
+.section:last-child {
+  padding-bottom: 0;
+
+  border-bottom: none;
 }
 
 .column {
@@ -44,23 +64,27 @@
   overflow-wrap: anywhere;
 }
 
-.column h1,
 .column h2 {
   margin: 0 0 1rem;
 
   color: var(--color-primary);
 
-  font-family: var(--font-beautifully-delicious), sans-serif;
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
   font-size: 1.8rem;
   font-weight: 400;
   line-height: 1.15;
 }
 
 .summary {
-  margin-bottom: 1.25rem;
+  margin: 0 0 1.25rem;
 
-  font-size: 1.05rem;
-  line-height: 1.5;
+  color: var(--color-text);
+
+  font-weight: 600;
+  line-height: 1.6;
 }
 
 .description {
@@ -76,9 +100,17 @@
   margin-bottom: 1rem;
 }
 
+.description p:last-child {
+  margin-bottom: 0;
+}
+
 .description ul,
 .description ol {
   padding-left: 1.5rem;
+}
+
+.description li {
+  margin-bottom: 0.5rem;
 }
 
 .empty {
@@ -89,14 +121,13 @@
 
 @media (max-width: 1024px) {
   .imageWrapper {
-    height: 130px;
+    height: 170px;
   }
 
-  .columns {
+  .section {
     gap: 2rem;
   }
 
-  .column h1,
   .column h2 {
     font-size: 1.55rem;
   }
@@ -108,23 +139,32 @@
   }
 
   .imageWrapper {
-    height: 110px;
+    height: 150px;
 
     margin-bottom: 1.5rem;
   }
 
-  .columns {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-
-    gap: 1rem;
+  .sections {
+    gap: 2rem;
   }
 
-  .column h1,
+  .section {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 1rem;
+
+    padding-bottom: 2rem;
+  }
+
   .column h2 {
     font-size: 1.25rem;
   }
 
-  .summary,
+  .summary {
+    font-size: 0.92rem;
+  }
+
   .description {
     font-size: 0.92rem;
   }
@@ -132,19 +172,21 @@
 
 @media (max-width: 390px) {
   .imageWrapper {
-    height: 90px;
+    height: 130px;
   }
 
-  .columns {
+  .section {
     gap: 0.75rem;
   }
 
-  .column h1,
   .column h2 {
     font-size: 1.1rem;
   }
 
-  .summary,
+  .summary {
+    font-size: 0.85rem;
+  }
+
   .description {
     font-size: 0.85rem;
   }

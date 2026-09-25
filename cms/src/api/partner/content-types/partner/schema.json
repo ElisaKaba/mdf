@@ -9,28 +9,14 @@
   "options": {
     "draftAndPublish": true
   },
-  "pluginOptions": {
-    "i18n": {
-      "localized": true
-    }
-  },
+  "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      },
       "required": true
     },
     "logo": {
       "type": "media",
-      "pluginOptions": {
-        "i18n": {
-          "localized": false
-        }
-      },
       "multiple": false,
       "allowedTypes": [
         "images",
@@ -40,40 +26,21 @@
       ]
     },
     "websiteUrl": {
-      "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": false
-        }
-      }
+      "type": "string"
     },
     "description": {
-      "type": "blocks",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "type": "blocks"
     },
     "category": {
       "type": "enumeration",
-      "pluginOptions": {
-        "i18n": {
-          "localized": false
-        }
-      },
       "enum": [
         "works_with_us",
+        "artists",
         "funders"
       ]
     },
     "displayOrder": {
-      "type": "integer",
-      "pluginOptions": {
-        "i18n": {
-          "localized": false
-        }
-      }
+      "type": "integer"
     },
     "house": {
       "type": "relation",

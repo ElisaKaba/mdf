@@ -68,7 +68,6 @@ export default async function ActionsPage({
 
   /*
    * Première action de la page.
-   * Ici : Journées du Matrimoine si displayOrder = 1.
    */
   const featuredActionFr =
     actionsFr.find(
@@ -85,8 +84,7 @@ export default async function ActionsPage({
       : undefined;
 
   /*
-   * Les autres actions seront affichées
-   * après "Que fait-on ?".
+   * Les autres actions.
    */
   const remainingActionsFr =
     featuredActionFr
@@ -99,7 +97,7 @@ export default async function ActionsPage({
 
   return (
     <section className={styles.wrapper}>
-      {/* ACTION MISE EN AVANT TOUT EN HAUT */}
+      {/* ACTION MISE EN AVANT */}
       {featuredActionFr && (
         <div className={styles.featuredAction}>
           <ActionDetail
@@ -133,7 +131,7 @@ export default async function ActionsPage({
         <div className={styles.languageColumn}>
           <h2 className={styles.sectionTitle}>
             {actionsPageEu?.actionsTitle ??
-              "Zer egiten dugu?"}
+              "Gure ekintzak"}
           </h2>
 
           {actionsPageEu?.actionsIntro && (
@@ -173,49 +171,6 @@ export default async function ActionsPage({
           )}
         </div>
       )}
-
-      {/* OÙ VA-T-ON ? */}
-      <div className={styles.columns}>
-        <div className={styles.languageColumn}>
-          <h2 className={styles.sectionTitle}>
-            {actionsPageFr
-              ?.whereWeAreGoingTitle ??
-              "Où va-t-on ?"}
-          </h2>
-
-          {actionsPageFr?.whereWeAreGoing && (
-            <div
-              className={`richText ${styles.intro}`}
-            >
-              <BlocksRenderer
-                content={
-                  actionsPageFr.whereWeAreGoing
-                }
-              />
-            </div>
-          )}
-        </div>
-
-        <div className={styles.languageColumn}>
-          <h2 className={styles.sectionTitle}>
-            {actionsPageEu
-              ?.whereWeAreGoingTitle ??
-              "Nora goaz?"}
-          </h2>
-
-          {actionsPageEu?.whereWeAreGoing && (
-            <div
-              className={`richText ${styles.intro}`}
-            >
-              <BlocksRenderer
-                content={
-                  actionsPageEu.whereWeAreGoing
-                }
-              />
-            </div>
-          )}
-        </div>
-      </div>
     </section>
   );
 }

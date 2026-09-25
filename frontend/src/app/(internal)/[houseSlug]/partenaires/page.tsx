@@ -18,7 +18,9 @@ const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL ??
   "http://localhost:1337";
 
-function getMediaUrl(path?: string | null) {
+function getMediaUrl(
+  path?: string | null
+) {
   if (!path) {
     return undefined;
   }
@@ -33,7 +35,9 @@ function getMediaUrl(path?: string | null) {
   return `${STRAPI_URL}${path}`;
 }
 
-function sortPartners(partners: StrapiPartner[]) {
+function sortPartners(
+  partners: StrapiPartner[]
+) {
   return [...partners].sort(
     (a, b) =>
       (a.displayOrder ?? 999) -
@@ -43,14 +47,11 @@ function sortPartners(partners: StrapiPartner[]) {
 
 function PartnerCard({
   partner,
-  locale,
 }: {
   partner: StrapiPartner;
-  locale: "fr" | "eu";
 }) {
-  const logoUrl = getMediaUrl(
-    partner.logo?.url
-  );
+  const logoUrl =
+    getMediaUrl(partner.logo?.url);
 
   return (
     <article className={styles.card}>
@@ -70,12 +71,18 @@ function PartnerCard({
       )}
 
       <div className={styles.cardContent}>
-        <h3>{partner.name}</h3>
+        <h3>
+          {partner.name}
+        </h3>
 
         {partner.description && (
-          <div className={`richText ${styles.description}`}>
+          <div
+            className={`richText ${styles.description}`}
+          >
             <BlocksRenderer
-              content={partner.description}
+              content={
+                partner.description
+              }
             />
           </div>
         )}
@@ -87,9 +94,7 @@ function PartnerCard({
             rel="noopener noreferrer"
             className={styles.link}
           >
-            {locale === "fr"
-              ? "Voir le site"
-              : "Webgunea ikusi"}
+            Voir le site
           </a>
         )}
       </div>
@@ -98,38 +103,73 @@ function PartnerCard({
 }
 
 function PartnerGroup({
-  title,
+  titleFr,
+  titleEu,
   partners,
-  locale,
 }: {
-  title: string;
+  titleFr: string;
+  titleEu: string;
   partners: StrapiPartner[];
-  locale: "fr" | "eu";
 }) {
   return (
-    <section className={styles.group}>
-      <h2 className={styles.groupTitle}>
-        {title}
-      </h2>
+    <details
+      className={styles.group}
+      open
+    >
+      <summary
+        className={
+          styles.groupHeader
+        }
+      >
+        <div
+          className={
+            styles.groupTitles
+          }
+        >
+          <h2
+            className={
+              styles.groupTitle
+            }
+          >
+            {titleFr}
+          </h2>
 
-      {partners.length > 0 ? (
-        <div className={styles.cards}>
-          {partners.map((partner) => (
-            <PartnerCard
-              key={partner.documentId}
-              partner={partner}
-              locale={locale}
-            />
-          ))}
+          <h2
+            className={
+              styles.groupTitle
+            }
+          >
+            {titleEu}
+          </h2>
         </div>
-      ) : (
-        <p className={styles.empty}>
-          {locale === "fr"
-            ? "Aucun partenaire renseigné pour le moment."
-            : "Oraingoz ez dago bazkiderik."}
-        </p>
-      )}
-    </section>
+      </summary>
+
+      <div
+        className={
+          styles.groupContent
+        }
+      >
+        {partners.length > 0 ? (
+          <div className={styles.cards}>
+            {partners.map(
+              (partner) => (
+                <PartnerCard
+                  key={
+                    partner.documentId
+                  }
+                  partner={partner}
+                />
+              )
+            )}
+          </div>
+        ) : (
+          <p className={styles.empty}>
+            Aucun partenaire renseigné
+            pour le moment.
+          </p>
+        )}
+      </div>
+    </details>
   );
 }
 
@@ -138,99 +178,73 @@ export default async function PartnersPage({
 }: PartnersPageProps) {
   const { houseSlug } = await params;
 
-  const [responseFr, responseEu] =
-    await Promise.all([
-      getPartners("fr"),
-      getPartners("eu"),
-    ]);
+  /*
+   * Une seule locale suffit ici :
+   * les informations partenaires
+   * sont identiques en FR et EU.
+   */
+  const responseFr =
+    await getPartners("fr");
 
-  const partnersFr = sortPartners(
-    responseFr.data.filter(
-      (partner) =>
-        partner.house?.slug === houseSlug
-    )
-  );
+  const partners =
+    sortPartners(
+      responseFr.data.filter(
+        (partner) =>
+          partner.house?.slug ===
+          houseSlug
+      )
+    );
 
-  const partnersEu = sortPartners(
-    responseEu.data.filter(
-      (partner) =>
-        partner.house?.slug === houseSlug
-    )
-  );
-
-  const worksWithUsFr =
-    partnersFr.filter(
+  const worksWithUs =
+    partners.filter(
       (partner) =>
         partner.category ===
         "works_with_us"
     );
 
-  const fundersFr =
-    partnersFr.filter(
-      (partner) =>
-        partner.category === "funders"
-    );
-
-  const worksWithUsEu =
-    partnersEu.filter(
+  const funders =
+    partners.filter(
       (partner) =>
         partner.category ===
-        "works_with_us"
+        "funders"
     );
 
-  const fundersEu =
-    partnersEu.filter(
+  const artists =
+    partners.filter(
       (partner) =>
-        partner.category === "funders"
+        partner.category ===
+        "artists"
     );
 
   return (
     <section className={styles.wrapper}>
-      <div className={styles.columns}>
-        <div className={styles.languageColumn}>
-          <p className={styles.language}>
-            Français
-          </p>
+      <div className={styles.pageHeadings}>
+        <h1 className={styles.pageTitle}>
+          Partenaires
+        </h1>
 
-          <h1 className={styles.pageTitle}>
-            Partenaires
-          </h1>
-
-          <PartnerGroup
-            title="On travaille avec eux"
-            partners={worksWithUsFr}
-            locale="fr"
-          />
-
-          <PartnerGroup
-            title="Ils nous financent"
-            partners={fundersFr}
-            locale="fr"
-          />
-        </div>
-
-        <div className={styles.languageColumn}>
-          <p className={styles.language}>
-            Euskara
-          </p>
-
-          <h2 className={styles.pageTitle}>
-            Partnerak
-          </h2>
-
-          <PartnerGroup
-            title="Gurekin lan egiten dute"
-            partners={worksWithUsEu}
-            locale="eu"
-          />
-
-          <PartnerGroup
-            title="Finantzatzen gaituzte"
-            partners={fundersEu}
-            locale="eu"
-          />
-        </div>
+        <h2 className={styles.pageTitle}>
+          Partnerak
+        </h2>
       </div>
+
+      <PartnerGroup
+        titleFr="On travaille avec eux"
+        titleEu="Gurekin lan egiten dute"
+        partners={worksWithUs}
+      />
+
+      <PartnerGroup
+        titleFr="Ils nous financent"
+        titleEu="Finantzatzen gaituzte"
+        partners={funders}
+      />
+
+      <PartnerGroup
+        titleFr="Artistes"
+        titleEu="Artistak"
+        partners={artists}
+      />
     </section>
   );
 }
