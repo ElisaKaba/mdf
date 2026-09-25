@@ -151,9 +151,17 @@ object-fit: contain;
   font-family: Arial, sans-serif;
 }
 
+.actionImg{
+  border-radius: 20px;
+  margin-bottom: 50px;
+}
+
 @media (max-width: 768px) {
   .richText p,
   .richText li {
     text-align: left;
+  }
+  .localeMatrimoineImg{
+  height: auto;
   }
 }

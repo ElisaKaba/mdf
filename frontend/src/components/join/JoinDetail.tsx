@@ -101,7 +101,9 @@ function SupportCard({
   }
 
   return (
-    <article className={styles.supportCard}>
+    <article
+      className={styles.supportCard}
+    >
       {title && (
         <h3>
           {title}
@@ -123,14 +125,18 @@ function SupportCard({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={styles.cardButton}
+          className={
+            styles.cardButton
+          }
         >
           {buttonLabel}
         </a>
       ) : (
         <Link
           href={href}
-          className={styles.cardButton}
+          className={
+            styles.cardButton
+          }
         >
           {buttonLabel}
         </Link>
@@ -156,7 +162,8 @@ export default function JoinDetail({
 
   return (
     <section className={styles.wrapper}>
-      {/* {imageUrl && (
+      {/* IMAGE DE TÊTE — INCHANGÉE */}
+         {/* {imageUrl && (
         <div className={styles.imageWrapper}>
           <Image
             src={imageUrl}
@@ -179,9 +186,12 @@ export default function JoinDetail({
       <img src={"/images/nous-soutenir.png"} alt="Soutien" className="localeSubImage"/>
       </div>  
 
+
       {/* INTRODUCTION */}
       <div className={styles.columns}>
-        <article className={styles.column}>
+        <article
+          className={styles.column}
+        >
           <h1>
             {joinFr.title}
           </h1>
@@ -197,7 +207,9 @@ export default function JoinDetail({
           </div>
         </article>
 
-        <article className={styles.column}>
+        <article
+          className={styles.column}
+        >
           {joinEu ? (
             <>
               <h2>
@@ -215,7 +227,11 @@ export default function JoinDetail({
               </div>
             </>
           ) : (
-            <p className={styles.empty}>
+            <p
+              className={
+                styles.empty
+              }
+            >
               Euskarazko edukia ez dago
               oraindik erabilgarri.
             </p>
@@ -224,7 +240,11 @@ export default function JoinDetail({
       </div>
 
       {/* DEVENIR BÉNÉVOLE */}
-      <div className={styles.supportRow}>
+      <div
+        className={
+          styles.supportRow
+        }
+      >
         <SupportCard
           title={
             joinFr.volunteerTitle
@@ -252,7 +272,11 @@ export default function JoinDetail({
 
       {/* SOUTIEN FINANCIER */}
       {donationUrl && (
-        <div className={styles.supportRow}>
+        <div
+          className={
+            styles.supportRow
+          }
+        >
           <SupportCard
             title={
               joinFr.financialTitle
@@ -282,7 +306,11 @@ export default function JoinDetail({
       )}
 
       {/* DEVENIR MÉCÈNE */}
-      <div className={styles.supportRow}>
+      <div
+        className={
+          styles.supportRow
+        }
+      >
         <SupportCard
           title={
             joinFr.patronTitle

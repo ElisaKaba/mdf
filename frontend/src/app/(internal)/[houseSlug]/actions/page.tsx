@@ -126,7 +126,7 @@ export default async function ActionsPage({
   return (
     <section className={styles.wrapper}>
       {/* IMAGE BANDEAU */}
-      {imageUrl && (
+      {/* {imageUrl && (
         <div
           className={
             styles.pageImageWrapper
@@ -154,7 +154,8 @@ export default async function ActionsPage({
             priority
           />
         </div>
-      )}
+      )} */
+     <img src="/images/cv-actions.png" alt="Nos actions" className="actionImg"/>}
 
       {/* ACTION MISE EN AVANT */}
       {featuredActionFr && (

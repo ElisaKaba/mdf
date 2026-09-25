@@ -1,12 +1,17 @@
 .wrapper {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1000px;
 
   margin-inline: auto;
   margin-bottom: 4rem;
 
   overflow-x: hidden;
 }
+
+/*
+ * IMAGE DE TÊTE
+ * ON NE CHANGE PAS SON COMPORTEMENT
+ */
 
 .imageWrapper {
   width: 100%;
@@ -30,8 +35,9 @@
 }
 
 /*
- * Intro FR / EU
+ * INTRO FR / EU
  */
+
 .columns {
   width: 100%;
 
@@ -78,20 +84,28 @@
   margin-bottom: 1rem;
 }
 
+.description p:last-child {
+  margin-bottom: 0;
+}
+
 .description ul,
 .description ol {
+  margin: 1rem 0;
+
   padding-left: 1.5rem;
 }
 
-.empty {
-  color: var(--color-text-muted);
-
-  font-style: italic;
+.description li {
+  margin-bottom: 0.5rem;
 }
 
 /*
- * Une ligne = FR à gauche / EU à droite
+ * LIGNES DES BLOCS DE SOUTIEN
+ *
+ * Desktop :
+ * FR | EU
  */
+
 .supportRow {
   width: 100%;
 
@@ -101,34 +115,39 @@
 
   gap: 3rem;
 
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+
+  align-items: stretch;
 }
 
 /*
- * Carte soutien
+ * CARTE
  */
+
 .supportCard {
   min-width: 0;
 
   display: flex;
   flex-direction: column;
 
-  padding: 1.75rem;
+  padding: 1.5rem;
 
-  background-color: var(--color-primary);
-  color: #ffffff;
+  background-color: #ffffff;
 
-  border-radius: var(--radius-md);
+  border:
+    1px solid
+    rgba(143, 90, 83, 0.2);
 
-  box-shadow:
-    0 6px 18px
-    rgba(0, 0, 0, 0.06);
+  border-radius:
+    var(--radius-md);
+
+  box-sizing: border-box;
 }
 
 .supportCard h3 {
   margin: 0 0 1rem;
 
-  color: #ffffff;
+  color: var(--color-primary);
 
   font-family:
     var(--font-beautifully-delicious),
@@ -142,16 +161,9 @@
 .cardText {
   flex: 1;
 
-  color: #ffffff;
+  color: var(--color-text);
 
-  line-height: 1.6;
-}
-
-.cardText p,
-.cardText li,
-.cardText strong,
-.cardText em {
-  color: #ffffff;
+  line-height: 1.65;
 }
 
 .cardText p {
@@ -163,11 +175,23 @@
   margin-bottom: 0;
 }
 
+.cardText ul,
+.cardText ol {
+  margin: 1rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.cardText li {
+  margin-bottom: 0.5rem;
+}
+
 /*
- * Boutons
+ * BOUTONS
  */
+
 .cardButton {
-  width: fit-content;
+  align-self: flex-start;
 
   display: inline-flex;
   align-items: center;
@@ -179,35 +203,48 @@
     0.65rem
     1.1rem;
 
-  color: var(--color-primary);
-  background-color: #ffffff;
+  color: #ffffff;
 
-  border: 2px solid #ffffff;
+  background-color:
+    var(--color-primary);
+
   border-radius: 999px;
 
-  font-size: 0.9rem;
   font-weight: 600;
 
   text-decoration: none;
-
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
 }
 
 .cardButton:hover {
-  color: #ffffff;
-  background-color: transparent;
+  opacity: 0.9;
 }
 
 .cardButton:focus-visible {
-  outline: 3px solid #ffffff;
+  outline:
+    3px solid
+    rgba(143, 90, 83, 0.35);
+
   outline-offset: 4px;
+}
+
+/*
+ * CONTENU BASQUE ABSENT
+ */
+
+.empty {
+  margin: 0;
+
+  color:
+    var(--color-text-muted);
+
+  font-style: italic;
+  line-height: 1.5;
 }
 
 /*
  * TABLETTE
  */
+
 @media (max-width: 1024px) {
   .imageWrapper {
     height: 170px;
@@ -223,10 +260,6 @@
     font-size: 1.55rem;
   }
 
-  .supportCard {
-    padding: 1.5rem;
-  }
-
   .supportCard h3 {
     font-size: 1.35rem;
   }
@@ -235,39 +268,55 @@
 /*
  * MOBILE
  *
- * On garde FR / EU côte à côte
- * comme sur le reste du site.
+ * FR puis EU
+ * Toutes les cartes les unes
+ * sous les autres.
  */
+
 @media (max-width: 768px) {
   .wrapper {
     margin-bottom: 2rem;
   }
 
+  /*
+   * Image conservée telle quelle,
+   * seulement sa hauteur responsive.
+   */
   .imageWrapper {
     height: 150px;
 
     margin-bottom: 1.5rem;
   }
 
-  .columns,
-  .supportRow {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
-    gap: 1rem;
-  }
-
+  /*
+   * Intro :
+   * FR au-dessus,
+   * EU en dessous.
+   */
   .columns {
+    grid-template-columns: 1fr;
+
+    gap: 2rem;
+
     margin-bottom: 2rem;
   }
 
+  /*
+   * IMPORTANT :
+   * les cartes deviennent
+   * une seule colonne.
+   */
   .supportRow {
-    margin-bottom: 1.25rem;
+    grid-template-columns: 1fr;
+
+    gap: 1.25rem;
+
+    margin-bottom: 2rem;
   }
 
   .column h1,
   .column h2 {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
   }
 
   .description {
@@ -275,67 +324,63 @@
   }
 
   .supportCard {
-    padding: 1rem;
+    width: 100%;
+
+    padding: 1.25rem;
   }
 
   .supportCard h3 {
-    font-size: 1.15rem;
+    font-size: 1.25rem;
   }
 
   .cardText {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
   }
 
   .cardButton {
-    padding:
-      0.55rem
-      0.8rem;
-
-    font-size: 0.78rem;
+    margin-top: 1.25rem;
   }
 }
 
 /*
  * PETIT MOBILE
  */
+
 @media (max-width: 390px) {
   .imageWrapper {
     height: 130px;
   }
 
-  .columns,
+  .columns {
+    gap: 1.5rem;
+  }
+
   .supportRow {
-    gap: 0.75rem;
+    gap: 1rem;
   }
 
   .column h1,
   .column h2 {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
   }
 
-  .description {
+  .description,
+  .cardText,
+  .empty {
     font-size: 0.85rem;
   }
 
   .supportCard {
-    padding: 0.8rem;
+    padding: 1rem;
   }
 
   .supportCard h3 {
-    font-size: 1rem;
-  }
-
-  .cardText {
-    font-size: 0.8rem;
+    font-size: 1.1rem;
   }
 
   .cardButton {
     width: 100%;
 
-    padding:
-      0.5rem
-      0.6rem;
-
-    font-size: 0.72rem;
+    box-sizing: border-box;
   }
 }
