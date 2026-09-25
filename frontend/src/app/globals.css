@@ -129,6 +129,7 @@ body {
 }
 .quiImg{
 border-radius: 20px;
+object-fit: contain;
 }
 .additionalInfo, .planningDescription{
   max-width: 100%;

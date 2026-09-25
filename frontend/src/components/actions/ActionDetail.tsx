@@ -64,7 +64,9 @@ export default function ActionDetail({
               className={`richText ${styles.description}`}
             >
               <Description
-                content={actionFr.description}
+                content={
+                  actionFr.description
+                }
               />
             </div>
           )}

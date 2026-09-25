@@ -9,7 +9,8 @@ import {
   getAboutPages,
   type StrapiAboutPage,
 } from "@/lib/strapi/about";
-import { randomBytes } from "crypto";
+
+import styles from "./page.module.css";
 
 type AboutPageProps = {
   params: Promise<{
@@ -54,38 +55,21 @@ function AboutContent({
   page: StrapiAboutPage;
 }) {
   return (
-    <section
-      style={{
-        minWidth: 0,
-      }}
-    >
-      <h2
-        style={{
-          margin: "0 0 1rem",
-          color: "var(--color-primary)",
-          fontFamily:
-            "var(--font-beautifully-delicious), sans-serif",
-          fontSize: "1.8rem",
-          fontWeight: 400,
-          lineHeight: 1.2,
-        }}
-      >
+    <section className={styles.column}>
+      <h2 className={styles.title}>
         {page.title}
       </h2>
 
       {page.summary && (
-        <p
-          style={{
-            margin: "0 0 1rem",
-            lineHeight: 1.65,
-          }}
-        >
+        <p className={styles.summary}>
           {page.summary}
         </p>
       )}
 
       {page.description && (
-        <div className="richText">
+        <div
+          className={`richText ${styles.description}`}
+        >
           <BlocksRenderer
             content={
               page.description as BlocksContent
@@ -127,7 +111,9 @@ export default async function AboutPage({
   if (pagesFr.length === 0) {
     return (
       <section>
-        <h1>Qui sommes-nous ?</h1>
+        <h1>
+          Qui sommes-nous ?
+        </h1>
 
         <p>
           Aucun contenu publié pour le moment.
@@ -137,68 +123,62 @@ export default async function AboutPage({
   }
 
   /*
-   * L'image utilisée pour le bandeau
-   * vient de la première entrée FR
+   * Image bandeau :
+   * image de la première entrée
    * selon displayOrder.
    */
   const pageImage =
     pagesFr[0]?.image?.[0];
 
- const imageUrl =
+  const imageUrl =
     getMediaUrl(
-      
-    pageImage?.url
-     );
+      pageImage?.url
+    );
+
   return (
-    <section
-      style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "3rem",
-      }}
-    >
+    <section className={styles.wrapper}>
       {/* IMAGE BANDEAU */}
-      {/* {imageUrl && (
-      
-          style={{
-            width: "100%",
-            height: "400px",
-
-            overflow: "hidden",
-
-            borderRadius:
-              "var(--radius-md)",
-          }}
-        > */}
-          <div>
-          <img src= "/images/qui-sommes-nous.png" alt="Maison des femmes" className="quiImg"
-            
+      {/* {imageUrl && ( */}
+        <div
+          className={
+            styles.pageImageWrapper
+          }
+        >
+          {/* <Image
+            src={imageUrl}
+            alt={
+              pageImage
+                ?.alternativeText
+                ?.trim() ||
+              "Maison des Femmes"
+            }
             width={
               pageImage?.width ??
-              1200
+              1600
             }
             height={
               pageImage?.height ??
-              800
+              900
             }
-            style={{
-              display: "block",
-                 
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition:
-                "center",
-            }}
-        
-          />
-        </div>
-      
+            className={
+              styles.pageImage
+            }
+            priority
+          />*/}
+      <img src="/images/qui-sommes-nous.png" alt="Femmes de la Maison des femmes" className="quiImg"/>
+        </div> 
 
-      {/* CONTENUS */}
+      {/* SECTIONS FR / EU */}
       {pagesFr.map(
         (pageFr) => {
+          /*
+           * On essaie d'abord
+           * d'associer les traductions
+           * avec documentId.
+           *
+           * Sinon on utilise
+           * displayOrder.
+           */
           const pageEu =
             pagesEu.find(
               (page) =>
@@ -216,19 +196,7 @@ export default async function AboutPage({
               key={
                 pageFr.documentId
               }
-              style={{
-                display: "grid",
-
-                gridTemplateColumns:
-                  "repeat(2, minmax(0, 1fr))",
-
-                gap: "3rem",
-
-                width: "100%",
-
-                alignItems:
-                  "start",
-              }}
+              className={styles.row}
             >
               {/* FRANÇAIS */}
               <AboutContent
@@ -236,30 +204,27 @@ export default async function AboutPage({
               />
 
               {/* EUSKARA */}
-              <div>
-                {pageEu ? (
-                  <AboutContent
-                    page={pageEu}
-                  />
-                ) : (
+              {pageEu ? (
+                <AboutContent
+                  page={pageEu}
+                />
+              ) : (
+                <div
+                  className={
+                    styles.column
+                  }
+                >
                   <p
-                    style={{
-                      margin: 0,
-
-                      color:
-                        "var(--color-text-muted)",
-
-                      fontStyle:
-                        "italic",
-                    }}
+                    className={
+                      styles.empty
+                    }
                   >
-                    Euskarazko
-                    edukia ez dago
-                    oraindik
+                    Euskarazko edukia
+                    ez dago oraindik
                     erabilgarri.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           );
         }
