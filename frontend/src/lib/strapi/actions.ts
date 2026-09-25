@@ -2,19 +2,6 @@ import type { BlocksContent } from "@strapi/blocks-react-renderer";
 
 import { fetchStrapi } from "./client";
 
-export type StrapiActionImage = {
-  id: number;
-  documentId: string;
-
-  name?: string;
-  alternativeText?: string | null;
-
-  width?: number;
-  height?: number;
-
-  url: string;
-};
-
 export type StrapiAction = {
   id: number;
   documentId: string;
@@ -24,15 +11,11 @@ export type StrapiAction = {
 
   summary?: string | null;
 
-  description?: BlocksContent | null;
-
-  category?: string | null;
-
-  displayOrder?: number | null;
+  description?: BlocksContent | string | null;
 
   locale: string;
 
-  image?: StrapiActionImage[] | null;
+  displayOrder?: number | null;
 
   house?: {
     id: number;

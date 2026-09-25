@@ -7,23 +7,38 @@ export type StrapiActionsPage = {
   documentId: string;
 
   actionsTitle?: string | null;
+
   actionsIntro?: BlocksContent | null;
 
-  whereWeAreGoingTitle?: string | null;
-  whereWeAreGoing?: BlocksContent | null;
+  locale?: string;
 
-  locale: string;
+  image?: {
+    id: number;
+    documentId: string;
+
+    name?: string;
+    alternativeText?: string | null;
+
+    width?: number;
+    height?: number;
+
+    url: string;
+  } | null;
+
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string | null;
 };
 
-type StrapiActionsPageResponse = {
+type ActionsPageResponse = {
   data: StrapiActionsPage | null;
 };
 
 export async function getActionsPage(
   locale: "fr" | "eu"
-): Promise<StrapiActionsPageResponse> {
-  return fetchStrapi<StrapiActionsPageResponse>(
+): Promise<ActionsPageResponse> {
+  return fetchStrapi<ActionsPageResponse>(
     "actions-page",
-    `?locale=${locale}`
+    `?locale=${locale}&populate=*`
   );
 }

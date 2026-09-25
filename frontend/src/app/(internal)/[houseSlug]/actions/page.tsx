@@ -1,4 +1,8 @@
-import { BlocksRenderer } from "@strapi/blocks-react-renderer";
+import Image from "next/image";
+
+import {
+  BlocksRenderer,
+} from "@strapi/blocks-react-renderer";
 
 import ActionDetail from "@/components/actions/ActionDetail";
 
@@ -18,6 +22,27 @@ type ActionsPageProps = {
     houseSlug: string;
   }>;
 };
+
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_STRAPI_URL ??
+  "http://localhost:1337";
+
+function getMediaUrl(
+  path?: string | null
+) {
+  if (!path) {
+    return undefined;
+  }
+
+  if (
+    path.startsWith("http://") ||
+    path.startsWith("https://")
+  ) {
+    return path;
+  }
+
+  return `${STRAPI_URL}${path}`;
+}
 
 function sortActions(
   actions: StrapiAction[]
@@ -67,11 +92,23 @@ export default async function ActionsPage({
     actionsPageEuResponse.data;
 
   /*
-   * Première action de la page.
+   * IMAGE GLOBALE DE LA PAGE
+   */
+  const pageImage =
+    actionsPageFr?.image;
+
+  const imageUrl =
+    getMediaUrl(
+      pageImage?.url
+    );
+
+  /*
+   * Première action mise en avant.
    */
   const featuredActionFr =
     actionsFr.find(
-      (action) => action.displayOrder === 1
+      (action) =>
+        action.displayOrder === 1
     ) ?? actionsFr[0];
 
   const featuredActionEu =
@@ -84,7 +121,7 @@ export default async function ActionsPage({
       : undefined;
 
   /*
-   * Les autres actions.
+   * Toutes les autres actions.
    */
   const remainingActionsFr =
     featuredActionFr
@@ -97,50 +134,113 @@ export default async function ActionsPage({
 
   return (
     <section className={styles.wrapper}>
+      {/* IMAGE BANDEAU */}
+      {imageUrl && (
+        <div
+          className={
+            styles.pageImageWrapper
+          }
+        >
+          <Image
+            src={imageUrl}
+            alt={
+              pageImage
+                ?.alternativeText
+                ?.trim() ||
+              "Nos actions"
+            }
+            width={
+              pageImage?.width ??
+              1200
+            }
+            height={
+              pageImage?.height ??
+              800
+            }
+            className={
+              styles.pageImage
+            }
+            priority
+          />
+        </div>
+      )}
+
       {/* ACTION MISE EN AVANT */}
       {featuredActionFr && (
-        <div className={styles.featuredAction}>
+        <div
+          className={
+            styles.featuredAction
+          }
+        >
           <ActionDetail
-            actionFr={featuredActionFr}
-            actionEu={featuredActionEu}
+            actionFr={
+              featuredActionFr
+            }
+            actionEu={
+              featuredActionEu
+            }
           />
         </div>
       )}
 
       {/* QUE FAIT-ON ? */}
       <div className={styles.columns}>
-        <div className={styles.languageColumn}>
-          <h1 className={styles.sectionTitle}>
-            {actionsPageFr?.actionsTitle ??
+        {/* FR */}
+        <div
+          className={
+            styles.languageColumn
+          }
+        >
+          <h1
+            className={
+              styles.sectionTitle
+            }
+          >
+            {actionsPageFr
+              ?.actionsTitle ??
               "Que fait-on ?"}
           </h1>
 
-          {actionsPageFr?.actionsIntro && (
+          {actionsPageFr
+            ?.actionsIntro && (
             <div
               className={`richText ${styles.intro}`}
             >
               <BlocksRenderer
                 content={
-                  actionsPageFr.actionsIntro
+                  actionsPageFr
+                    .actionsIntro
                 }
               />
             </div>
           )}
         </div>
 
-        <div className={styles.languageColumn}>
-          <h2 className={styles.sectionTitle}>
-            {actionsPageEu?.actionsTitle ??
+        {/* EU */}
+        <div
+          className={
+            styles.languageColumn
+          }
+        >
+          <h2
+            className={
+              styles.sectionTitle
+            }
+          >
+            {actionsPageEu
+              ?.actionsTitle ??
               "Gure ekintzak"}
           </h2>
 
-          {actionsPageEu?.actionsIntro && (
+          {actionsPageEu
+            ?.actionsIntro && (
             <div
               className={`richText ${styles.intro}`}
             >
               <BlocksRenderer
                 content={
-                  actionsPageEu.actionsIntro
+                  actionsPageEu
+                    .actionsIntro
                 }
               />
             </div>
@@ -149,22 +249,39 @@ export default async function ActionsPage({
       </div>
 
       {/* AUTRES ACTIONS */}
-      {remainingActionsFr.length > 0 && (
-        <div className={styles.actionsList}>
+      {remainingActionsFr.length >
+        0 && (
+        <div
+          className={
+            styles.actionsList
+          }
+        >
           {remainingActionsFr.map(
-            (actionFr: StrapiAction) => {
+            (
+              actionFr:
+                StrapiAction
+            ) => {
               const actionEu =
                 actionsEu.find(
-                  (action: StrapiAction) =>
+                  (
+                    action:
+                      StrapiAction
+                  ) =>
                     action.documentId ===
                     actionFr.documentId
                 );
 
               return (
                 <ActionDetail
-                  key={actionFr.documentId}
-                  actionFr={actionFr}
-                  actionEu={actionEu}
+                  key={
+                    actionFr.documentId
+                  }
+                  actionFr={
+                    actionFr
+                  }
+                  actionEu={
+                    actionEu
+                  }
                 />
               );
             }

@@ -1,9 +1,10 @@
-import Image from "next/image";
-import { BlocksRenderer } from "@strapi/blocks-react-renderer";
+import {
+  BlocksRenderer,
+  type BlocksContent,
+} from "@strapi/blocks-react-renderer";
 
 import type {
   StrapiAction,
-  StrapiActionImage,
 } from "@/lib/strapi/actions";
 
 import styles from "./ActionDetail.module.css";
@@ -13,83 +14,44 @@ type ActionDetailProps = {
   actionEu?: StrapiAction;
 };
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ??
-  "http://localhost:1337";
-
-function getStrapiMediaUrl(
-  path?: string
-) {
-  if (!path) {
-    return undefined;
-  }
-
-  if (
-    path.startsWith("http://") ||
-    path.startsWith("https://")
-  ) {
-    return path;
-  }
-
-  return `${STRAPI_URL}${path}`;
+function isBlocksContent(
+  content: StrapiAction["description"]
+): content is BlocksContent {
+  return Array.isArray(content);
 }
 
-function ActionImage({
-  image,
-  fallbackAlt,
+function Description({
+  content,
 }: {
-  image?: StrapiActionImage;
-  fallbackAlt: string;
+  content: StrapiAction["description"];
 }) {
-  if (!image) {
+  if (!content) {
     return null;
   }
 
-  const imageUrl =
-    getStrapiMediaUrl(image.url);
-
-  if (!imageUrl) {
-    return null;
-  }
-
-  return (
-    <div className={styles.imageWrapper}>
-      <Image
-        src={imageUrl}
-        alt={
-          image.alternativeText?.trim() ||
-          fallbackAlt
-        }
-        width={image.width ?? 600}
-        height={image.height ?? 800}
-        className={styles.image}
+  if (isBlocksContent(content)) {
+    return (
+      <BlocksRenderer
+        content={content}
       />
-    </div>
-  );
+    );
+  }
+
+  return <p>{content}</p>;
 }
 
 export default function ActionDetail({
   actionFr,
   actionEu,
 }: ActionDetailProps) {
-  const images =
-    actionFr.image ?? [];
-
-  const imageFr = images[0];
-  const imageEu = images[1];
-
   return (
     <section className={styles.wrapper}>
       <div className={styles.columns}>
+        {/* FRANÇAIS */}
         <article className={styles.column}>
-          <ActionImage
-            image={imageFr}
-            fallbackAlt={actionFr.title}
-          />
-
-          <h1>
+          <h2>
             {actionFr.title}
-          </h1>
+          </h2>
 
           {actionFr.summary && (
             <p className={styles.summary}>
@@ -101,24 +63,15 @@ export default function ActionDetail({
             <div
               className={`richText ${styles.description}`}
             >
-              <BlocksRenderer
-                content={
-                  actionFr.description
-                }
+              <Description
+                content={actionFr.description}
               />
             </div>
           )}
         </article>
 
+        {/* EUSKARA */}
         <article className={styles.column}>
-          <ActionImage
-            image={imageEu}
-            fallbackAlt={
-              actionEu?.title ??
-              actionFr.title
-            }
-          />
-
           {actionEu ? (
             <>
               <h2>
@@ -126,11 +79,7 @@ export default function ActionDetail({
               </h2>
 
               {actionEu.summary && (
-                <p
-                  className={
-                    styles.summary
-                  }
-                >
+                <p className={styles.summary}>
                   {actionEu.summary}
                 </p>
               )}
@@ -139,7 +88,7 @@ export default function ActionDetail({
                 <div
                   className={`richText ${styles.description}`}
                 >
-                  <BlocksRenderer
+                  <Description
                     content={
                       actionEu.description
                     }

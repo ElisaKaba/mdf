@@ -1,7 +1,9 @@
 .wrapper {
   width: 100%;
+  max-width: 1000px;
 
-  margin: 0 0 4rem;
+  margin-inline: auto;
+  margin-bottom: 3rem;
 
   overflow-x: hidden;
 }
@@ -19,45 +21,11 @@
 .column {
   min-width: 0;
 
-  margin: 0;
-  padding: 0;
-
   overflow-wrap: anywhere;
 }
 
-.imageWrapper {
-  width: 100%;
-  max-width: 260px;
-
-  aspect-ratio: 3 / 4;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin: 0 auto 1.5rem;
-
-  overflow: hidden;
-
-  border-radius: var(--radius-md);
-
-  background-color: #ffffff;
-}
-
-.image {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: contain;
-  object-position: center;
-}
-
-.column h1,
 .column h2 {
   margin: 0 0 1rem;
-  padding: 0;
 
   color: var(--color-primary);
 
@@ -71,17 +39,16 @@
 }
 
 .summary {
-  margin: 0 0 1.25rem;
-  padding: 0;
+  margin: 0 0 1rem;
 
-  font-size: 1.05rem;
-  line-height: 1.5;
+  color: var(--color-text);
+
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .description {
-  margin: 0;
-  padding: 0;
-
   color: var(--color-text);
 
   line-height: 1.65;
@@ -91,7 +58,7 @@
 
 .description p {
   margin-top: 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .description p:last-child {
@@ -109,10 +76,24 @@
   margin-bottom: 0.5rem;
 }
 
+.description a {
+  color: var(--color-primary);
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.description a:hover {
+  opacity: 0.8;
+}
+
 .empty {
+  margin: 0;
+
   color: var(--color-text-muted);
 
   font-style: italic;
+  line-height: 1.5;
 }
 
 @media (max-width: 1024px) {
@@ -120,13 +101,12 @@
     gap: 2rem;
   }
 
-  .imageWrapper {
-    max-width: 220px;
-  }
-
-  .column h1,
   .column h2 {
     font-size: 1.55rem;
+  }
+
+  .summary {
+    font-size: 0.95rem;
   }
 }
 
@@ -142,13 +122,6 @@
     gap: 1rem;
   }
 
-  .imageWrapper {
-    max-width: 180px;
-
-    margin-bottom: 1rem;
-  }
-
-  .column h1,
   .column h2 {
     font-size: 1.25rem;
   }
@@ -164,17 +137,13 @@
     gap: 0.75rem;
   }
 
-  .imageWrapper {
-    max-width: 140px;
-  }
-
-  .column h1,
   .column h2 {
     font-size: 1.1rem;
   }
 
   .summary,
-  .description {
+  .description,
+  .empty {
     font-size: 0.85rem;
   }
 }
