@@ -55,9 +55,7 @@ export default function ResourceDetail({
 
       <div className={styles.columns}>
         <article className={styles.column}>
-          <p className={styles.language}>
-            Français
-          </p>
+      
 
           <h1>{resourceFr.title}</h1>
 
@@ -88,9 +86,6 @@ export default function ResourceDetail({
         </article>
 
         <article className={styles.column}>
-          <p className={styles.language}>
-            Euskara
-          </p>
 
           {resourceEu ? (
             <>
@@ -103,7 +98,7 @@ export default function ResourceDetail({
               )}
 
               {resourceEu.description && (
-                <div className={styles.description}>
+               <div className={`richText ${styles.description}`}>
                   <BlocksRenderer
                     content={resourceEu.description}
                   />

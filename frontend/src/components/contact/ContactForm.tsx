@@ -8,46 +8,265 @@ type ContactFormProps = {
   houseSlug: string;
 };
 
+type Locale = "fr" | "eu";
+
+type SubjectOption =
+  | ""
+  | "volunteer"
+  | "workshop"
+  | "help"
+  | "other";
+
 type FormState = {
   firstName: string;
   lastName: string;
   email: string;
-  subject: string;
+  subject: SubjectOption;
+  subjectDetails: string;
   message: string;
   consent: boolean;
 };
 
-type FieldErrors = Partial<Record<keyof FormState, string>>;
+type FieldErrors =
+  Partial<Record<keyof FormState, string>>;
 
 const initialState: FormState = {
   firstName: "",
   lastName: "",
   email: "",
   subject: "",
+  subjectDetails: "",
   message: "",
   consent: false,
+};
+
+const translations = {
+  fr: {
+    title: "Nous contacter",
+    switchLanguage: "Euskaraz",
+
+    firstName: "Prénom",
+    lastName: "Nom",
+    email: "Adresse e-mail",
+
+    subject: "Sujet",
+    chooseSubject: "Choisir un sujet",
+
+    volunteer: "Devenir bénévole",
+    workshop: "Proposer un atelier",
+    help: "Besoin d’aide",
+    other: "Autre",
+
+    subjectDetails: "Précisez votre demande",
+
+    message: "Message",
+
+    consent:
+      "J’accepte que mes informations soient utilisées pour répondre à ma demande.",
+
+    submit: "Envoyer",
+    submitting: "Envoi en cours…",
+
+    success:
+      "Votre message a bien été envoyé. La Maison des Femmes pourra revenir vers vous.",
+
+    serverError:
+      "Impossible de contacter le serveur. Réessayez dans quelques instants.",
+
+    unexpectedError:
+      "Une erreur inattendue est survenue. Réessayez dans quelques instants.",
+
+    errors: {
+      firstName:
+        "Le prénom doit contenir au moins 2 caractères.",
+
+      lastName:
+        "Le nom doit contenir au moins 2 caractères.",
+
+      email:
+        "Saisissez une adresse e-mail valide.",
+
+      subject:
+        "Choisissez un sujet.",
+
+      subjectDetails:
+        "Précisez votre demande.",
+
+      message:
+        "Le message doit contenir au moins 10 caractères.",
+
+      consent:
+        "Vous devez accepter l’utilisation de vos données pour envoyer votre message.",
+    },
+  },
+
+  eu: {
+    title: "Gurekin harremanetan jarri",
+    switchLanguage: "Français",
+
+    firstName: "Izena",
+    lastName: "Abizena",
+    email: "Helbide elektronikoa",
+
+    subject: "Gaia",
+    chooseSubject: "Aukeratu gai bat",
+
+    volunteer: "Boluntario izan",
+    workshop: "Tailer bat proposatu",
+    help: "Laguntza behar dut",
+    other: "Bestelakoa",
+
+    subjectDetails:
+      "Zehaztu zure eskaera",
+
+    message: "Mezua",
+
+    consent:
+      "Nire informazioa nire eskaerari erantzuteko erabiltzea onartzen dut.",
+
+    submit: "Bidali",
+    submitting: "Bidaltzen…",
+
+    success:
+      "Zure mezua behar bezala bidali da. Emakumeen Etxea zurekin harremanetan jarri ahal izango da.",
+
+    serverError:
+      "Ezin izan da zerbitzariarekin konektatu. Saiatu berriro une batzuk barru.",
+
+    unexpectedError:
+      "Ustekabeko errore bat gertatu da. Saiatu berriro une batzuk barru.",
+
+    errors: {
+      firstName:
+        "Izenak gutxienez 2 karaktere izan behar ditu.",
+
+      lastName:
+        "Abizenak gutxienez 2 karaktere izan behar ditu.",
+
+      email:
+        "Sartu baliozko helbide elektroniko bat.",
+
+      subject:
+        "Aukeratu gai bat.",
+
+      subjectDetails:
+        "Zehaztu zure eskaera.",
+
+      message:
+        "Mezuak gutxienez 10 karaktere izan behar ditu.",
+
+      consent:
+        "Zure datuen erabilera onartu behar duzu mezua bidaltzeko.",
+    },
+  },
 };
 
 export default function ContactForm({
   houseSlug,
 }: ContactFormProps) {
-  const [form, setForm] = useState<FormState>(initialState);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [globalError, setGlobalError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [locale, setLocale] =
+    useState<Locale>("fr");
 
-  function clearFieldError(field: keyof FormState) {
+  const [form, setForm] =
+    useState<FormState>(initialState);
+
+  const [
+    fieldErrors,
+    setFieldErrors,
+  ] = useState<FieldErrors>({});
+
+  const [
+    globalError,
+    setGlobalError,
+  ] = useState("");
+
+  const [
+    successMessage,
+    setSuccessMessage,
+  ] = useState("");
+
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
+
+  const t = translations[locale];
+
+  function clearFieldError(
+    field: keyof FormState
+  ) {
     setFieldErrors((current) => {
       if (!current[field]) {
         return current;
       }
 
       const next = { ...current };
+
       delete next[field];
 
       return next;
     });
+  }
+
+  function validateForm() {
+    const errors: FieldErrors = {};
+
+    if (
+      form.firstName.trim().length < 2
+    ) {
+      errors.firstName =
+        t.errors.firstName;
+    }
+
+    if (
+      form.lastName.trim().length < 2
+    ) {
+      errors.lastName =
+        t.errors.lastName;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (
+      !emailRegex.test(
+        form.email.trim()
+      )
+    ) {
+      errors.email =
+        t.errors.email;
+    }
+
+    if (!form.subject) {
+      errors.subject =
+        t.errors.subject;
+    }
+
+    if (
+      form.subject === "other" &&
+      !form.subjectDetails.trim()
+    ) {
+      errors.subjectDetails =
+        t.errors.subjectDetails;
+    }
+
+    if (
+      form.message.trim().length < 10
+    ) {
+      errors.message =
+        t.errors.message;
+    }
+
+    if (!form.consent) {
+      errors.consent =
+        t.errors.consent;
+    }
+
+    setFieldErrors(errors);
+
+    return (
+      Object.keys(errors).length === 0
+    );
   }
 
   async function handleSubmit(
@@ -55,46 +274,71 @@ export default function ContactForm({
   ) {
     event.preventDefault();
 
-    setIsSubmitting(true);
-    setFieldErrors({});
     setGlobalError("");
     setSuccessMessage("");
 
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          houseSlug,
-          ...form,
-        }),
-      });
+    const isValid =
+      validateForm();
 
-      const data = await response.json();
+    if (!isValid) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch(
+        "/api/contact",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify({
+            houseSlug,
+            locale,
+            ...form,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
 
       if (!response.ok) {
+        /*
+         * La validation principale
+         * est déjà faite côté client.
+         *
+         * On conserve quand même
+         * les erreurs serveur si besoin.
+         */
         if (data.fieldErrors) {
-          setFieldErrors(data.fieldErrors);
+          setFieldErrors(
+            data.fieldErrors
+          );
         }
 
-        if (data.message) {
-          setGlobalError(data.message);
-        }
+        setGlobalError(
+          data.message ??
+            t.unexpectedError
+        );
 
         return;
       }
 
       setSuccessMessage(
-        data.message ?? "Votre message a bien été envoyé."
+        t.success
       );
 
       setForm(initialState);
       setFieldErrors({});
     } catch {
       setGlobalError(
-        "Impossible de contacter le serveur. Réessayez dans quelques instants."
+        t.serverError
       );
     } finally {
       setIsSubmitting(false);
@@ -107,14 +351,47 @@ export default function ContactForm({
       onSubmit={handleSubmit}
       noValidate
     >
-      <h1>Nous contacter</h1>
+      <div
+        className={
+          styles.formHeader
+        }
+      >
+        <h1>
+          {t.title}
+        </h1>
+
+        <button
+          type="button"
+          className={
+            styles.languageButton
+          }
+          onClick={() => {
+            setLocale(
+              (
+                current
+              ) =>
+                current === "fr"
+                  ? "eu"
+                  : "fr"
+            );
+
+            setFieldErrors({});
+            setGlobalError("");
+            setSuccessMessage("");
+          }}
+        >
+          {t.switchLanguage}
+        </button>
+      </div>
 
       <div className={styles.row}>
         <div className={styles.field}>
           <label htmlFor="firstName">
-            Prénom{" "}
+            {t.firstName}{" "}
             <span
-              className={styles.required}
+              className={
+                styles.required
+              }
               aria-hidden="true"
             >
               *
@@ -125,30 +402,46 @@ export default function ContactForm({
             id="firstName"
             type="text"
             autoComplete="given-name"
-            value={form.firstName}
-            aria-invalid={Boolean(fieldErrors.firstName)}
+            value={
+              form.firstName
+            }
+            aria-invalid={Boolean(
+              fieldErrors.firstName
+            )}
             onChange={(event) => {
               setForm({
                 ...form,
-                firstName: event.target.value,
+                firstName:
+                  event.target.value,
               });
 
-              clearFieldError("firstName");
+              clearFieldError(
+                "firstName"
+              );
             }}
           />
 
           {fieldErrors.firstName && (
-            <p className={styles.fieldError} role="alert">
-              {fieldErrors.firstName}
+            <p
+              className={
+                styles.fieldError
+              }
+              role="alert"
+            >
+              {
+                fieldErrors.firstName
+              }
             </p>
           )}
         </div>
 
         <div className={styles.field}>
           <label htmlFor="lastName">
-            Nom{" "}
+            {t.lastName}{" "}
             <span
-              className={styles.required}
+              className={
+                styles.required
+              }
               aria-hidden="true"
             >
               *
@@ -159,21 +452,35 @@ export default function ContactForm({
             id="lastName"
             type="text"
             autoComplete="family-name"
-            value={form.lastName}
-            aria-invalid={Boolean(fieldErrors.lastName)}
+            value={
+              form.lastName
+            }
+            aria-invalid={Boolean(
+              fieldErrors.lastName
+            )}
             onChange={(event) => {
               setForm({
                 ...form,
-                lastName: event.target.value,
+                lastName:
+                  event.target.value,
               });
 
-              clearFieldError("lastName");
+              clearFieldError(
+                "lastName"
+              );
             }}
           />
 
           {fieldErrors.lastName && (
-            <p className={styles.fieldError} role="alert">
-              {fieldErrors.lastName}
+            <p
+              className={
+                styles.fieldError
+              }
+              role="alert"
+            >
+              {
+                fieldErrors.lastName
+              }
             </p>
           )}
         </div>
@@ -181,9 +488,11 @@ export default function ContactForm({
 
       <div className={styles.field}>
         <label htmlFor="email">
-          Adresse e-mail{" "}
+          {t.email}{" "}
           <span
-            className={styles.required}
+            className={
+              styles.required
+            }
             aria-hidden="true"
           >
             *
@@ -195,19 +504,29 @@ export default function ContactForm({
           type="email"
           autoComplete="email"
           value={form.email}
-          aria-invalid={Boolean(fieldErrors.email)}
+          aria-invalid={Boolean(
+            fieldErrors.email
+          )}
           onChange={(event) => {
             setForm({
               ...form,
-              email: event.target.value,
+              email:
+                event.target.value,
             });
 
-            clearFieldError("email");
+            clearFieldError(
+              "email"
+            );
           }}
         />
 
         {fieldErrors.email && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.email}
           </p>
         )}
@@ -215,92 +534,219 @@ export default function ContactForm({
 
       <div className={styles.field}>
         <label htmlFor="subject">
-          Sujet{" "}
+          {t.subject}{" "}
           <span
-            className={styles.required}
+            className={
+              styles.required
+            }
             aria-hidden="true"
           >
             *
           </span>
         </label>
 
-        <input
+        <select
           id="subject"
-          type="text"
           value={form.subject}
-          aria-invalid={Boolean(fieldErrors.subject)}
+          aria-invalid={Boolean(
+            fieldErrors.subject
+          )}
           onChange={(event) => {
+            const subject =
+              event.target
+                .value as SubjectOption;
+
             setForm({
               ...form,
-              subject: event.target.value,
+              subject,
+
+              subjectDetails:
+                subject === "other"
+                  ? form.subjectDetails
+                  : "",
             });
 
-            clearFieldError("subject");
+            clearFieldError(
+              "subject"
+            );
+
+            if (
+              subject !== "other"
+            ) {
+              clearFieldError(
+                "subjectDetails"
+              );
+            }
           }}
-        />
+        >
+          <option value="">
+            {t.chooseSubject}
+          </option>
+
+          <option value="volunteer">
+            {t.volunteer}
+          </option>
+
+          <option value="workshop">
+            {t.workshop}
+          </option>
+
+          <option value="help">
+            {t.help}
+          </option>
+
+          <option value="other">
+            {t.other}
+          </option>
+        </select>
 
         {fieldErrors.subject && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.subject}
           </p>
         )}
       </div>
 
+      {form.subject === "other" && (
+        <div className={styles.field}>
+          <label
+            htmlFor="subjectDetails"
+          >
+            {t.subjectDetails}{" "}
+            <span
+              className={
+                styles.required
+              }
+              aria-hidden="true"
+            >
+              *
+            </span>
+          </label>
+
+          <input
+            id="subjectDetails"
+            type="text"
+            value={
+              form.subjectDetails
+            }
+            aria-invalid={Boolean(
+              fieldErrors.subjectDetails
+            )}
+            onChange={(event) => {
+              setForm({
+                ...form,
+                subjectDetails:
+                  event.target.value,
+              });
+
+              clearFieldError(
+                "subjectDetails"
+              );
+            }}
+          />
+
+          {fieldErrors.subjectDetails && (
+            <p
+              className={
+                styles.fieldError
+              }
+              role="alert"
+            >
+              {
+                fieldErrors.subjectDetails
+              }
+            </p>
+          )}
+        </div>
+      )}
+
       <div className={styles.field}>
         <label htmlFor="message">
-          Message{" "}
-        <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
+          {t.message}{" "}
+          <span
+            className={
+              styles.required
+            }
+            aria-hidden="true"
+          >
+            *
+          </span>
         </label>
 
         <textarea
           id="message"
           rows={6}
           maxLength={2000}
-          value={form.message}
-          aria-invalid={Boolean(fieldErrors.message)}
+          value={
+            form.message
+          }
+          aria-invalid={Boolean(
+            fieldErrors.message
+          )}
           onChange={(event) => {
             setForm({
               ...form,
-              message: event.target.value,
+              message:
+                event.target.value,
             });
 
-            clearFieldError("message");
+            clearFieldError(
+              "message"
+            );
           }}
         />
 
         {fieldErrors.message && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.message}
           </p>
         )}
       </div>
 
       <div>
-        <label className={styles.consent}>
+        <label
+          className={
+            styles.consent
+          }
+        >
           <input
             type="checkbox"
-            checked={form.consent}
-            aria-invalid={Boolean(fieldErrors.consent)}
+            checked={
+              form.consent
+            }
+            aria-invalid={Boolean(
+              fieldErrors.consent
+            )}
             onChange={(event) => {
               setForm({
                 ...form,
-                consent: event.target.checked,
+                consent:
+                  event.target
+                    .checked,
               });
 
-              clearFieldError("consent");
+              clearFieldError(
+                "consent"
+              );
             }}
           />
 
           <span>
-            J’accepte que mes informations soient utilisées pour répondre à ma
-            demande.{" "}
+            {t.consent}{" "}
             <span
-              className={styles.required}
+              className={
+                styles.required
+              }
               aria-hidden="true"
             >
               *
@@ -309,30 +755,49 @@ export default function ContactForm({
         </label>
 
         {fieldErrors.consent && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.consent}
           </p>
         )}
       </div>
 
       {globalError && (
-        <p className={styles.error} role="alert">
+        <p
+          className={
+            styles.error
+          }
+          role="alert"
+        >
           {globalError}
         </p>
       )}
 
       {successMessage && (
-        <p className={styles.success} role="status">
+        <p
+          className={
+            styles.success
+          }
+          role="status"
+        >
           {successMessage}
         </p>
       )}
 
       <button
         type="submit"
-        className={styles.submitButton}
+        className={
+          styles.submitButton
+        }
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Envoi en cours…" : "Envoyer"}
+        {isSubmitting
+          ? t.submitting
+          : t.submit}
       </button>
     </form>
   );

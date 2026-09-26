@@ -1,6 +1,54 @@
 import type { Event } from "@/types/event";
 import type { StrapiEvent } from "./events";
 
+function formatDateInParis(date: Date) {
+  const parts = new Intl.DateTimeFormat(
+    "fr-CA",
+    {
+      timeZone: "Europe/Paris",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }
+  ).formatToParts(date);
+
+  const year =
+    parts.find((part) => part.type === "year")
+      ?.value ?? "";
+
+  const month =
+    parts.find((part) => part.type === "month")
+      ?.value ?? "";
+
+  const day =
+    parts.find((part) => part.type === "day")
+      ?.value ?? "";
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatTimeInParis(date: Date) {
+  const parts = new Intl.DateTimeFormat(
+    "fr-FR",
+    {
+      timeZone: "Europe/Paris",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }
+  ).formatToParts(date);
+
+  const hour =
+    parts.find((part) => part.type === "hour")
+      ?.value ?? "";
+
+  const minute =
+    parts.find((part) => part.type === "minute")
+      ?.value ?? "";
+
+  return `${hour}:${minute}`;
+}
+
 export function mapStrapiEvent(
   event: StrapiEvent
 ): Event {
@@ -21,13 +69,13 @@ export function mapStrapiEvent(
     category: event.category,
 
     startDate:
-      start.toISOString().slice(0, 10),
+      formatDateInParis(start),
 
     startTime:
-      start.toISOString().slice(11, 16),
+      formatTimeInParis(start),
 
     endTime: end
-      ? end.toISOString().slice(11, 16)
+      ? formatTimeInParis(end)
       : undefined,
 
     location: event.location,

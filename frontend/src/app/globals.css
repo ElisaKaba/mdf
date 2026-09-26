@@ -9,6 +9,7 @@
   --color-text: #8F5A53;
   --color-text-muted: #6f6561;
 
+
   /* Bordures */
   --color-border: #ded5d1;
 
@@ -86,4 +87,89 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+
+.richText p {
+  margin: 0 0 1.25rem;
+  line-height: 1.65;
+}
+
+.richText p:last-child {
+  margin-bottom: 0;
+}
+
+.richText ul,
+.richText ol {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.richText li {
+  margin-bottom: 0.5rem;
+}
+
+.richText h2,
+.richText h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.localeSubImage{
+  border-radius: 20px;
+   margin-bottom: 50px;
+   max-height: 368px;
+   width: 100%;
+   object-fit: cover;
+}
+.localeMatrimoineImg{
+      width: 500px;
+    height: 700px;
+    margin: auto;
+    margin-bottom: 50px;
+    border-radius: 20px;
+}
+.quiImg{
+border-radius: 20px;
+height: 100%;
+}
+.additionalInfo, .planningDescription{
+  max-width: 100%;
+  width: 100%;
+}
+
+.richText p,
+.richText li {
+  text-align: justify;
+}
+.summary,
+.description {
+  text-align: justify;
+}
+
+.richText strong,
+.richText b {
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+}
+
+.actionImg{
+  border-radius: 20px;
+  margin-bottom: 50px;
+}
+
+@media (max-width: 768px) {
+  .richText p,
+  .richText li {
+    text-align: left;
+  }
+  .localeMatrimoineImg{
+  height: auto;
+  }
+}
+
+.richText p,
+.richText li,
+.summary,
+.description,
+.cardText {
+  text-align: justify;
 }

@@ -52,7 +52,7 @@
           "localized": true
         }
       },
-      "multiple": false,
+      "multiple": true,
       "allowedTypes": [
         "images",
         "files",
@@ -80,6 +80,14 @@
       "relation": "manyToOne",
       "target": "api::house.house",
       "inversedBy": "action"
+    },
+    "displayOrder": {
+      "type": "integer",
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      }
     }
   }
 }

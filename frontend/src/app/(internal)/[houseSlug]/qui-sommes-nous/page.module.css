@@ -1,0 +1,232 @@
+.wrapper {
+  width: 100%;
+  max-width: 1100px;
+
+  margin-inline: auto;
+  margin-bottom: 4rem;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3rem;
+}
+
+/*
+ * IMAGE BANDEAU
+ */
+
+.pageImageWrapper {
+  width: 100%;
+  overflow: hidden;
+
+  border-radius: var(--radius-md);
+}
+
+.pageImage {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/*
+ * UNE LIGNE = FR + EU
+ */
+
+.row {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 3rem;
+
+  align-items: start;
+}
+
+.column {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+}
+
+/*
+ * TITRES
+ */
+
+.title {
+  margin: 0 0 1rem;
+
+  color: var(--color-primary);
+
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/*
+ * RÉSUMÉ
+ */
+
+.summary {
+  margin: 0 0 1rem;
+
+  color: var(--color-text);
+
+  line-height: 1.65;
+}
+
+/*
+ * DESCRIPTION
+ */
+
+.description {
+  color: var(--color-text);
+
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+}
+
+.description p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.description p:last-child {
+  margin-bottom: 0;
+}
+
+.description ul,
+.description ol {
+  margin: 1rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.description li {
+  margin-bottom: 0.5rem;
+}
+
+.description strong,
+.description b {
+  font-weight: 700;
+}
+
+.description a {
+  color: var(--color-primary);
+
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.description a:hover {
+  opacity: 0.8;
+}
+
+/*
+ * TRADUCTION ABSENTE
+ */
+
+.empty {
+  margin: 0;
+
+  color: var(--color-text-muted);
+
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/*
+ * TABLETTE
+ */
+
+@media (max-width: 1024px) {
+  .wrapper {
+    max-width: 100%;
+  }
+
+  .pageImageWrapper {
+    height: 320px;
+  }
+
+  .row {
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: 1.55rem;
+  }
+}
+
+/*
+ * MOBILE
+ *
+ * FR au-dessus
+ * EU en dessous
+ */
+
+@media (max-width: 768px) {
+  .wrapper {
+    margin-bottom: 2rem;
+
+    gap: 2.5rem;
+  }
+
+  .pageImageWrapper {
+    height: 240px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+
+    gap: 2rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .summary,
+  .description {
+    font-size: 0.92rem;
+  }
+}
+
+/*
+ * PETIT MOBILE
+ */
+
+@media (max-width: 390px) {
+  .wrapper {
+    gap: 2rem;
+  }
+
+  .pageImageWrapper {
+    height: 100%;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+
+    gap: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.15rem;
+  }
+
+  .summary,
+  .description,
+  .empty {
+    font-size: 0.85rem;
+  }
+}

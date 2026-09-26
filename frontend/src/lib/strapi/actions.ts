@@ -9,50 +9,21 @@ export type StrapiAction = {
   title: string;
   slug: string;
 
-  summary?: string;
-  description?: BlocksContent;
+  summary?: string | null;
 
-  category?:
-    | "atelier"
-    | "accompagnement"
-    | "prevention"
-    | "sensibilisation"
-    | "autre";
+  description?: BlocksContent | string | null;
 
   locale: string;
 
-  image?: {
-    id: number;
-    documentId: string;
-    name?: string;
-    alternativeText?: string;
-    caption?: string;
-    width?: number;
-    height?: number;
-    url: string;
-
-    formats?: {
-      thumbnail?: {
-        url: string;
-      };
-      small?: {
-        url: string;
-      };
-      medium?: {
-        url: string;
-      };
-      large?: {
-        url: string;
-      };
-    };
-  };
+  displayOrder?: number | null;
 
   house?: {
     id: number;
     documentId: string;
+
     name: string;
     slug: string;
-  };
+  } | null;
 };
 
 type StrapiActionsResponse = {
@@ -64,6 +35,6 @@ export async function getActions(
 ): Promise<StrapiActionsResponse> {
   return fetchStrapi<StrapiActionsResponse>(
     "actions",
-    `?locale=${locale}&populate[house]=true&populate[image]=true`
+    `?locale=${locale}&populate=*`
   );
 }

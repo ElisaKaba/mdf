@@ -27,14 +27,20 @@ const navigationLinks = [
     label: "Agenda",
     href: "agenda",
   },
-  {
-    label: "Ressources",
-    href: "ressources",
+// {
+// !!EN ATTENTE DE CONTENU!!
+//   label: "Ressources",
+//   href: `/${houseSlug}/ressources`,
+// },
+   {
+    label: "Nous soutenir",
+    href: "nous-soutenir",
   },
-  {
-    label: "Nous rejoindre",
-    href: "nous-rejoindre",
+   {
+    label: "Partenaires",
+    href: "partenaires",
   },
+
   {
     label: "Contact",
     href: "contact",

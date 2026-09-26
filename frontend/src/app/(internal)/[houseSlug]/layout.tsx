@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import Sidebar from "@/components/layout/Sidebar";
-import { getHouseBySlug } from "@/lib/houses/getHouseBySlug";
+import { getHouses } from "@/lib/strapi/houses";
 
 import styles from "../internal-layout.module.css";
 
@@ -20,7 +20,11 @@ export default async function HouseLayout({
 }: HouseLayoutProps) {
   const { houseSlug } = await params;
 
-  const house = getHouseBySlug(houseSlug);
+  const response = await getHouses("fr");
+
+  const house = response.data.find(
+    (item) => item.slug === houseSlug
+  );
 
   if (!house) {
     notFound();
@@ -31,7 +35,7 @@ export default async function HouseLayout({
       <div className={styles.body}>
         <Sidebar
           houseSlug={house.slug}
-          donationUrl={house.donationUrl}
+          donationUrl={house.donationUrl ?? undefined}
         />
 
         <div className={styles.mainColumn}>
@@ -49,37 +53,41 @@ export default async function HouseLayout({
 
       <footer className={styles.footer}>
         <div className={styles.socials}>
-          <a
-            href={house.facebookUrl ?? "#"}
-            aria-label={`Facebook de ${house.name}`}
-            className={styles.socialLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/facebook.png"
-              alt=""
-              width={34}
-              height={34}
-              className={styles.socialIcon}
-            />
-          </a>
+          {house.facebookUrl && (
+            <a
+              href={house.facebookUrl}
+              aria-label={`Facebook de ${house.name}`}
+              className={styles.socialLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/images/facebook.png"
+                alt=""
+                width={34}
+                height={34}
+                className={styles.socialIcon}
+              />
+            </a>
+          )}
 
-          <a
-            href={house.instagramUrl ?? "#"}
-            aria-label={`Instagram de ${house.name}`}
-            className={styles.socialLink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              src="/images/instagram.png"
-              alt=""
-              width={34}
-              height={34}
-              className={styles.socialIcon}
-            />
-          </a>
+          {house.instagramUrl && (
+            <a
+              href={house.instagramUrl}
+              aria-label={`Instagram de ${house.name}`}
+              className={styles.socialLink}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Image
+                src="/images/instagram.png"
+                alt=""
+                width={34}
+                height={34}
+                className={styles.socialIcon}
+              />
+            </a>
+          )}
         </div>
       </footer>
     </div>

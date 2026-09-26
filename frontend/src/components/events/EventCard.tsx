@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import type { Event } from "@/types/event";
 
+import { formatDate } from "@/lib/date";
+
 import styles from "./EventCard.module.css";
 
 type EventCardProps = {
@@ -9,27 +11,23 @@ type EventCardProps = {
   locale: "fr" | "eu";
 };
 
-function formatDate(date: string, locale: "fr" | "eu") {
-  return new Intl.DateTimeFormat(
-    locale === "fr" ? "fr-FR" : "eu-ES",
-    {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }
-  ).format(new Date(`${date}T00:00:00`));
-}
-
 function formatPrice(
   event: Event,
   locale: "fr" | "eu"
 ) {
   if (event.pricingType === "free") {
-    return locale === "fr" ? "Gratuit" : "Doan";
+    return locale === "fr"
+      ? "Gratuit"
+      : "Doan";
   }
 
-  if (event.pricingType === "pay_what_you_want") {
-    return locale === "fr" ? "Prix libre" : "Prezio librea";
+  if (
+    event.pricingType ===
+    "pay_what_you_want"
+  ) {
+    return locale === "fr"
+      ? "Prix libre"
+      : "Prezio librea";
   }
 
   if (
@@ -37,7 +35,9 @@ function formatPrice(
     typeof event.price === "number"
   ) {
     return new Intl.NumberFormat(
-      locale === "fr" ? "fr-FR" : "eu-ES",
+      locale === "fr"
+        ? "fr-FR"
+        : "eu-ES",
       {
         style: "currency",
         currency: "EUR",
@@ -48,39 +48,72 @@ function formatPrice(
   return null;
 }
 
+function cleanTime(
+  time?: string | null
+) {
+  if (!time) {
+    return null;
+  }
+
+  return time.slice(0, 5);
+}
+
 export default function EventCard({
   event,
   locale,
 }: EventCardProps) {
-  const timeSeparator = locale === "fr" ? "à" : "-";
-  const priceLabel = formatPrice(event, locale);
+  const timeSeparator =
+    locale === "fr" ? "à" : "-";
+
+  const priceLabel =
+    formatPrice(event, locale);
+
+  const registrationLabel =
+    locale === "fr"
+      ? "Sur inscription"
+      : "Izen-ematea beharrezkoa";
+
+  const startTime =
+    cleanTime(event.startTime);
+
+  const endTime =
+    cleanTime(event.endTime);
+
+  const detailUrl =
+    `/${event.houseSlug}/agenda/${event.slug}?lang=${locale}`;
 
   return (
     <article className={styles.card}>
       <Link
-        href={`/${event.houseSlug}/agenda/${event.slug}`}
+        href={detailUrl}
         className={styles.link}
       >
         <p className={styles.date}>
-          {formatDate(event.startDate, locale)}
+          {formatDate(
+            event.startDate,
+            locale
+          )}
 
-          {event.startTime && (
+          {startTime && (
             <>
               {" — "}
-              {event.startTime}
+              {startTime}
 
-              {event.endTime && (
+              {endTime && (
                 <>
                   {" "}
-                  {timeSeparator}{" "}
-                  {event.endTime}
+                  {timeSeparator}
+                  {" "}
+                  {endTime}
                 </>
               )}
             </>
           )}
         </p>
 
-        <h2>{event.title}</h2>
+        <h2>
+          {event.title}
+        </h2>
 
         {event.summary && (
           <p className={styles.summary}>
@@ -94,10 +127,25 @@ export default function EventCard({
           </p>
         )}
 
-        {priceLabel && (
-          <p className={styles.price}>
-            {priceLabel}
-          </p>
+        {(priceLabel ||
+          event.registrationRequired) && (
+          <div className={styles.meta}>
+            {priceLabel && (
+              <p className={styles.price}>
+                {priceLabel}
+              </p>
+            )}
+
+            {event.registrationRequired && (
+              <span
+                className={
+                  styles.registrationBadge
+                }
+              >
+                {registrationLabel}
+              </span>
+            )}
+          </div>
         )}
       </Link>
     </article>

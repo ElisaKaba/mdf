@@ -93,26 +93,40 @@ export async function POST(request: Request) {
     const registration = result.data;
 
     /*
-     * Récupération de l'événement directement depuis Strapi.
-     * On ne fait pas confiance aux données métier envoyées
-     * par le navigateur.
+     * URL publique de Strapi.
      */
     const strapiUrl =
       process.env.NEXT_PUBLIC_STRAPI_URL ??
       "http://localhost:1337";
 
+    /*
+     * Strapi 5 :
+     * récupération directe d'un document grâce à son documentId.
+     */
+    const eventUrl =
+      `${strapiUrl}/api/events/${registration.eventId}?populate=house`;
+
+    console.log(
+      "STRAPI EVENT REQUEST :",
+      eventUrl
+    );
+
     const eventResponse = await fetch(
-      `${strapiUrl}/api/events?filters[documentId][$eq]=${registration.eventId}&populate=house`,
+      eventUrl,
       {
         cache: "no-store",
       }
     );
 
     if (!eventResponse.ok) {
+      const errorText =
+        await eventResponse.text();
+
       console.error(
         "STRAPI EVENT ERROR :",
         eventResponse.status,
-        eventResponse.statusText
+        eventResponse.statusText,
+        errorText
       );
 
       return NextResponse.json(
@@ -128,9 +142,11 @@ export async function POST(request: Request) {
       );
     }
 
-    const eventData = await eventResponse.json();
+    const eventData =
+      await eventResponse.json();
 
-    const strapiEvent = eventData.data?.[0];
+    const strapiEvent =
+      eventData.data;
 
     if (!strapiEvent) {
       return NextResponse.json(
@@ -283,7 +299,7 @@ export async function POST(request: Request) {
           registration.eventId,
 
         event_title:
-          registration.eventTitle,
+          strapiEvent.title,
 
         first_name:
           registration.firstName,
@@ -316,10 +332,6 @@ export async function POST(request: Request) {
         error
       );
 
-      /*
-       * PostgreSQL code 23505 =
-       * violation d'une contrainte UNIQUE.
-       */
       if (error.code === "23505") {
         return NextResponse.json(
           {

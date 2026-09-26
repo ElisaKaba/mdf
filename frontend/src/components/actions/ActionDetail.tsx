@@ -1,7 +1,11 @@
-import Image from "next/image";
-import { BlocksRenderer } from "@strapi/blocks-react-renderer";
+import {
+  BlocksRenderer,
+  type BlocksContent,
+} from "@strapi/blocks-react-renderer";
 
-import type { StrapiAction } from "@/lib/strapi/actions";
+import type {
+  StrapiAction,
+} from "@/lib/strapi/actions";
 
 import styles from "./ActionDetail.module.css";
 
@@ -10,56 +14,44 @@ type ActionDetailProps = {
   actionEu?: StrapiAction;
 };
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
+function isBlocksContent(
+  content: StrapiAction["description"]
+): content is BlocksContent {
+  return Array.isArray(content);
+}
 
-function getStrapiMediaUrl(path?: string) {
-  if (!path) {
-    return undefined;
+function Description({
+  content,
+}: {
+  content: StrapiAction["description"];
+}) {
+  if (!content) {
+    return null;
   }
 
-  if (
-    path.startsWith("http://") ||
-    path.startsWith("https://")
-  ) {
-    return path;
+  if (isBlocksContent(content)) {
+    return (
+      <BlocksRenderer
+        content={content}
+      />
+    );
   }
 
-  return `${STRAPI_URL}${path}`;
+  return <p>{content}</p>;
 }
 
 export default function ActionDetail({
   actionFr,
   actionEu,
 }: ActionDetailProps) {
-  const imageUrl = getStrapiMediaUrl(
-    actionFr.image?.url
-  );
-
   return (
     <section className={styles.wrapper}>
-      {imageUrl && (
-        <div className={styles.imageWrapper}>
-          <Image
-            src={imageUrl}
-            alt={
-              actionFr.image?.alternativeText?.trim() ||
-              actionFr.title
-            }
-            width={1200}
-            height={600}
-            className={styles.image}
-          />
-        </div>
-      )}
-
       <div className={styles.columns}>
+        {/* FRANÇAIS */}
         <article className={styles.column}>
-          <p className={styles.language}>
-            Français
-          </p>
-
-          <h1>{actionFr.title}</h1>
+          <h2>
+            {actionFr.title}
+          </h2>
 
           {actionFr.summary && (
             <p className={styles.summary}>
@@ -68,22 +60,25 @@ export default function ActionDetail({
           )}
 
           {actionFr.description && (
-            <div className={styles.description}>
-              <BlocksRenderer
-                content={actionFr.description}
+            <div
+              className={`richText ${styles.description}`}
+            >
+              <Description
+                content={
+                  actionFr.description
+                }
               />
             </div>
           )}
         </article>
 
+        {/* EUSKARA */}
         <article className={styles.column}>
-          <p className={styles.language}>
-            Euskara
-          </p>
-
           {actionEu ? (
             <>
-              <h2>{actionEu.title}</h2>
+              <h2>
+                {actionEu.title}
+              </h2>
 
               {actionEu.summary && (
                 <p className={styles.summary}>
@@ -92,16 +87,21 @@ export default function ActionDetail({
               )}
 
               {actionEu.description && (
-                <div className={styles.description}>
-                  <BlocksRenderer
-                    content={actionEu.description}
+                <div
+                  className={`richText ${styles.description}`}
+                >
+                  <Description
+                    content={
+                      actionEu.description
+                    }
                   />
                 </div>
               )}
             </>
           ) : (
             <p className={styles.empty}>
-              Euskarazko edukia ez dago oraindik erabilgarri.
+              Euskarazko edukia ez dago
+              oraindik erabilgarri.
             </p>
           )}
         </article>

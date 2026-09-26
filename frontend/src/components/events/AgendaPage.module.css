@@ -2,17 +2,15 @@
   width: 100%;
   max-width: 1100px;
 
-  margin-inline: auto;
+  margin: 0 auto 4rem;
 }
 
 .header {
-  width: 100%;
-
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  gap: 1.5rem;
+  gap: 1rem;
 
   margin-bottom: 2rem;
 }
@@ -22,30 +20,206 @@
 
   color: var(--color-primary);
 
-  font-family: var(--font-beautifully-delicious), sans-serif;
-  font-size: 2.5rem;
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
+  font-size: 2rem;
   font-weight: 400;
 }
 
 .languageButton {
   flex-shrink: 0;
 
-  padding: 0.7rem 1.2rem;
+  padding: 0.55rem 1rem;
 
-  border: 1px solid var(--color-primary);
-  border-radius: var(--radius-pill);
-
-  background-color: var(--color-background);
   color: var(--color-primary);
 
+  background-color: transparent;
+
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+
   font: inherit;
+  font-weight: 600;
 
   cursor: pointer;
 }
 
-.filters {
+.languageButton:hover {
+  background-color: #f7f3f0;
+}
+
+.languageButton:focus-visible {
+  outline: 3px solid rgba(143, 90, 83, 0.35);
+  outline-offset: 4px;
+}
+
+/*
+ * PLANNING MENSUEL
+ */
+
+.planningSection {
   width: 100%;
 
+  margin-bottom: 2.5rem;
+  padding: 1.5rem;
+
+  background-color: #f7f3f0;
+
+  border-radius: var(--radius-md);
+
+  box-sizing: border-box;
+}
+
+.planningTitle {
+  margin: 0 0 1rem;
+
+  color: var(--color-primary);
+
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+/*
+ * DESCRIPTION AVANT L'AFFICHE
+ */
+
+.planningDescription {
+  width: 100%;
+
+
+  margin: 0 0 1.5rem;
+
+  color: var(--color-text);
+
+  line-height: 1.6;
+}
+
+.planningDescription p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.planningDescription p:last-child {
+  margin-bottom: 0;
+}
+
+.planningDescription ul,
+.planningDescription ol {
+  margin: 0.75rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.planningDescription li {
+  margin-bottom: 0.4rem;
+}
+
+/*
+ * AFFICHE
+ */
+
+.planningImageWrapper {
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-md);
+}
+
+.planningImage {
+  display: block;
+
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+
+  object-fit: contain;
+
+  border-radius: var(--radius-md);
+}
+
+/*
+ * PDF
+ */
+
+.planningButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0.65rem 1rem;
+
+  color: #ffffff;
+
+  background-color: var(--color-primary);
+
+  border-radius: 999px;
+
+  font-weight: 600;
+
+  text-decoration: none;
+}
+
+.planningButton:hover {
+  opacity: 0.9;
+}
+
+/*
+ * COMPLÉMENT D'INFORMATIONS
+ */
+
+.additionalInfo {
+
+
+  margin: 1.5rem auto 0;
+  padding: 1rem 1.25rem;
+
+  color: var(--color-text);
+
+  background-color: #ffffff;
+
+  border: 1px solid rgba(143, 90, 83, 0.2);
+  border-radius: var(--radius-md);
+
+  line-height: 1.6;
+
+  box-sizing: border-box;
+}
+
+.additionalInfo p {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+}
+
+.additionalInfo p:last-child {
+  margin-bottom: 0;
+}
+
+.additionalInfo ul,
+.additionalInfo ol {
+  margin: 0.75rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.additionalInfo li {
+  margin-bottom: 0.4rem;
+}
+
+/*
+ * FILTRES
+ */
+
+.filters {
   display: flex;
   flex-wrap: wrap;
 
@@ -54,66 +228,143 @@
   margin-bottom: 2rem;
 }
 
+/*
+ * CARTES ÉVÉNEMENTS
+ */
+
 .events {
-  width: 100%;
-
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 
-  gap: 1.5rem;
+  grid-template-columns:
+    repeat(
+      3,
+      minmax(0, 1fr)
+    );
+
+  gap: 1.25rem;
 }
 
-/* Tablette + mobile */
+/*
+ * TABLETTE
+ */
+
 @media (max-width: 900px) {
   .agenda {
-    width: 100%;
     max-width: 100%;
   }
 
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 1rem;
-
-    margin-bottom: 1.5rem;
-  }
-
   .header h1 {
-    font-size: 2rem;
+    font-size: 1.7rem;
   }
 
-  .languageButton {
-    width: 100%;
-    max-width: none;
+  .planningSection {
+    padding: 1.25rem;
   }
 
-  .filters {
-    gap: 0.6rem;
-
-    margin-bottom: 1.5rem;
+  .planningImage {
+    max-width: 500px;
   }
 
   .events {
-    width: 100%;
-
-    grid-template-columns: 1fr;
-
-    gap: 1rem;
+    grid-template-columns:
+      repeat(
+        2,
+        minmax(0, 1fr)
+      );
   }
 }
 
-/* Petit mobile */
-@media (max-width: 390px) {
+/*
+ * MOBILE
+ */
+
+@media (max-width: 768px) {
+  .agenda {
+    margin-bottom: 2rem;
+  }
+
+  .header {
+    align-items: flex-start;
+
+    margin-bottom: 1.5rem;
+  }
+
   .header h1 {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
+  }
+
+  .languageButton {
+    padding: 0.45rem 0.75rem;
+
+    font-size: 0.85rem;
+  }
+
+  .planningSection {
+    margin-bottom: 2rem;
+
+    padding: 1rem;
+  }
+
+  .planningTitle {
+    font-size: 1.25rem;
+  }
+
+  .planningDescription {
+    margin-bottom: 1.25rem;
+
+    font-size: 0.92rem;
+  }
+
+  .planningImage {
+    max-width: 420px;
+  }
+
+  .additionalInfo {
+    margin-top: 1.25rem;
+    padding: 0.9rem 1rem;
+
+    font-size: 0.92rem;
   }
 
   .filters {
     gap: 0.5rem;
   }
 
+  .events {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * PETIT MOBILE
+ */
+
+@media (max-width: 390px) {
+  .header {
+    gap: 0.75rem;
+  }
+
+  .header h1 {
+    font-size: 1.3rem;
+  }
+
   .languageButton {
-    padding: 0.65rem 1rem;
+    font-size: 0.78rem;
+  }
+
+  .planningTitle {
+    font-size: 1.1rem;
+  }
+
+  .planningDescription {
+    font-size: 0.85rem;
+  }
+
+  .planningImage {
+    max-width: 100%;
+  }
+
+  .additionalInfo {
+    font-size: 0.85rem;
   }
 }

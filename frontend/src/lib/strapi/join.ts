@@ -7,9 +7,17 @@ export type StrapiJoin = {
   documentId: string;
 
   title: string;
-  slug: string;
 
-  description?: BlocksContent | string;
+  description?: BlocksContent | string | null;
+
+  volunteerTitle?: string | null;
+  volunteerText?: BlocksContent | string | null;
+
+  patronTitle?: string | null;
+  patronText?: BlocksContent | string | null;
+
+  financialTitle?: string | null;
+  financialText?: BlocksContent | string | null;
 
   locale: string;
 
@@ -24,14 +32,14 @@ export type StrapiJoin = {
     height?: number;
 
     url: string;
-  }>;
+  }> | null;
 
   house?: {
     id: number;
     documentId: string;
     name: string;
     slug: string;
-  };
+  } | null;
 };
 
 type StrapiJoinResponse = {

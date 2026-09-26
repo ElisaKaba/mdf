@@ -1,0 +1,214 @@
+.wrapper {
+  width: 100%;
+  max-width: 1100px;
+
+  margin-inline: auto;
+  margin-bottom: 4rem;
+}
+
+/*
+ * IMAGE DE PAGE
+ */
+
+.pageImageWrapper {
+  width: 100%;
+  height: 360px;
+
+  margin-bottom: 3rem;
+
+  overflow: hidden;
+
+  border-radius: var(--radius-md);
+}
+
+.pageImage {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center;
+}
+
+/*
+ * ACTION MISE EN AVANT
+ */
+
+.featuredAction {
+  width: 100%;
+
+  margin-bottom: 3rem;
+}
+
+/*
+ * BLOCS BILINGUES
+ */
+
+.columns {
+  width: 100%;
+
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 3rem;
+
+  margin-bottom: 3rem;
+}
+
+.languageColumn {
+  min-width: 0;
+
+  overflow-wrap: anywhere;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+
+  color: var(--color-primary);
+
+  font-family:
+    var(--font-beautifully-delicious),
+    sans-serif;
+
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+/*
+ * INTRO
+ */
+
+.intro {
+  color: var(--color-text);
+
+  line-height: 1.65;
+
+  overflow-wrap: anywhere;
+}
+
+.intro p {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.intro p:last-child {
+  margin-bottom: 0;
+}
+
+.intro ul,
+.intro ol {
+  margin: 1rem 0;
+
+  padding-left: 1.5rem;
+}
+
+.intro li {
+  margin-bottom: 0.5rem;
+}
+
+/*
+ * AUTRES ACTIONS
+ */
+
+.actionsList {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3rem;
+}
+
+/*
+ * TABLETTE
+ */
+
+@media (max-width: 1024px) {
+  .wrapper {
+    max-width: 100%;
+  }
+
+  .pageImageWrapper {
+    height: 320px;
+
+    margin-bottom: 2.5rem;
+  }
+
+  .columns {
+    gap: 2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.55rem;
+  }
+}
+
+/*
+ * MOBILE
+ *
+ * FR au-dessus
+ * EU en dessous
+ */
+
+@media (max-width: 768px) {
+  .wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .pageImageWrapper {
+    height: 100%;
+
+    margin-bottom: 2rem;
+  }
+
+  .featuredAction {
+    margin-bottom: 2rem;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+
+    gap: 2rem;
+
+    margin-bottom: 2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .intro {
+    font-size: 0.92rem;
+  }
+
+  .actionsList {
+    gap: 2rem;
+  }
+}
+
+/*
+ * PETIT MOBILE
+ */
+
+@media (max-width: 390px) {
+  .pageImageWrapper {
+    height: 100%;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+
+    gap: 1.5rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.1rem;
+  }
+
+  .intro {
+    font-size: 0.85rem;
+  }
+}

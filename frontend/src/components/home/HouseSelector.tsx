@@ -6,14 +6,24 @@ import styles from "./HouseSelector.module.css";
 
 type HouseSelectorProps = {
   houses: StrapiHouse[];
+
   value: string;
-  onChange: (slug: string) => void;
+
+  onChange: (
+    value: string
+  ) => void;
+
+  label: string;
+
+  placeholder: string;
 };
 
 export default function HouseSelector({
   houses,
   value,
   onChange,
+  label,
+  placeholder,
 }: HouseSelectorProps) {
   return (
     <div className={styles.wrapper}>
@@ -21,7 +31,7 @@ export default function HouseSelector({
         htmlFor="house-selector"
         className={styles.label}
       >
-        Choisir ma Maison des Femmes
+        {label}
       </label>
 
       <select
@@ -29,21 +39,30 @@ export default function HouseSelector({
         className={styles.select}
         value={value}
         onChange={(event) =>
-          onChange(event.target.value)
+          onChange(
+            event.target.value
+          )
         }
       >
-        <option value="" disabled>
-          Sélectionner une maison
+        <option
+          value=""
+          disabled
+        >
+          {placeholder}
         </option>
 
-        {houses.map((house) => (
-          <option
-            key={house.documentId}
-            value={house.slug}
-          >
-            {house.city}
-          </option>
-        ))}
+        {houses.map(
+          (house) => (
+            <option
+              key={
+                house.documentId
+              }
+              value={house.slug}
+            >
+              {house.name}
+            </option>
+          )
+        )}
       </select>
     </div>
   );

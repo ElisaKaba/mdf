@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "partners",
+  "info": {
+    "singularName": "partner",
+    "pluralName": "partners",
+    "displayName": "Partner"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "websiteUrl": {
+      "type": "string"
+    },
+    "description": {
+      "type": "blocks"
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "works_with_us",
+        "artists",
+        "funders"
+      ]
+    },
+    "displayOrder": {
+      "type": "integer"
+    },
+    "house": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::house.house",
+      "inversedBy": "partners"
+    }
+  }
+}
