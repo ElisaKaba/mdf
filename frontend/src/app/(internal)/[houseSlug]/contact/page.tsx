@@ -7,18 +7,29 @@ type ContactPageProps = {
   params: Promise<{
     houseSlug: string;
   }>;
+
+  searchParams: Promise<{
+    lang?: string;
+  }>;
 };
 
 export default async function ContactPage({
   params,
+  searchParams,
 }: ContactPageProps) {
   const { houseSlug } = await params;
+  const { lang } = await searchParams;
 
   const headersList = await headers();
   const host = headersList.get("host");
 
-  const defaultLocale =
+  const localeFromHost =
     getDefaultLocaleFromHost(host);
+
+  const defaultLocale =
+    lang === "fr" || lang === "eu"
+      ? lang
+      : localeFromHost;
 
   return (
     <ContactForm

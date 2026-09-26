@@ -141,8 +141,11 @@ export default function JoinDetail({
   const imageUrl =
     getMediaUrl(image?.url);
 
-  const contactUrl =
-    `/${houseSlug}/contact`;
+  const contactUrlFr =
+  `/${houseSlug}/contact?lang=fr`;
+
+const contactUrlEu =
+  `/${houseSlug}/contact?lang=eu`;
 
   const frenchIntro = (
     <article className={styles.column}>
@@ -186,7 +189,7 @@ export default function JoinDetail({
       title={joinFr.volunteerTitle}
       content={joinFr.volunteerText}
       buttonLabel="Nous contacter"
-      href={contactUrl}
+      href={contactUrlFr}
     />
   );
 
@@ -195,7 +198,7 @@ export default function JoinDetail({
       title={joinEu.volunteerTitle}
       content={joinEu.volunteerText}
       buttonLabel="Harremanetan jarri"
-      href={contactUrl}
+      href={contactUrlEu}
     />
   ) : null;
 
@@ -225,7 +228,7 @@ export default function JoinDetail({
       title={joinFr.patronTitle}
       content={joinFr.patronText}
       buttonLabel="Nous contacter"
-      href={contactUrl}
+      href={contactUrlFr}
     />
   );
 
@@ -234,7 +237,7 @@ export default function JoinDetail({
       title={joinEu.patronTitle}
       content={joinEu.patronText}
       buttonLabel="Harremanetan jarri"
-      href={contactUrl}
+      href={contactUrlEu}
     />
   ) : null;
 
