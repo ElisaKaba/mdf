@@ -10,7 +10,6 @@
 
 /*
  * IMAGE DE TÊTE
- * ON NE CHANGE PAS SON COMPORTEMENT
  */
 
 .imageWrapper {
@@ -100,10 +99,7 @@
 }
 
 /*
- * LIGNES DES BLOCS DE SOUTIEN
- *
- * Desktop :
- * FR | EU
+ * BLOCS DE SOUTIEN
  */
 
 .supportRow {
@@ -121,7 +117,7 @@
 }
 
 /*
- * CARTE
+ * CARTES MARRON
  */
 
 .supportCard {
@@ -132,14 +128,11 @@
 
   padding: 1.5rem;
 
-  background-color: #ffffff;
+  background-color: var(--color-primary);
 
-  border:
-    1px solid
-    rgba(143, 90, 83, 0.2);
+  color: #ffffff;
 
-  border-radius:
-    var(--radius-md);
+  border-radius: var(--radius-md);
 
   box-sizing: border-box;
 }
@@ -147,7 +140,7 @@
 .supportCard h3 {
   margin: 0 0 1rem;
 
-  color: var(--color-primary);
+  color: #ffffff;
 
   font-family:
     var(--font-beautifully-delicious),
@@ -161,7 +154,7 @@
 .cardText {
   flex: 1;
 
-  color: var(--color-text);
+  color: #ffffff;
 
   line-height: 1.65;
 }
@@ -169,6 +162,8 @@
 .cardText p {
   margin-top: 0;
   margin-bottom: 1rem;
+
+  color: #ffffff;
 }
 
 .cardText p:last-child {
@@ -180,14 +175,23 @@
   margin: 1rem 0;
 
   padding-left: 1.5rem;
+
+  color: #ffffff;
 }
 
 .cardText li {
   margin-bottom: 0.5rem;
+
+  color: #ffffff;
+}
+
+.cardText strong,
+.cardText b {
+  color: #ffffff;
 }
 
 /*
- * BOUTONS
+ * BOUTONS BLANCS
  */
 
 .cardButton {
@@ -203,10 +207,9 @@
     0.65rem
     1.1rem;
 
-  color: #ffffff;
+  color: var(--color-primary);
 
-  background-color:
-    var(--color-primary);
+  background-color: #ffffff;
 
   border-radius: 999px;
 
@@ -222,7 +225,7 @@
 .cardButton:focus-visible {
   outline:
     3px solid
-    rgba(143, 90, 83, 0.35);
+    rgba(255, 255, 255, 0.7);
 
   outline-offset: 4px;
 }
@@ -267,10 +270,6 @@
 
 /*
  * MOBILE
- *
- * FR puis EU
- * Toutes les cartes les unes
- * sous les autres.
  */
 
 @media (max-width: 768px) {
@@ -278,21 +277,12 @@
     margin-bottom: 2rem;
   }
 
-  /*
-   * Image conservée telle quelle,
-   * seulement sa hauteur responsive.
-   */
   .imageWrapper {
     height: 150px;
 
     margin-bottom: 1.5rem;
   }
 
-  /*
-   * Intro :
-   * FR au-dessus,
-   * EU en dessous.
-   */
   .columns {
     grid-template-columns: 1fr;
 
@@ -301,11 +291,6 @@
     margin-bottom: 2rem;
   }
 
-  /*
-   * IMPORTANT :
-   * les cartes deviennent
-   * une seule colonne.
-   */
   .supportRow {
     grid-template-columns: 1fr;
 
