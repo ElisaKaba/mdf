@@ -30,6 +30,7 @@ type AgendaPageProps = {
 
   agendaPageFr?: StrapiAgendaPage | null;
   agendaPageEu?: StrapiAgendaPage | null;
+   defaultLocale: "fr" | "eu";
 };
 
 type Filter =
@@ -57,10 +58,11 @@ function getMatrimoineImage(
 }
 
 export default function AgendaPage({
-  eventsFr,
+eventsFr,
   eventsEu,
   agendaPageFr,
   agendaPageEu,
+  defaultLocale,
 }: AgendaPageProps) {
   const router =
     useRouter();
@@ -79,13 +81,8 @@ export default function AgendaPage({
   ] =
     useState<Filter>("tous");
 
-  const [
-    locale,
-    setLocale,
-  ] =
-    useState<Locale>(
-      initialLocale
-    );
+  const [locale, setLocale] =
+  useState<Locale>(defaultLocale);
 
   const matrimoineImage =
     getMatrimoineImage(locale);

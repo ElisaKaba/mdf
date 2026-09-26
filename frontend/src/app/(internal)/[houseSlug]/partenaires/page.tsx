@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 import Image from "next/image";
 import { BlocksRenderer } from "@strapi/blocks-react-renderer";
 
@@ -6,7 +8,9 @@ import {
   type StrapiPartner,
 } from "@/lib/strapi/partners";
 
-
+import {
+  getDefaultLocaleFromHost,
+} from "@/lib/i18n/getDefaultLocale";
 
 import styles from "./page.module.css";
 
@@ -15,6 +19,8 @@ type PartnersPageProps = {
     houseSlug: string;
   }>;
 };
+
+type Locale = "fr" | "eu";
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL ??
@@ -108,10 +114,12 @@ function PartnerGroup({
   titleFr,
   titleEu,
   partners,
+  defaultLocale,
 }: {
   titleFr: string;
   titleEu: string;
   partners: StrapiPartner[];
+  defaultLocale: Locale;
 }) {
   return (
     <details
@@ -124,17 +132,35 @@ function PartnerGroup({
         <div
           className={styles.groupTitles}
         >
-          <h2
-            className={styles.groupTitle}
-          >
-            {titleFr}
-          </h2>
+          {defaultLocale === "eu" ? (
+            <>
+              <h2
+                className={styles.groupTitle}
+              >
+                {titleEu}
+              </h2>
 
-          <h2
-            className={styles.groupTitle}
-          >
-            {titleEu}
-          </h2>
+              <h2
+                className={styles.groupTitle}
+              >
+                {titleFr}
+              </h2>
+            </>
+          ) : (
+            <>
+              <h2
+                className={styles.groupTitle}
+              >
+                {titleFr}
+              </h2>
+
+              <h2
+                className={styles.groupTitle}
+              >
+                {titleEu}
+              </h2>
+            </>
+          )}
         </div>
       </summary>
 
@@ -170,11 +196,14 @@ export default async function PartnersPage({
 }: PartnersPageProps) {
   const { houseSlug } = await params;
 
-  const [
-    partnersResponse,
-  ] = await Promise.all([
-    getPartners("fr"),
-  ]);
+  const headersList = await headers();
+  const host = headersList.get("host");
+
+  const defaultLocale =
+    getDefaultLocaleFromHost(host);
+
+  const partnersResponse =
+    await getPartners("fr");
 
   const partners = sortPartners(
     partnersResponse.data.filter(
@@ -207,28 +236,49 @@ export default async function PartnersPage({
 
   return (
     <section className={styles.wrapper}>
-     
       {/* TITRES DE PAGE */}
       <div
         className={
           styles.pageHeadings
         }
       >
-        <h1
-          className={
-            styles.pageTitle
-          }
-        >
-          Partenaires
-        </h1>
+        {defaultLocale === "eu" ? (
+          <>
+            <h1
+              className={
+                styles.pageTitle
+              }
+            >
+              Partnerak
+            </h1>
 
-        <h2
-          className={
-            styles.pageTitle
-          }
-        >
-          Partnerak
-        </h2>
+            <h2
+              className={
+                styles.pageTitle
+              }
+            >
+              Partenaires
+            </h2>
+          </>
+        ) : (
+          <>
+            <h1
+              className={
+                styles.pageTitle
+              }
+            >
+              Partenaires
+            </h1>
+
+            <h2
+              className={
+                styles.pageTitle
+              }
+            >
+              Partnerak
+            </h2>
+          </>
+        )}
       </div>
 
       {/* PARTENAIRES */}
@@ -236,6 +286,7 @@ export default async function PartnersPage({
         titleFr="On travaille avec elleux"
         titleEu="Gurekin lan egiten dute"
         partners={worksWithUs}
+        defaultLocale={defaultLocale}
       />
 
       {/* FINANCEURS */}
@@ -243,6 +294,7 @@ export default async function PartnersPage({
         titleFr="Iels nous financent"
         titleEu="Finantzatzen gaituzte"
         partners={funders}
+        defaultLocale={defaultLocale}
       />
 
       {/* ARTISTES */}
@@ -250,6 +302,7 @@ export default async function PartnersPage({
         titleFr="Artistes"
         titleEu="Artistak"
         partners={artists}
+        defaultLocale={defaultLocale}
       />
     </section>
   );

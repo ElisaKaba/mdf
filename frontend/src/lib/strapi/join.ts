@@ -40,6 +40,7 @@ export type StrapiJoin = {
     name: string;
     slug: string;
   } | null;
+  localizations?: StrapiJoin[];
 };
 
 type StrapiJoinResponse = {

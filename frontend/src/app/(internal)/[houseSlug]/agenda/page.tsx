@@ -1,5 +1,6 @@
 import AgendaPage from "@/components/events/AgendaPage";
-
+import { headers } from "next/headers";
+import { getDefaultLocaleFromHost } from "@/lib/i18n/getDefaultLocale";
 import { getEvents } from "@/lib/strapi/events";
 import { getAgendaPage } from "@/lib/strapi/agendaPage";
 import { mapStrapiEvent } from "@/lib/strapi/mapEvent";
@@ -30,6 +31,11 @@ export default async function AgendaRoute({
   params,
 }: AgendaRouteProps) {
   const { houseSlug } = await params;
+  const headersList = await headers();
+const host = headersList.get("host");
+
+const defaultLocale =
+  getDefaultLocaleFromHost(host);
 
   const [
     responseFr,
@@ -62,11 +68,12 @@ export default async function AgendaRoute({
   );
 
   return (
-    <AgendaPage
-      eventsFr={eventsFr}
-      eventsEu={eventsEu}
-      agendaPageFr={agendaPageFrResponse.data}
-      agendaPageEu={agendaPageEuResponse.data}
-    />
+   <AgendaPage
+  eventsFr={eventsFr}
+  eventsEu={eventsEu}
+  agendaPageFr={agendaPageFrResponse.data}
+  agendaPageEu={agendaPageEuResponse.data}
+  defaultLocale={defaultLocale}
+/>
   );
 }

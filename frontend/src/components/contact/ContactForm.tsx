@@ -6,6 +6,7 @@ import styles from "./ContactForm.module.css";
 
 type ContactFormProps = {
   houseSlug: string;
+  defaultLocale: "fr" | "eu";
 };
 
 type Locale = "fr" | "eu";
@@ -163,9 +164,11 @@ const translations = {
 
 export default function ContactForm({
   houseSlug,
+  defaultLocale,
 }: ContactFormProps) {
+ 
   const [locale, setLocale] =
-    useState<Locale>("fr");
+  useState<Locale>(defaultLocale);
 
   const [form, setForm] =
     useState<FormState>(initialState);

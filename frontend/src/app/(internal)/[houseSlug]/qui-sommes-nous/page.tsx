@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { headers } from "next/headers";
 
 import {
   BlocksRenderer,
@@ -10,6 +10,10 @@ import {
   type StrapiAboutPage,
 } from "@/lib/strapi/about";
 
+import {
+  getDefaultLocaleFromHost,
+} from "@/lib/i18n/getDefaultLocale";
+
 import styles from "./page.module.css";
 
 type AboutPageProps = {
@@ -17,27 +21,6 @@ type AboutPageProps = {
     houseSlug: string;
   }>;
 };
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ??
-  "http://localhost:1337";
-
-function getMediaUrl(
-  path?: string | null
-) {
-  if (!path) {
-    return undefined;
-  }
-
-  if (
-    path.startsWith("http://") ||
-    path.startsWith("https://")
-  ) {
-    return path;
-  }
-
-  return `${STRAPI_URL}${path}`;
-}
 
 function sortAboutPages(
   pages: StrapiAboutPage[]
@@ -86,6 +69,12 @@ export default async function AboutPage({
 }: AboutPageProps) {
   const { houseSlug } = await params;
 
+  const headersList = await headers();
+  const host = headersList.get("host");
+
+  const defaultLocale =
+    getDefaultLocaleFromHost(host);
+
   const [
     responseFr,
     responseEu,
@@ -122,63 +111,24 @@ export default async function AboutPage({
     );
   }
 
-  /*
-   * Image bandeau :
-   * image de la première entrée
-   * selon displayOrder.
-   */
-  const pageImage =
-    pagesFr[0]?.image?.[0];
-
-  const imageUrl =
-    getMediaUrl(
-      pageImage?.url
-    );
-
   return (
     <section className={styles.wrapper}>
       {/* IMAGE BANDEAU */}
-      {/* {imageUrl && ( */}
-        <div
-          className={
-            styles.pageImageWrapper
-          }
-        >
-          {/* <Image
-            src={imageUrl}
-            alt={
-              pageImage
-                ?.alternativeText
-                ?.trim() ||
-              "Maison des Femmes"
-            }
-            width={
-              pageImage?.width ??
-              1600
-            }
-            height={
-              pageImage?.height ??
-              900
-            }
-            className={
-              styles.pageImage
-            }
-            priority
-          />*/}
-      <img src="/images/qui-sommes-nous.png" alt="Femmes de la Maison des femmes" className="quiImg"/>
-        </div> 
+      <div
+        className={
+          styles.pageImageWrapper
+        }
+      >
+        <img
+          src="/images/qui-sommes-nous.png"
+          alt="Femmes de la Maison des femmes"
+          className="quiImg"
+        />
+      </div>
 
       {/* SECTIONS FR / EU */}
       {pagesFr.map(
         (pageFr) => {
-          /*
-           * On essaie d'abord
-           * d'associer les traductions
-           * avec documentId.
-           *
-           * Sinon on utilise
-           * displayOrder.
-           */
           const pageEu =
             pagesEu.find(
               (page) =>
@@ -191,6 +141,35 @@ export default async function AboutPage({
                 pageFr.displayOrder
             );
 
+          const frenchContent = (
+            <AboutContent
+              page={pageFr}
+            />
+          );
+
+          const basqueContent =
+            pageEu ? (
+              <AboutContent
+                page={pageEu}
+              />
+            ) : (
+              <div
+                className={
+                  styles.column
+                }
+              >
+                <p
+                  className={
+                    styles.empty
+                  }
+                >
+                  Euskarazko edukia
+                  ez dago oraindik
+                  erabilgarri.
+                </p>
+              </div>
+            );
+
           return (
             <div
               key={
@@ -198,32 +177,17 @@ export default async function AboutPage({
               }
               className={styles.row}
             >
-              {/* FRANÇAIS */}
-              <AboutContent
-                page={pageFr}
-              />
-
-              {/* EUSKARA */}
-              {pageEu ? (
-                <AboutContent
-                  page={pageEu}
-                />
+              {defaultLocale ===
+              "eu" ? (
+                <>
+                  {basqueContent}
+                  {frenchContent}
+                </>
               ) : (
-                <div
-                  className={
-                    styles.column
-                  }
-                >
-                  <p
-                    className={
-                      styles.empty
-                    }
-                  >
-                    Euskarazko edukia
-                    ez dago oraindik
-                    erabilgarri.
-                  </p>
-                </div>
+                <>
+                  {frenchContent}
+                  {basqueContent}
+                </>
               )}
             </div>
           );

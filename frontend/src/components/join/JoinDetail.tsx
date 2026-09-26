@@ -13,19 +13,16 @@ import styles from "./JoinDetail.module.css";
 type JoinDetailProps = {
   joinFr: StrapiJoin;
   joinEu?: StrapiJoin;
-
   houseSlug: string;
-
   donationUrl?: string | null;
+  defaultLocale: "fr" | "eu";
 };
 
 const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL ??
   "http://localhost:1337";
 
-function getMediaUrl(
-  path?: string
-) {
+function getMediaUrl(path?: string) {
   if (!path) {
     return undefined;
   }
@@ -76,16 +73,12 @@ function RichContent({
 
 type SupportCardProps = {
   title?: string | null;
-
   content?:
     | BlocksContent
     | string
     | null;
-
   buttonLabel: string;
-
   href: string;
-
   external?: boolean;
 };
 
@@ -101,14 +94,8 @@ function SupportCard({
   }
 
   return (
-    <article
-      className={styles.supportCard}
-    >
-      {title && (
-        <h3>
-          {title}
-        </h3>
-      )}
+    <article className={styles.supportCard}>
+      {title && <h3>{title}</h3>}
 
       {content && (
         <div
@@ -125,18 +112,14 @@ function SupportCard({
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={
-            styles.cardButton
-          }
+          className={styles.cardButton}
         >
           {buttonLabel}
         </a>
       ) : (
         <Link
           href={href}
-          className={
-            styles.cardButton
-          }
+          className={styles.cardButton}
         >
           {buttonLabel}
         </Link>
@@ -150,6 +133,7 @@ export default function JoinDetail({
   joinEu,
   houseSlug,
   donationUrl,
+  defaultLocale,
 }: JoinDetailProps) {
   const image =
     joinFr.image?.[0];
@@ -160,10 +144,104 @@ export default function JoinDetail({
   const contactUrl =
     `/${houseSlug}/contact`;
 
+  const frenchIntro = (
+    <article className={styles.column}>
+      <h1>{joinFr.title}</h1>
+
+      <div
+        className={`richText ${styles.description}`}
+      >
+        <RichContent
+          content={joinFr.description}
+        />
+      </div>
+    </article>
+  );
+
+  const basqueIntro = (
+    <article className={styles.column}>
+      {joinEu ? (
+        <>
+          <h2>{joinEu.title}</h2>
+
+          <div
+            className={`richText ${styles.description}`}
+          >
+            <RichContent
+              content={joinEu.description}
+            />
+          </div>
+        </>
+      ) : (
+        <p className={styles.empty}>
+          Euskarazko edukia ez dago
+          oraindik erabilgarri.
+        </p>
+      )}
+    </article>
+  );
+
+  const volunteerFr = (
+    <SupportCard
+      title={joinFr.volunteerTitle}
+      content={joinFr.volunteerText}
+      buttonLabel="Nous contacter"
+      href={contactUrl}
+    />
+  );
+
+  const volunteerEu = joinEu ? (
+    <SupportCard
+      title={joinEu.volunteerTitle}
+      content={joinEu.volunteerText}
+      buttonLabel="Harremanetan jarri"
+      href={contactUrl}
+    />
+  ) : null;
+
+  const financialFr = donationUrl ? (
+    <SupportCard
+      title={joinFr.financialTitle}
+      content={joinFr.financialText}
+      buttonLabel="Faire un don"
+      href={donationUrl}
+      external
+    />
+  ) : null;
+
+  const financialEu =
+    donationUrl && joinEu ? (
+      <SupportCard
+        title={joinEu.financialTitle}
+        content={joinEu.financialText}
+        buttonLabel="Dohaintza egin"
+        href={donationUrl}
+        external
+      />
+    ) : null;
+
+  const patronFr = (
+    <SupportCard
+      title={joinFr.patronTitle}
+      content={joinFr.patronText}
+      buttonLabel="Nous contacter"
+      href={contactUrl}
+    />
+  );
+
+  const patronEu = joinEu ? (
+    <SupportCard
+      title={joinEu.patronTitle}
+      content={joinEu.patronText}
+      buttonLabel="Harremanetan jarri"
+      href={contactUrl}
+    />
+  ) : null;
+
   return (
     <section className={styles.wrapper}>
-      {/* IMAGE DE TÊTE — INCHANGÉE */}
-         {/* {imageUrl && (
+      {/* IMAGE DE TÊTE */}
+      {/* {imageUrl && (
         <div className={styles.imageWrapper}>
           <Image
             src={imageUrl}
@@ -171,168 +249,81 @@ export default function JoinDetail({
               image?.alternativeText?.trim() ||
               joinFr.title
             }
-            width={
-              image?.width ?? 1200
-            }
-            height={
-              image?.height ?? 600
-            }
+            width={image?.width ?? 1200}
+            height={image?.height ?? 600}
             className={styles.image}
             priority
           />
         </div>
       )} */}
-      <div >
-      <img src={"/images/nous-soutenir.png"} alt="Soutien" className="localeSubImage"/>
-      </div>  
 
+      <div>
+        <img
+          src="/images/nous-soutenir.png"
+          alt="Soutien"
+          className="localeSubImage"
+        />
+      </div>
 
       {/* INTRODUCTION */}
       <div className={styles.columns}>
-        <article
-          className={styles.column}
-        >
-          <h1>
-            {joinFr.title}
-          </h1>
-
-          <div
-            className={`richText ${styles.description}`}
-          >
-            <RichContent
-              content={
-                joinFr.description
-              }
-            />
-          </div>
-        </article>
-
-        <article
-          className={styles.column}
-        >
-          {joinEu ? (
-            <>
-              <h2>
-                {joinEu.title}
-              </h2>
-
-              <div
-                className={`richText ${styles.description}`}
-              >
-                <RichContent
-                  content={
-                    joinEu.description
-                  }
-                />
-              </div>
-            </>
-          ) : (
-            <p
-              className={
-                styles.empty
-              }
-            >
-              Euskarazko edukia ez dago
-              oraindik erabilgarri.
-            </p>
-          )}
-        </article>
+        {defaultLocale === "eu" ? (
+          <>
+            {basqueIntro}
+            {frenchIntro}
+          </>
+        ) : (
+          <>
+            {frenchIntro}
+            {basqueIntro}
+          </>
+        )}
       </div>
 
       {/* DEVENIR BÉNÉVOLE */}
-      <div
-        className={
-          styles.supportRow
-        }
-      >
-        <SupportCard
-          title={
-            joinFr.volunteerTitle
-          }
-          content={
-            joinFr.volunteerText
-          }
-          buttonLabel="Nous contacter"
-          href={contactUrl}
-        />
-
-        {joinEu && (
-          <SupportCard
-            title={
-              joinEu.volunteerTitle
-            }
-            content={
-              joinEu.volunteerText
-            }
-            buttonLabel="Harremanetan jarri"
-            href={contactUrl}
-          />
+      <div className={styles.supportRow}>
+        {defaultLocale === "eu" ? (
+          <>
+            {volunteerEu}
+            {volunteerFr}
+          </>
+        ) : (
+          <>
+            {volunteerFr}
+            {volunteerEu}
+          </>
         )}
       </div>
 
       {/* SOUTIEN FINANCIER */}
       {donationUrl && (
-        <div
-          className={
-            styles.supportRow
-          }
-        >
-          <SupportCard
-            title={
-              joinFr.financialTitle
-            }
-            content={
-              joinFr.financialText
-            }
-            buttonLabel="Faire un don"
-            href={donationUrl}
-            external
-          />
-
-          {joinEu && (
-            <SupportCard
-              title={
-                joinEu.financialTitle
-              }
-              content={
-                joinEu.financialText
-              }
-              buttonLabel="Dohaintza egin"
-              href={donationUrl}
-              external
-            />
+        <div className={styles.supportRow}>
+          {defaultLocale === "eu" ? (
+            <>
+              {financialEu}
+              {financialFr}
+            </>
+          ) : (
+            <>
+              {financialFr}
+              {financialEu}
+            </>
           )}
         </div>
       )}
 
       {/* DEVENIR MÉCÈNE */}
-      <div
-        className={
-          styles.supportRow
-        }
-      >
-        <SupportCard
-          title={
-            joinFr.patronTitle
-          }
-          content={
-            joinFr.patronText
-          }
-          buttonLabel="Nous contacter"
-          href={contactUrl}
-        />
-
-        {joinEu && (
-          <SupportCard
-            title={
-              joinEu.patronTitle
-            }
-            content={
-              joinEu.patronText
-            }
-            buttonLabel="Harremanetan jarri"
-            href={contactUrl}
-          />
+      <div className={styles.supportRow}>
+        {defaultLocale === "eu" ? (
+          <>
+            {patronEu}
+            {patronFr}
+          </>
+        ) : (
+          <>
+            {patronFr}
+            {patronEu}
+          </>
         )}
       </div>
     </section>

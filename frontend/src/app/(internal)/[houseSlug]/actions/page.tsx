@@ -1,8 +1,5 @@
-import Image from "next/image";
-
-import {
-  BlocksRenderer,
-} from "@strapi/blocks-react-renderer";
+import { headers } from "next/headers";
+import { BlocksRenderer } from "@strapi/blocks-react-renderer";
 
 import ActionDetail from "@/components/actions/ActionDetail";
 
@@ -15,6 +12,10 @@ import {
   getActionsPage,
 } from "@/lib/strapi/actionsPage";
 
+import {
+  getDefaultLocaleFromHost,
+} from "@/lib/i18n/getDefaultLocale";
+
 import styles from "./page.module.css";
 
 type ActionsPageProps = {
@@ -22,27 +23,6 @@ type ActionsPageProps = {
     houseSlug: string;
   }>;
 };
-
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ??
-  "http://localhost:1337";
-
-function getMediaUrl(
-  path?: string | null
-) {
-  if (!path) {
-    return undefined;
-  }
-
-  if (
-    path.startsWith("http://") ||
-    path.startsWith("https://")
-  ) {
-    return path;
-  }
-
-  return `${STRAPI_URL}${path}`;
-}
 
 function sortActions(
   actions: StrapiAction[]
@@ -58,6 +38,19 @@ export default async function ActionsPage({
   params,
 }: ActionsPageProps) {
   const { houseSlug } = await params;
+
+  /*
+   * Détermine la langue prioritaire
+   * selon le domaine.
+   *
+   * .eus => Euskara
+   * .fr  => Français
+   */
+  const headersList = await headers();
+  const host = headersList.get("host");
+
+  const defaultLocale =
+    getDefaultLocaleFromHost(host);
 
   const [
     responseFr,
@@ -91,14 +84,9 @@ export default async function ActionsPage({
   const actionsPageEu =
     actionsPageEuResponse.data;
 
-  const pageImage =
-    actionsPageFr?.image;
-
-  const imageUrl =
-    getMediaUrl(
-      pageImage?.url
-    );
-
+  /*
+   * Action mise en avant
+   */
   const featuredActionFr =
     actionsFr.find(
       (action) =>
@@ -114,6 +102,9 @@ export default async function ActionsPage({
         )
       : undefined;
 
+  /*
+   * Autres actions
+   */
   const remainingActionsFr =
     featuredActionFr
       ? actionsFr.filter(
@@ -123,39 +114,86 @@ export default async function ActionsPage({
         )
       : actionsFr;
 
-  return (
-    <section className={styles.wrapper}>
-      {/* IMAGE BANDEAU */}
-      {/* {imageUrl && (
+  /*
+   * Bloc français
+   */
+  const frenchIntro = (
+    <div
+      className={
+        styles.languageColumn
+      }
+    >
+      <h1
+        className={
+          styles.sectionTitle
+        }
+      >
+        {actionsPageFr
+          ?.actionsTitle ??
+          "Que fait-on ?"}
+      </h1>
+
+      {actionsPageFr
+        ?.actionsIntro && (
         <div
-          className={
-            styles.pageImageWrapper
-          }
+          className={`richText ${styles.intro}`}
         >
-          <Image
-            src={imageUrl}
-            alt={
-              pageImage
-                ?.alternativeText
-                ?.trim() ||
-              "Nos actions"
+          <BlocksRenderer
+            content={
+              actionsPageFr
+                .actionsIntro
             }
-            width={
-              pageImage?.width ??
-              1200
-            }
-            height={
-              pageImage?.height ??
-              800
-            }
-            className={
-              styles.pageImage
-            }
-            priority
           />
         </div>
-      )} */
-     <img src="/images/cv-actions.png" alt="Nos actions" className="actionImg"/>}
+      )}
+    </div>
+  );
+
+  /*
+   * Bloc Euskara
+   */
+  const basqueIntro = (
+    <div
+      className={
+        styles.languageColumn
+      }
+    >
+      <h2
+        className={
+          styles.sectionTitle
+        }
+      >
+        {actionsPageEu
+          ?.actionsTitle ??
+          "Gure ekintzak"}
+      </h2>
+
+      {actionsPageEu
+        ?.actionsIntro && (
+        <div
+          className={`richText ${styles.intro}`}
+        >
+          <BlocksRenderer
+            content={
+              actionsPageEu
+                .actionsIntro
+            }
+          />
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <section
+      className={styles.wrapper}
+    >
+      {/* IMAGE BANDEAU */}
+      <img
+        src="/images/cv-actions.png"
+        alt="Nos actions"
+        className="actionImg"
+      />
 
       {/* ACTION MISE EN AVANT */}
       {featuredActionFr && (
@@ -175,69 +213,19 @@ export default async function ActionsPage({
         </div>
       )}
 
-      {/* QUE FAIT-ON ? */}
+      {/* QUE FAIT-ON ? / GURE EKINTZAK */}
       <div className={styles.columns}>
-        {/* FR */}
-        <div
-          className={
-            styles.languageColumn
-          }
-        >
-          <h1
-            className={
-              styles.sectionTitle
-            }
-          >
-            {actionsPageFr
-              ?.actionsTitle ??
-              "Que fait-on ?"}
-          </h1>
-
-          {actionsPageFr
-            ?.actionsIntro && (
-            <div
-              className={`richText ${styles.intro}`}
-            >
-              <BlocksRenderer
-                content={
-                  actionsPageFr
-                    .actionsIntro
-                }
-              />
-            </div>
-          )}
-        </div>
-
-        {/* EU */}
-        <div
-          className={
-            styles.languageColumn
-          }
-        >
-          <h2
-            className={
-              styles.sectionTitle
-            }
-          >
-            {actionsPageEu
-              ?.actionsTitle ??
-              "Gure ekintzak"}
-          </h2>
-
-          {actionsPageEu
-            ?.actionsIntro && (
-            <div
-              className={`richText ${styles.intro}`}
-            >
-              <BlocksRenderer
-                content={
-                  actionsPageEu
-                    .actionsIntro
-                }
-              />
-            </div>
-          )}
-        </div>
+        {defaultLocale === "eu" ? (
+          <>
+            {basqueIntro}
+            {frenchIntro}
+          </>
+        ) : (
+          <>
+            {frenchIntro}
+            {basqueIntro}
+          </>
+        )}
       </div>
 
       {/* AUTRES ACTIONS */}

@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+
 import JoinDetail from "@/components/join/JoinDetail";
 
 import {
@@ -10,6 +12,10 @@ import {
   type StrapiHouse,
 } from "@/lib/strapi/houses";
 
+import {
+  getDefaultLocaleFromHost,
+} from "@/lib/i18n/getDefaultLocale";
+
 type SupportPageProps = {
   params: Promise<{
     houseSlug: string;
@@ -21,25 +27,40 @@ export default async function SupportPage({
 }: SupportPageProps) {
   const { houseSlug } = await params;
 
-  const [
-    responseFr,
-    responseEu,
-    housesResponse,
-  ] = await Promise.all([
-    getJoinContents("fr"),
-    getJoinContents("eu"),
-    getHouses("fr"),
-  ]);
+  const headersList = await headers();
+  const host = headersList.get("host");
 
+  const defaultLocale =
+    getDefaultLocaleFromHost(host);
+
+const [
+  responseFr,
+  housesResponse,
+] = await Promise.all([
+  getJoinContents("fr"),
+  getHouses("fr"),
+]);
+
+  /*
+   * On trouve d'abord le contenu FR
+   * grâce à la Maison.
+   */
   const joinFr = responseFr.data.find(
     (item: StrapiJoin) =>
       item.house?.slug === houseSlug
   );
 
-  const joinEu = responseEu.data.find(
-    (item: StrapiJoin) =>
-      item.house?.slug === houseSlug
-  );
+  /*
+   * Puis on retrouve sa traduction EU
+   * grâce au documentId.
+   *
+   * Cela évite de dépendre de la relation
+   * house sur la localisation basque.
+   */
+  const joinEu = joinFr?.localizations?.find(
+  (item: StrapiJoin) =>
+    item.locale === "eu"
+);
 
   const house = housesResponse.data.find(
     (item: StrapiHouse) =>
@@ -47,10 +68,9 @@ export default async function SupportPage({
   );
 
   if (!joinFr) {
-    return (  
+    return (
       <section>
-
-         <h1>Nous soutenir</h1>
+        <h1>Nous soutenir</h1>
 
         <p>
           Aucun contenu publié pour le moment.
@@ -67,6 +87,7 @@ export default async function SupportPage({
       donationUrl={
         house?.donationUrl ?? null
       }
+      defaultLocale={defaultLocale}
     />
   );
 }
