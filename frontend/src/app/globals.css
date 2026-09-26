@@ -165,3 +165,11 @@ object-fit: contain;
   height: auto;
   }
 }
+
+.richText p,
+.richText li,
+.summary,
+.description,
+.cardText {
+  text-align: justify;
+}
