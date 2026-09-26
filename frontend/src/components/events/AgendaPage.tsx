@@ -1,9 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 import {
   useRouter,
   useSearchParams,
@@ -42,25 +40,20 @@ type Locale =
   | "fr"
   | "eu";
 
-const STRAPI_URL =
-  process.env.NEXT_PUBLIC_STRAPI_URL ??
-  "http://localhost:1337";
-
-function getMediaUrl(
-  path?: string | null
+function getMatrimoineImage(
+  locale: Locale
 ) {
-  if (!path) {
-    return undefined;
+  if (locale === "fr") {
+    return {
+      src: "/images/Visuel les journées du Matrimoine.png",
+      alt: "Affiche des Journées du Matrimoine",
+    };
   }
 
-  if (
-    path.startsWith("http://") ||
-    path.startsWith("https://")
-  ) {
-    return path;
-  }
-
-  return `${STRAPI_URL}${path}`;
+  return {
+    src: "/images/Visuel les journées du Matrimoine_eu.png",
+    alt: "Matrimonioaren Jardunaldien afixa",
+  };
 }
 
 export default function AgendaPage({
@@ -93,6 +86,9 @@ export default function AgendaPage({
     useState<Locale>(
       initialLocale
     );
+
+  const matrimoineImage =
+    getMatrimoineImage(locale);
 
   function changeLocale(
     newLocale: Locale
@@ -132,8 +128,7 @@ export default function AgendaPage({
       ? events
       : events.filter(
           (event) =>
-            event.category ===
-            filter
+            event.category === filter
         );
 
   const labels =
@@ -147,8 +142,6 @@ export default function AgendaPage({
           events: "Événements",
           switchLanguage:
             "Euskaraz",
-          openPlanning:
-            "Ouvrir le planning",
         }
       : {
           title: "Agenda",
@@ -159,32 +152,7 @@ export default function AgendaPage({
           events: "Ekitaldiak",
           switchLanguage:
             "Français",
-          openPlanning:
-            "Egutegia ireki",
         };
-
-  const planning =
-    agendaPage?.monthlyPlanning;
-
-  const planningUrl =
-    getMediaUrl(
-      planning?.url
-    );
-
-  const isPdf =
-    planning?.mime ===
-      "application/pdf" ||
-    planning?.url
-      ?.toLowerCase()
-      .endsWith(".pdf");
-
-  const isImage =
-    planning?.mime
-      ?.toLowerCase()
-      .startsWith("image/") ||
-    /\.(png|jpg|jpeg|webp)$/i.test(
-      planning?.url ?? ""
-    );
 
   return (
     <section
@@ -214,99 +182,69 @@ export default function AgendaPage({
             labels.switchLanguage
           }
         </button>
-       
       </div>
-          <h2
-            className={
-              styles.planningTitle
-            }
-          >
-            {agendaPage?.planningTitle ??
-              (locale === "fr"
-                ? "Planning mensuel"
-                : "Hileko egutegia")}
-          </h2>
-         {agendaPage?.description && (
-            <div
-              className={`richText ${styles.planningDescription}`}
-            >
-              <BlocksRenderer
-                content={
-                  agendaPage.description
-                }
-              />
-   <div>
-        <img src={"/images/Visuel les journées du Matrimoine.png"} alt="MatrimoineFr" className="localeMatrimoineImg"/>
-      </div>
-       {agendaPage?.additionalInfo && (
-            <div
-              className={`richText ${styles.additionalInfo}`}
-            >
-              <BlocksRenderer
-                content={
-                  agendaPage.additionalInfo
-                }
-              />
-            </div>
-          )}
 
-            </div>
-          )}
-
-      {planningUrl && (
-        <section
+      <section
+        className={
+          styles.planningSection
+        }
+      >
+        <h2
           className={
-            styles.planningSection
+            styles.planningTitle
           }
         >
-      
+          {agendaPage?.planningTitle ??
+            (locale === "fr"
+              ? "Journées du Matrimoine"
+              : "Matrimonioaren Jardunaldiak")}
+        </h2>
 
-       
+        {agendaPage?.description && (
+          <div
+            className={`richText ${styles.planningDescription}`}
+          >
+            <BlocksRenderer
+              content={
+                agendaPage.description
+              }
+            />
+          </div>
+        )}
 
-          {isImage && (
-            <div
-              className={
-                styles.planningImageWrapper
-              }
-            >
-              <Image
-                src={
-                  planningUrl
-                }
-                alt={
-                  planning?.alternativeText?.trim() ||
-                  agendaPage?.planningTitle ||
-                  labels.title
-                }
-                width={700}
-                height={500}
-                className={
-                  styles.planningImage
-                }
-              />
-            </div>
-          )}
+        <div
+          className={
+            styles.planningImageWrapper
+          }
+        >
+          <Image
+            src={
+              matrimoineImage.src
+            }
+            alt={
+              matrimoineImage.alt
+            }
+            width={900}
+            height={1200}
+            className={
+              styles.planningImage
+            }
+            priority
+          />
+        </div>
 
-          {isPdf && (
-            <a
-              href={
-                planningUrl
+        {agendaPage?.additionalInfo && (
+          <div
+            className={`richText ${styles.additionalInfo}`}
+          >
+            <BlocksRenderer
+              content={
+                agendaPage.additionalInfo
               }
-              target="_blank"
-              rel="noopener noreferrer"
-              className={
-                styles.planningButton
-              }
-            >
-              {
-                labels.openPlanning
-              }
-            </a>
-          )}
-
-         
-        </section>
-      )}
+            />
+          </div>
+        )}
+      </section>
 
       <div
         className={styles.filters}
