@@ -7,30 +7,27 @@ import { getLandingPage } from "@/lib/strapi/landing";
 
 export const dynamic = "force-dynamic";
 
-type HomePageProps = {
-  searchParams: Promise<{
-    lang?: string;
-  }>;
-};
+type Locale = "fr" | "eu";
 
-export default async function HomePage({
-  searchParams,
-}: HomePageProps) {
-  const { lang } = await searchParams;
+function getLocaleFromHost(
+  host: string
+): Locale {
+  if (host.includes("mdf-ee.eus")) {
+    return "eu";
+  }
 
-  const headersList = await headers();
+  return "fr";
+}
+
+export default async function HomePage() {
+  const headersList =
+    await headers();
 
   const host =
     headersList.get("host") ?? "";
 
-  const locale: "fr" | "eu" =
-    lang === "eu"
-      ? "eu"
-      : lang === "fr"
-      ? "fr"
-      : host.includes("mde-ee.eus")
-      ? "eu"
-      : "fr";
+  const locale =
+    getLocaleFromHost(host);
 
   const [
     housesResponse,
@@ -49,16 +46,20 @@ export default async function HomePage({
         housesResponse.data ?? []
       }
       slogan={
-        landing?.slogan ?? ""
+        landing?.slogan ??
+        ""
       }
       ctaLabel={
-        landing?.ctaLabel ?? ""
+        landing?.ctaLabel ??
+        ""
       }
       selectorLabel={
-        landing?.selectorLabel ?? ""
+        landing?.selectorLabel ??
+        ""
       }
       selectorPlaceholder={
-        landing?.selectorPlaceholder ?? ""
+        landing?.selectorPlaceholder ??
+        ""
       }
     />
   );
