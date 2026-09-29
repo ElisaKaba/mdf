@@ -7,11 +7,13 @@ export function getDefaultLocaleFromHost(
     return "fr";
   }
 
-  const normalizedHost = host.toLowerCase();
+  const normalizedHost =
+    host.toLowerCase();
 
   if (
-    normalizedHost.includes("mdf-ee.eus") ||
-    normalizedHost.includes("localhost")
+    normalizedHost.includes(
+      "mdf-ee.eus"
+    )
   ) {
     return "eu";
   }

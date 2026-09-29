@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import styles from "./ContactForm.module.css";
@@ -25,7 +26,6 @@ type FormState = {
   subject: SubjectOption;
   subjectDetails: string;
   message: string;
-  consent: boolean;
 };
 
 type FieldErrors =
@@ -38,7 +38,6 @@ const initialState: FormState = {
   subject: "",
   subjectDetails: "",
   message: "",
-  consent: false,
 };
 
 const translations = {
@@ -62,9 +61,6 @@ const translations = {
 
     message: "Message",
 
-    consent:
-      "J’accepte que mes informations soient utilisées pour répondre à ma demande.",
-
     submit: "Envoyer",
     submitting: "Envoi en cours…",
 
@@ -76,6 +72,12 @@ const translations = {
 
     unexpectedError:
       "Une erreur inattendue est survenue. Réessayez dans quelques instants.",
+
+    privacy:
+      "Les informations recueillies sont utilisées uniquement pour traiter votre demande et vous répondre. Elles sont conservées pendant un an maximum après le dernier échange. Vous pouvez exercer vos droits en écrivant à emazteen.etxea@gmail.com.",
+
+    privacyLink:
+      "Consulter notre politique de confidentialité.",
 
     errors: {
       firstName:
@@ -95,9 +97,6 @@ const translations = {
 
       message:
         "Le message doit contenir au moins 10 caractères.",
-
-      consent:
-        "Vous devez accepter l’utilisation de vos données pour envoyer votre message.",
     },
   },
 
@@ -122,9 +121,6 @@ const translations = {
 
     message: "Mezua",
 
-    consent:
-      "Nire informazioa nire eskaerari erantzuteko erabiltzea onartzen dut.",
-
     submit: "Bidali",
     submitting: "Bidaltzen…",
 
@@ -136,6 +132,12 @@ const translations = {
 
     unexpectedError:
       "Ustekabeko errore bat gertatu da. Saiatu berriro une batzuk barru.",
+
+    privacy:
+      "Bildutako informazioa zure eskaera tratatzeko eta zuri erantzuteko baino ez da erabiltzen. Datuak gehienez urtebetez gordeko dira azken harremanetik aurrera. Zure eskubideak erabiltzeko, idatzi emazteen.etxea@gmail.com helbidera.",
+
+    privacyLink:
+      "Ikusi gure pribatutasun-politika.",
 
     errors: {
       firstName:
@@ -155,9 +157,6 @@ const translations = {
 
       message:
         "Mezuak gutxienez 10 karaktere izan behar ditu.",
-
-      consent:
-        "Zure datuen erabilera onartu behar duzu mezua bidaltzeko.",
     },
   },
 };
@@ -166,9 +165,8 @@ export default function ContactForm({
   houseSlug,
   defaultLocale,
 }: ContactFormProps) {
- 
   const [locale, setLocale] =
-  useState<Locale>(defaultLocale);
+    useState<Locale>(defaultLocale);
 
   const [form, setForm] =
     useState<FormState>(initialState);
@@ -260,11 +258,6 @@ export default function ContactForm({
         t.errors.message;
     }
 
-    if (!form.consent) {
-      errors.consent =
-        t.errors.consent;
-    }
-
     setFieldErrors(errors);
 
     return (
@@ -312,13 +305,6 @@ export default function ContactForm({
         await response.json();
 
       if (!response.ok) {
-        /*
-         * La validation principale
-         * est déjà faite côté client.
-         *
-         * On conserve quand même
-         * les erreurs serveur si besoin.
-         */
         if (data.fieldErrors) {
           setFieldErrors(
             data.fieldErrors
@@ -370,9 +356,7 @@ export default function ContactForm({
           }
           onClick={() => {
             setLocale(
-              (
-                current
-              ) =>
+              (current) =>
                 current === "fr"
                   ? "eu"
                   : "fr"
@@ -716,57 +700,20 @@ export default function ContactForm({
         )}
       </div>
 
-      <div>
-        <label
-          className={
-            styles.consent
-          }
+      <div
+        className={
+          styles.privacyNotice
+        }
+      >
+        <p>
+          {t.privacy}
+        </p>
+
+        <Link
+          href={`/${houseSlug}/politique-de-confidentialite`}
         >
-          <input
-            type="checkbox"
-            checked={
-              form.consent
-            }
-            aria-invalid={Boolean(
-              fieldErrors.consent
-            )}
-            onChange={(event) => {
-              setForm({
-                ...form,
-                consent:
-                  event.target
-                    .checked,
-              });
-
-              clearFieldError(
-                "consent"
-              );
-            }}
-          />
-
-          <span>
-            {t.consent}{" "}
-            <span
-              className={
-                styles.required
-              }
-              aria-hidden="true"
-            >
-              *
-            </span>
-          </span>
-        </label>
-
-        {fieldErrors.consent && (
-          <p
-            className={
-              styles.fieldError
-            }
-            role="alert"
-          >
-            {fieldErrors.consent}
-          </p>
-        )}
+          {t.privacyLink}
+        </Link>
       </div>
 
       {globalError && (

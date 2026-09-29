@@ -6,6 +6,7 @@ import {
   useRouter,
   useSearchParams,
 } from "next/navigation";
+
 import {
   BlocksRenderer,
 } from "@strapi/blocks-react-renderer";
@@ -30,7 +31,8 @@ type AgendaPageProps = {
 
   agendaPageFr?: StrapiAgendaPage | null;
   agendaPageEu?: StrapiAgendaPage | null;
-   defaultLocale: "fr" | "eu";
+
+  defaultLocale: "fr" | "eu";
 };
 
 type Filter =
@@ -58,7 +60,7 @@ function getMatrimoineImage(
 }
 
 export default function AgendaPage({
-eventsFr,
+  eventsFr,
   eventsEu,
   agendaPageFr,
   agendaPageEu,
@@ -70,10 +72,15 @@ eventsFr,
   const searchParams =
     useSearchParams();
 
+  const lang =
+    searchParams.get("lang");
+
   const initialLocale: Locale =
-    searchParams.get("lang") === "eu"
+    lang === "eu"
       ? "eu"
-      : "fr";
+      : lang === "fr"
+        ? "fr"
+        : defaultLocale;
 
   const [
     filter,
@@ -81,8 +88,13 @@ eventsFr,
   ] =
     useState<Filter>("tous");
 
-  const [locale, setLocale] =
-  useState<Locale>(defaultLocale);
+  const [
+    locale,
+    setLocale,
+  ] =
+    useState<Locale>(
+      initialLocale
+    );
 
   const matrimoineImage =
     getMatrimoineImage(locale);
@@ -131,22 +143,40 @@ eventsFr,
   const labels =
     locale === "fr"
       ? {
-          title: "Agenda",
-          all: "Tous",
-          workshops: "Ateliers",
+          title:
+            "Agenda",
+
+          all:
+            "Tous",
+
+          workshops:
+            "Ateliers",
+
           permanences:
             "Permanences",
-          events: "Événements",
+
+          events:
+            "Événements",
+
           switchLanguage:
             "Euskaraz",
         }
       : {
-          title: "Agenda",
-          all: "Guztiak",
-          workshops: "Tailerrak",
+          title:
+            "Agenda",
+
+          all:
+            "Guztiak",
+
+          workshops:
+            "Tailerrak",
+
           permanences:
             "Permanenteak",
-          events: "Ekitaldiak",
+
+          events:
+            "Ekitaldiak",
+
           switchLanguage:
             "Français",
         };
@@ -191,23 +221,31 @@ eventsFr,
             styles.planningTitle
           }
         >
-          {agendaPage?.planningTitle ??
-            (locale === "fr"
-              ? "Journées du Matrimoine"
-              : "Matrimonioaren Jardunaldiak")}
+          {
+            agendaPage
+              ?.planningTitle ??
+            (
+              locale === "fr"
+                ? "Journées du Matrimoine"
+                : "Matrimonioaren Jardunaldiak"
+            )
+          }
         </h2>
 
-        {agendaPage?.description && (
-          <div
-            className={`richText ${styles.planningDescription}`}
-          >
-            <BlocksRenderer
-              content={
-                agendaPage.description
-              }
-            />
-          </div>
-        )}
+        {
+          agendaPage
+            ?.description && (
+            <div
+              className={`richText ${styles.planningDescription}`}
+            >
+              <BlocksRenderer
+                content={
+                  agendaPage.description
+                }
+              />
+            </div>
+          )
+        }
 
         <div
           className={
@@ -230,24 +268,31 @@ eventsFr,
           />
         </div>
 
-        {agendaPage?.additionalInfo && (
-          <div
-            className={`richText ${styles.additionalInfo}`}
-          >
-            <BlocksRenderer
-              content={
-                agendaPage.additionalInfo
-              }
-            />
-          </div>
-        )}
+        {
+          agendaPage
+            ?.additionalInfo && (
+            <div
+              className={`richText ${styles.additionalInfo}`}
+            >
+              <BlocksRenderer
+                content={
+                  agendaPage.additionalInfo
+                }
+              />
+            </div>
+          )
+        }
       </section>
 
       <div
-        className={styles.filters}
+        className={
+          styles.filters
+        }
       >
         <Pill
-          label={labels.all}
+          label={
+            labels.all
+          }
           active={
             filter === "tous"
           }
@@ -300,17 +345,21 @@ eventsFr,
       </div>
 
       <div
-        className={styles.events}
+        className={
+          styles.events
+        }
       >
-        {filteredEvents.map(
-          (event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-              locale={locale}
-            />
+        {
+          filteredEvents.map(
+            (event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                locale={locale}
+              />
+            )
           )
-        )}
+        }
       </div>
     </section>
   );

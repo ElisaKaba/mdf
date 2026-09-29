@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-
+import Link from "next/link";
 import Sidebar from "@/components/layout/Sidebar";
 import { getHouses } from "@/lib/strapi/houses";
 
@@ -52,44 +52,66 @@ export default async function HouseLayout({
       </div>
 
       <footer className={styles.footer}>
-        <div className={styles.socials}>
-          {house.facebookUrl && (
-            <a
-              href={house.facebookUrl}
-              aria-label={`Facebook de ${house.name}`}
-              className={styles.socialLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/images/facebook.png"
-                alt=""
-                width={34}
-                height={34}
-                className={styles.socialIcon}
-              />
-            </a>
-          )}
+  <div className={styles.socials}>
+    {house.facebookUrl && (
+      <a
+        href={house.facebookUrl}
+        aria-label={`Facebook de ${house.name}`}
+        className={styles.socialLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image
+          src="/images/facebook.png"
+          alt=""
+          width={34}
+          height={34}
+          className={styles.socialIcon}
+        />
+      </a>
+    )}
 
-          {house.instagramUrl && (
-            <a
-              href={house.instagramUrl}
-              aria-label={`Instagram de ${house.name}`}
-              className={styles.socialLink}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Image
-                src="/images/instagram.png"
-                alt=""
-                width={34}
-                height={34}
-                className={styles.socialIcon}
-              />
-            </a>
-          )}
-        </div>
-      </footer>
+    {house.instagramUrl && (
+      <a
+        href={house.instagramUrl}
+        aria-label={`Instagram de ${house.name}`}
+        className={styles.socialLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <Image
+          src="/images/instagram.png"
+          alt=""
+          width={34}
+          height={34}
+          className={styles.socialIcon}
+        />
+      </a>
+    )}
+  </div>
+
+  <nav aria-label="Navigation du pied de page">
+    <Link href={`/${houseSlug}/mentions-legales`}>
+      Mentions légales
+    </Link>
+
+    {" · "}
+
+    <Link
+      href={`/${houseSlug}/politique-de-confidentialite`}
+    >
+      Politique de confidentialité
+    </Link>
+
+    {" · "}
+
+    <Link
+      href={`/${houseSlug}/contact`}
+    >
+      Contact
+    </Link>
+  </nav>
+</footer>
     </div>
   );
 }

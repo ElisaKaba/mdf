@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import styles from "./RegistrationForm.module.css";
+
+type Locale = "fr" | "eu";
 
 type RegistrationFormProps = {
   eventId: string;
   eventTitle: string;
   houseSlug: string;
+  locale?: Locale;
 };
 
 type FormState = {
@@ -17,10 +21,10 @@ type FormState = {
   phone: string;
   participants: number;
   message: string;
-  consent: boolean;
 };
 
-type FieldErrors = Partial<Record<keyof FormState, string>>;
+type FieldErrors =
+  Partial<Record<keyof FormState, string>>;
 
 const initialState: FormState = {
   firstName: "",
@@ -29,27 +33,103 @@ const initialState: FormState = {
   phone: "",
   participants: 1,
   message: "",
-  consent: false,
+};
+
+const translations = {
+  fr: {
+    title: "S’inscrire à cette activité",
+
+    firstName: "Prénom",
+    lastName: "Nom",
+    email: "Adresse e-mail",
+    phone: "Téléphone",
+    participants: "Nombre de participantes",
+    message: "Message",
+
+    submitting: "Envoi en cours…",
+    submit: "Valider mon inscription",
+
+    success:
+      "Votre inscription a bien été enregistrée.",
+
+    serverError:
+      "Impossible de contacter le serveur. Réessayez dans quelques instants.",
+
+    privacy:
+      "Les informations recueillies sont utilisées pour gérer votre inscription à cette activité et pour établir les bilans d’activité de l’association. Les données nominatives sont conservées pendant deux ans maximum après l’activité, puis supprimées ou anonymisées. Vous pouvez exercer vos droits en écrivant à emazteen.etxea@gmail.com.",
+
+    privacyLink:
+      "Consulter notre politique de confidentialité.",
+  },
+
+  eu: {
+    title: "Jarduera honetan izena eman",
+
+    firstName: "Izena",
+    lastName: "Abizena",
+    email: "Helbide elektronikoa",
+    phone: "Telefonoa",
+    participants: "Parte-hartzaileen kopurua",
+    message: "Mezua",
+
+    submitting: "Bidaltzen…",
+    submit: "Izen-ematea baieztatu",
+
+    success:
+      "Zure izen-ematea behar bezala erregistratu da.",
+
+    serverError:
+      "Ezin izan da zerbitzariarekin konektatu. Saiatu berriro une batzuk barru.",
+
+    privacy:
+      "Bildutako informazioa jarduera honetan zure izen-ematea kudeatzeko eta elkartearen jarduera-balantzeak egiteko erabiltzen da. Datu izendunak jardueraren ondoren gehienez bi urtez gordeko dira, eta ondoren ezabatu edo anonimotu egingo dira. Zure eskubideak erabiltzeko, idatzi emazteen.etxea@gmail.com helbidera.",
+
+    privacyLink:
+      "Ikusi gure pribatutasun-politika.",
+  },
 };
 
 export default function RegistrationForm({
   eventId,
   eventTitle,
   houseSlug,
+  locale = "fr",
 }: RegistrationFormProps) {
-  const [form, setForm] = useState<FormState>(initialState);
-  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  const [globalError, setGlobalError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] =
+    useState<FormState>(initialState);
 
-  function clearFieldError(field: keyof FormState) {
+  const [
+    fieldErrors,
+    setFieldErrors,
+  ] = useState<FieldErrors>({});
+
+  const [
+    globalError,
+    setGlobalError,
+  ] = useState("");
+
+  const [
+    successMessage,
+    setSuccessMessage,
+  ] = useState("");
+
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
+
+  const t = translations[locale];
+
+  function clearFieldError(
+    field: keyof FormState
+  ) {
     setFieldErrors((current) => {
       if (!current[field]) {
         return current;
       }
 
       const next = { ...current };
+
       delete next[field];
 
       return next;
@@ -67,35 +147,58 @@ export default function RegistrationForm({
     setSuccessMessage("");
 
     try {
-      const response = await fetch("/api/registrations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          eventId,
-          eventTitle,
-          houseSlug,
+      const response = await fetch(
+        "/api/registrations",
+        {
+          method: "POST",
 
-          firstName: form.firstName,
-          lastName: form.lastName,
-          email: form.email,
-          phone: form.phone || undefined,
-          participants: form.participants,
-          message: form.message || undefined,
-          consent: form.consent,
-        }),
-      });
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
 
-      const data = await response.json();
+          body: JSON.stringify({
+            eventId,
+            eventTitle,
+            houseSlug,
+
+            firstName:
+              form.firstName,
+
+            lastName:
+              form.lastName,
+
+            email:
+              form.email,
+
+            phone:
+              form.phone ||
+              undefined,
+
+            participants:
+              form.participants,
+
+            message:
+              form.message ||
+              undefined,
+          }),
+        }
+      );
+
+      const data =
+        await response.json();
 
       if (!response.ok) {
         if (data.fieldErrors) {
-          setFieldErrors(data.fieldErrors);
+          setFieldErrors(
+            data.fieldErrors
+          );
         }
 
         if (data.message) {
-          setGlobalError(data.message);
+          setGlobalError(
+            data.message
+          );
         }
 
         return;
@@ -103,14 +206,14 @@ export default function RegistrationForm({
 
       setSuccessMessage(
         data.message ??
-          "Votre inscription a bien été enregistrée."
+          t.success
       );
 
       setForm(initialState);
       setFieldErrors({});
     } catch {
       setGlobalError(
-        "Impossible de contacter le serveur. Réessayez dans quelques instants."
+        t.serverError
       );
     } finally {
       setIsSubmitting(false);
@@ -123,25 +226,34 @@ export default function RegistrationForm({
       onSubmit={handleSubmit}
       noValidate
     >
-      <h2>S’inscrire à cette activité</h2>
+      <h2>
+        {t.title}
+      </h2>
 
       <div className={styles.row}>
         <div className={styles.field}>
           <label htmlFor="firstName">
-            Prénom <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
+            {t.firstName}{" "}
+            <span
+              className={
+                styles.required
+              }
+              aria-hidden="true"
+            >
+              *
+            </span>
           </label>
 
           <input
             id="firstName"
             type="text"
             autoComplete="given-name"
-            value={form.firstName}
-            aria-invalid={Boolean(fieldErrors.firstName)}
+            value={
+              form.firstName
+            }
+            aria-invalid={Boolean(
+              fieldErrors.firstName
+            )}
             aria-describedby={
               fieldErrors.firstName
                 ? "firstName-error"
@@ -150,40 +262,54 @@ export default function RegistrationForm({
             onChange={(event) => {
               setForm({
                 ...form,
-                firstName: event.target.value,
+                firstName:
+                  event.target.value,
               });
 
-              clearFieldError("firstName");
+              clearFieldError(
+                "firstName"
+              );
             }}
           />
 
           {fieldErrors.firstName && (
             <p
               id="firstName-error"
-              className={styles.fieldError}
+              className={
+                styles.fieldError
+              }
               role="alert"
             >
-              {fieldErrors.firstName}
+              {
+                fieldErrors.firstName
+              }
             </p>
           )}
         </div>
 
         <div className={styles.field}>
           <label htmlFor="lastName">
-            Nom <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
+            {t.lastName}{" "}
+            <span
+              className={
+                styles.required
+              }
+              aria-hidden="true"
+            >
+              *
+            </span>
           </label>
 
           <input
             id="lastName"
             type="text"
             autoComplete="family-name"
-            value={form.lastName}
-            aria-invalid={Boolean(fieldErrors.lastName)}
+            value={
+              form.lastName
+            }
+            aria-invalid={Boolean(
+              fieldErrors.lastName
+            )}
             aria-describedby={
               fieldErrors.lastName
                 ? "lastName-error"
@@ -192,20 +318,27 @@ export default function RegistrationForm({
             onChange={(event) => {
               setForm({
                 ...form,
-                lastName: event.target.value,
+                lastName:
+                  event.target.value,
               });
 
-              clearFieldError("lastName");
+              clearFieldError(
+                "lastName"
+              );
             }}
           />
 
           {fieldErrors.lastName && (
             <p
               id="lastName-error"
-              className={styles.fieldError}
+              className={
+                styles.fieldError
+              }
               role="alert"
             >
-              {fieldErrors.lastName}
+              {
+                fieldErrors.lastName
+              }
             </p>
           )}
         </div>
@@ -213,20 +346,27 @@ export default function RegistrationForm({
 
       <div className={styles.field}>
         <label htmlFor="email">
-          Adresse e-mail <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
+          {t.email}{" "}
+          <span
+            className={
+              styles.required
+            }
+            aria-hidden="true"
+          >
+            *
+          </span>
         </label>
 
         <input
           id="email"
           type="email"
           autoComplete="email"
-          value={form.email}
-          aria-invalid={Boolean(fieldErrors.email)}
+          value={
+            form.email
+          }
+          aria-invalid={Boolean(
+            fieldErrors.email
+          )}
           aria-describedby={
             fieldErrors.email
               ? "email-error"
@@ -235,17 +375,22 @@ export default function RegistrationForm({
           onChange={(event) => {
             setForm({
               ...form,
-              email: event.target.value,
+              email:
+                event.target.value,
             });
 
-            clearFieldError("email");
+            clearFieldError(
+              "email"
+            );
           }}
         />
 
         {fieldErrors.email && (
           <p
             id="email-error"
-            className={styles.fieldError}
+            className={
+              styles.fieldError
+            }
             role="alert"
           >
             {fieldErrors.email}
@@ -255,27 +400,39 @@ export default function RegistrationForm({
 
       <div className={styles.field}>
         <label htmlFor="phone">
-          Téléphone
+          {t.phone}
         </label>
 
         <input
           id="phone"
           type="tel"
           autoComplete="tel"
-          value={form.phone}
-          aria-invalid={Boolean(fieldErrors.phone)}
+          value={
+            form.phone
+          }
+          aria-invalid={Boolean(
+            fieldErrors.phone
+          )}
           onChange={(event) => {
             setForm({
               ...form,
-              phone: event.target.value,
+              phone:
+                event.target.value,
             });
 
-            clearFieldError("phone");
+            clearFieldError(
+              "phone"
+            );
           }}
         />
 
         {fieldErrors.phone && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.phone}
           </p>
         )}
@@ -283,13 +440,15 @@ export default function RegistrationForm({
 
       <div className={styles.field}>
         <label htmlFor="participants">
-          Nombre de participantes{" "}
+          {t.participants}{" "}
           <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
+            className={
+              styles.required
+            }
+            aria-hidden="true"
+          >
+            *
+          </span>
         </label>
 
         <input
@@ -297,108 +456,131 @@ export default function RegistrationForm({
           type="number"
           min={1}
           max={10}
-          value={form.participants}
-          aria-invalid={Boolean(fieldErrors.participants)}
+          value={
+            form.participants
+          }
+          aria-invalid={Boolean(
+            fieldErrors.participants
+          )}
           onChange={(event) => {
             setForm({
               ...form,
-              participants: Number(event.target.value),
+              participants:
+                Number(
+                  event.target.value
+                ),
             });
 
-            clearFieldError("participants");
+            clearFieldError(
+              "participants"
+            );
           }}
         />
 
         {fieldErrors.participants && (
-          <p className={styles.fieldError} role="alert">
-            {fieldErrors.participants}
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
+            {
+              fieldErrors.participants
+            }
           </p>
         )}
       </div>
 
       <div className={styles.field}>
         <label htmlFor="message">
-          Message
+          {t.message}
         </label>
 
         <textarea
           id="message"
           rows={4}
           maxLength={1000}
-          value={form.message}
-          aria-invalid={Boolean(fieldErrors.message)}
+          value={
+            form.message
+          }
+          aria-invalid={Boolean(
+            fieldErrors.message
+          )}
           onChange={(event) => {
             setForm({
               ...form,
-              message: event.target.value,
+              message:
+                event.target.value,
             });
 
-            clearFieldError("message");
+            clearFieldError(
+              "message"
+            );
           }}
         />
 
         {fieldErrors.message && (
-          <p className={styles.fieldError} role="alert">
+          <p
+            className={
+              styles.fieldError
+            }
+            role="alert"
+          >
             {fieldErrors.message}
           </p>
         )}
       </div>
 
-      <div>
-        <label className={styles.consent}>
-          <input
-            type="checkbox"
-            checked={form.consent}
-            aria-invalid={Boolean(fieldErrors.consent)}
-            onChange={(event) => {
-              setForm({
-                ...form,
-                consent: event.target.checked,
-              });
+      <div
+        className={
+          styles.privacyNotice
+        }
+      >
+        <p>
+          {t.privacy}
+        </p>
 
-              clearFieldError("consent");
-            }}
-          />
-
-          <span>
-            J’accepte que mes informations soient utilisées pour
-            gérer mon inscription.{" "}
-            <span
-  className={styles.required}
-  aria-hidden="true"
->
-  *
-</span>
-          </span>
-        </label>
-
-        {fieldErrors.consent && (
-          <p className={styles.fieldError} role="alert">
-            {fieldErrors.consent}
-          </p>
-        )}
+        <Link
+          href={`/${houseSlug}/politique-de-confidentialite`}
+        >
+          {t.privacyLink}
+        </Link>
       </div>
 
       {globalError && (
-        <p className={styles.error} role="alert">
+        <p
+          className={
+            styles.error
+          }
+          role="alert"
+        >
           {globalError}
         </p>
       )}
 
       {successMessage && (
-        <p className={styles.success} role="status">
+        <p
+          className={
+            styles.success
+          }
+          role="status"
+        >
           {successMessage}
         </p>
       )}
 
       <button
         type="submit"
-        className={styles.submitButton}
-        disabled={isSubmitting}
+        className={
+          styles.submitButton
+        }
+        disabled={
+          isSubmitting
+        }
       >
         {isSubmitting
-          ? "Envoi en cours…"
-          : "Valider mon inscription"}
+          ? t.submitting
+          : t.submit}
       </button>
     </form>
   );

@@ -98,10 +98,6 @@ export default async function EventDetailPage({
       ? "eu"
       : "fr";
 
-  /*
-   * On récupère directement
-   * la bonne locale Strapi.
-   */
   const response =
     await getEvents(locale);
 
@@ -178,7 +174,6 @@ export default async function EventDetailPage({
 
   return (
     <article className={styles.article}>
-    
       <div className={styles.backArea}>
         <Link
           href={`/${houseSlug}/agenda?lang=${locale}`}
@@ -272,6 +267,7 @@ export default async function EventDetailPage({
           eventId={event.id}
           eventTitle={event.title}
           houseSlug={houseSlug}
+          locale={locale}
         />
       )}
     </article>

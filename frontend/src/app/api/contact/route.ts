@@ -47,11 +47,6 @@ const contactSchema = z
       .trim()
       .min(10, "Le message doit contenir au moins 10 caractères.")
       .max(2000, "Le message ne peut pas dépasser 2000 caractères."),
-
-    consent: z.literal(true, {
-      error:
-        "Vous devez accepter l’utilisation de vos données pour envoyer votre message.",
-    }),
   })
   .superRefine((data, ctx) => {
     if (
@@ -155,9 +150,6 @@ export async function POST(request: Request) {
 
           message:
             contact.message,
-
-          consent:
-            contact.consent,
 
           status:
             "new",

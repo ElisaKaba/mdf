@@ -51,11 +51,6 @@ const registrationSchema = z.object({
     .trim()
     .max(1000, "Le message ne peut pas dépasser 1000 caractères.")
     .optional(),
-
-  consent: z.literal(true, {
-    error:
-      "Vous devez accepter l’utilisation de vos données pour vous inscrire.",
-  }),
 });
 
 export async function POST(request: Request) {
@@ -318,9 +313,6 @@ export async function POST(request: Request) {
 
         message:
           registration.message ?? null,
-
-        consent:
-          registration.consent,
 
         status:
           "pending",

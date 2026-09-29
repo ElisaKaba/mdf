@@ -158,3 +158,20 @@
   font-size: 2rem;
   line-height: 1;
 }
+
+.privacyNotice {
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.privacyNotice p {
+  margin: 0 0 0.35rem;
+}
+
+.privacyNotice a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
