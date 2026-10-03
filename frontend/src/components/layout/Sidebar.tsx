@@ -57,7 +57,7 @@ export default function Sidebar({
   const basqueLabels: Record<string, string> = {
     "qui-sommes-nous": "Nor gara",
     actions: "Gure ekintzak",
-    agenda: "Agenda",
+    agenda: "Egutegia",
     "nous-soutenir": "Lagundu gaitzazu",
     partenaires: "Partaideak",
     contact: "Harremana",
