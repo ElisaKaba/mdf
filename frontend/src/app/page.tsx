@@ -1,3 +1,4 @@
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
 import { headers } from "next/headers";
 
 import Hero from "@/components/home/Hero";
@@ -7,19 +8,9 @@ import { getLandingPage } from "@/lib/strapi/landing";
 
 export const dynamic = "force-dynamic";
 
-type Locale = "fr" | "eu";
-
-function getLocaleFromHost(
-  host: string
-): Locale {
-  if (host.includes("mdf-ee.eus")) {
-    return "eu";
-  }
-
-  return "fr";
-}
-
-export default async function HomePage() {
+export default async function HomePage({ searchParams }: {
+  searchParams: Promise<{ lang?: string | string[] }>;
+}) {
   const headersList =
     await headers();
 
@@ -27,7 +18,7 @@ export default async function HomePage() {
     headersList.get("host") ?? "";
 
   const locale =
-    getLocaleFromHost(host);
+    resolveLocale(host, (await searchParams).lang);
 
   const [
     housesResponse,

@@ -4,7 +4,7 @@
   "info": {
     "singularName": "agenda-page",
     "pluralName": "agenda-pages",
-    "displayName": "Agenda Page"
+    "displayName": "Page Agenda"
   },
   "options": {
     "draftAndPublish": true

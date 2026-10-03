@@ -446,7 +446,7 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
 export interface ApiAboutPageAboutPage extends Struct.CollectionTypeSchema {
   collectionName: 'about_pages';
   info: {
-    displayName: 'AboutPage';
+    displayName: 'Qui sommes-nous';
     pluralName: 'about-pages';
     singularName: 'about-page';
   };
@@ -517,7 +517,7 @@ export interface ApiAboutPageAboutPage extends Struct.CollectionTypeSchema {
 export interface ApiActionAction extends Struct.CollectionTypeSchema {
   collectionName: 'actions';
   info: {
-    displayName: 'Action';
+    displayName: 'Actions';
     pluralName: 'actions';
     singularName: 'action';
   };
@@ -589,7 +589,7 @@ export interface ApiActionAction extends Struct.CollectionTypeSchema {
 export interface ApiActionsPageActionsPage extends Struct.SingleTypeSchema {
   collectionName: 'actions_pages';
   info: {
-    displayName: 'Actions Page';
+    displayName: 'Page Actions';
     pluralName: 'actions-pages';
     singularName: 'actions-page';
   };
@@ -639,7 +639,7 @@ export interface ApiActionsPageActionsPage extends Struct.SingleTypeSchema {
 export interface ApiAgendaPageAgendaPage extends Struct.SingleTypeSchema {
   collectionName: 'agenda_pages';
   info: {
-    displayName: 'Agenda Page';
+    displayName: 'Page Agenda';
     pluralName: 'agenda-pages';
     singularName: 'agenda-page';
   };
@@ -696,7 +696,7 @@ export interface ApiAgendaPageAgendaPage extends Struct.SingleTypeSchema {
 export interface ApiEventEvent extends Struct.CollectionTypeSchema {
   collectionName: 'events';
   info: {
-    displayName: 'Event';
+    displayName: '\u00C9v\u00E9nements';
     pluralName: 'events';
     singularName: 'event';
   };
@@ -811,7 +811,7 @@ export interface ApiEventEvent extends Struct.CollectionTypeSchema {
 export interface ApiHouseHouse extends Struct.CollectionTypeSchema {
   collectionName: 'houses';
   info: {
-    displayName: 'House';
+    displayName: 'Maisons';
     pluralName: 'houses';
     singularName: 'house';
   };
@@ -920,7 +920,7 @@ export interface ApiHouseHouse extends Struct.CollectionTypeSchema {
 export interface ApiJoinJoin extends Struct.CollectionTypeSchema {
   collectionName: 'joins';
   info: {
-    displayName: 'Join';
+    displayName: 'Nous soutenir';
     pluralName: 'joins';
     singularName: 'join';
   };
@@ -1013,7 +1013,7 @@ export interface ApiJoinJoin extends Struct.CollectionTypeSchema {
 export interface ApiLandingPageLandingPage extends Struct.SingleTypeSchema {
   collectionName: 'landing_pages';
   info: {
-    displayName: 'Landing page';
+    displayName: 'Page d\u2019accueil';
     pluralName: 'landing-pages';
     singularName: 'landing-page';
   };
@@ -1068,7 +1068,7 @@ export interface ApiLandingPageLandingPage extends Struct.SingleTypeSchema {
 export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
   collectionName: 'partners';
   info: {
-    displayName: 'Partner';
+    displayName: 'Partenaires';
     pluralName: 'partners';
     singularName: 'partner';
   };
@@ -1104,7 +1104,7 @@ export interface ApiPartnerPartner extends Struct.CollectionTypeSchema {
 export interface ApiResourceResource extends Struct.CollectionTypeSchema {
   collectionName: 'resources';
   info: {
-    displayName: 'Resource';
+    displayName: 'Ressources';
     pluralName: 'resources';
     singularName: 'resource';
   };

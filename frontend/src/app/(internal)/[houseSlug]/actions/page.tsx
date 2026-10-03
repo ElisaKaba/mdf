@@ -13,12 +13,13 @@ import {
 } from "@/lib/strapi/actionsPage";
 
 import {
-  getDefaultLocaleFromHost,
+  resolveLocale,
 } from "@/lib/i18n/getDefaultLocale";
 
 import styles from "./page.module.css";
 
 type ActionsPageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -36,6 +37,7 @@ function sortActions(
 
 export default async function ActionsPage({
   params,
+  searchParams,
 }: ActionsPageProps) {
   const { houseSlug } = await params;
 
@@ -50,7 +52,7 @@ export default async function ActionsPage({
   const host = headersList.get("host");
 
   const defaultLocale =
-    getDefaultLocaleFromHost(host);
+    resolveLocale(host, (await searchParams).lang);
 
   const [
     responseFr,
@@ -203,6 +205,7 @@ export default async function ActionsPage({
           }
         >
           <ActionDetail
+            defaultLocale={defaultLocale}
             actionFr={
               featuredActionFr
             }
@@ -253,6 +256,7 @@ export default async function ActionsPage({
 
               return (
                 <ActionDetail
+                  defaultLocale={defaultLocale}
                   key={
                     actionFr.documentId
                   }

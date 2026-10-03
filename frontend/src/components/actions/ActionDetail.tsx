@@ -11,6 +11,7 @@ import styles from "./ActionDetail.module.css";
 
 type ActionDetailProps = {
   actionFr: StrapiAction;
+  defaultLocale?: "fr" | "eu";
   actionEu?: StrapiAction;
 };
 
@@ -43,12 +44,9 @@ function Description({
 export default function ActionDetail({
   actionFr,
   actionEu,
+  defaultLocale = "fr",
 }: ActionDetailProps) {
-  return (
-    <section className={styles.wrapper}>
-      <div className={styles.columns}>
-        {/* FRANÇAIS */}
-        <article className={styles.column}>
+  const frenchContent = (<article className={styles.column}>
           <h2>
             {actionFr.title}
           </h2>
@@ -70,10 +68,8 @@ export default function ActionDetail({
               />
             </div>
           )}
-        </article>
-
-        {/* EUSKARA */}
-        <article className={styles.column}>
+        </article>);
+  const basqueContent = (<article className={styles.column}>
           {actionEu ? (
             <>
               <h2>
@@ -104,7 +100,17 @@ export default function ActionDetail({
               oraindik erabilgarri.
             </p>
           )}
-        </article>
+        </article>);
+
+  return (
+    <section className={styles.wrapper}>
+      <div className={styles.columns}>
+        {defaultLocale === "eu" ? <>{basqueContent}{frenchContent}</> : <>{frenchContent}{basqueContent}</>}
+        {/* FRANÇAIS */}
+
+
+        {/* EUSKARA */}
+
       </div>
     </section>
   );

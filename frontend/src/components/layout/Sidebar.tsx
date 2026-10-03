@@ -1,8 +1,9 @@
 "use client";
 
+import { useSiteLocale } from "@/components/LocaleProvider";
 import { useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { usePathname } from "next/navigation";
 
 import Button from "@/components/ui/Button";
@@ -52,6 +53,15 @@ export default function Sidebar({
   donationUrl,
 }: SidebarProps) {
   const pathname = usePathname();
+  const locale = useSiteLocale();
+  const basqueLabels: Record<string, string> = {
+    "qui-sommes-nous": "Nor gara",
+    actions: "Gure ekintzak",
+    agenda: "Agenda",
+    "nous-soutenir": "Lagundu gaitzazu",
+    partenaires: "Partaideak",
+    contact: "Harremana",
+  };
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -134,7 +144,7 @@ export default function Sidebar({
                     }
                     onClick={closeMenu}
                   >
-                    {link.label}
+                    {locale === "eu" ? basqueLabels[link.href] : link.label}
                   </Link>
                 </li>
               );
@@ -147,7 +157,7 @@ export default function Sidebar({
             href={donationUrl ?? "#"}
             className={styles.donationButton}
           >
-            Faire un don
+            {locale === "eu" ? "Dohaintza egin" : "Faire un don"}
           </Button>
         </div>
       </div>

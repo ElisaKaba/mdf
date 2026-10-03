@@ -4,7 +4,7 @@
   "info": {
     "singularName": "actions-page",
     "pluralName": "actions-pages",
-    "displayName": "Actions Page"
+    "displayName": "Page Actions"
   },
   "options": {
     "draftAndPublish": true

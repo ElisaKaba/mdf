@@ -1,6 +1,15 @@
-export default function MentionsLegalesPage() {
-  return (
-    <section>
+import { headers } from "next/headers";
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
+import legalStyles from "../LegalPages.module.css";
+
+type PageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
+};
+
+export default async function MentionsLegalesPage({ searchParams }: PageProps) {
+  const locale = resolveLocale((await headers()).get("host"), (await searchParams).lang);
+  const frenchContent = (
+<section lang="fr" className={legalStyles.column}>
       <h1>Mentions légales</h1>
 
       <h2>Éditeur du site</h2>
@@ -82,5 +91,53 @@ export default function MentionsLegalesPage() {
         responsable du contenu de ces sites tiers.
       </p>
     </section>
+  );
+  const basqueContent = (
+<section lang="eu" className={legalStyles.column}>
+      <h1> Lege-oharrak </h1>
+
+      <h2> Webgunearen argitaratzailea </h2>
+
+      <p> Webgune hau Iparraldeko Emazteen Etxeak argitaratzen du. </p>
+
+      <p> Helbidea: 100 allée de Oihangaray, 64122 Urrugne </p>
+
+      <p> Harremana: {" "}
+        <a href="mailto:emazteen.etxea@gmail.com"> emazteen.etxea@gmail.com </a>
+      </p>
+
+      <h2> Argitalpenaren arduraduna </h2>
+
+      <p> Argitalpenaren arduraduna Iparraldeko Emazteen Etxea da. </p>
+
+      <h2> Ostatatzea </h2>
+
+      <p> Webgunea DigitalOcean-en ostatatzeko aurreikusita dago. </p>
+
+      <p> DigitalOcean, LLC <br /> 101 Avenue of the Americas <br /> New York, NY 10013 <br /> Ameriketako Estatu Batuak </p>
+
+      <h2> Jabetza intelektuala </h2>
+
+      <p> Webgune honetako edukiak, bereziki testuak, argazkiak, ilustrazioak, elementu grafikoak eta logotipoak, jabetza intelektualari buruzko arauek babesten dituzte. </p>
+
+      <p> Webgune osoa edo haren zati bat erreproduzitzea, jendaurrean aurkeztea, aldatzea edo erabiltzea debekatuta dago aurretiko baimenik gabe, legeak aurreikusitako salbuespenetan izan ezik. </p>
+
+      <h2> Datu pertsonalen babesa </h2>
+
+      <p> Datu pertsonalen bilketari eta tratamenduari buruzko informazioa webgunearen pribatutasun-politikan zehazten da. </p>
+
+      <h2> Erantzukizuna </h2>
+
+      <p> Iparraldeko Emazteen Etxea ahalik eta informazio zehatzena eta eguneratuena ematen ahalegintzen da. Hala ere, ezin du bermatu argitaratutako edukietan akatsik edo hutsunerik ez egotea. </p>
+
+      <p> Kanpoko webguneetarako estekak informatzeko eskaintzen dira. Iparraldeko Emazteen Etxea ez da hirugarrenen webgune horien edukiaren erantzule. </p>
+    </section>
+  );
+  return (
+    <div className={legalStyles.page}>
+      <div className={legalStyles.columns}>
+        {locale === "eu" ? <>{basqueContent}{frenchContent}</> : <>{frenchContent}{basqueContent}</>}
+      </div>
+    </div>
   );
 }

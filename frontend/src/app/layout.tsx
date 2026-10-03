@@ -1,3 +1,6 @@
+import { headers } from "next/headers";
+import LocaleProvider from "@/components/LocaleProvider";
+import { getDefaultLocaleFromHost } from "@/lib/i18n/getDefaultLocale";
 import type { Metadata, Viewport  } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -25,15 +28,16 @@ export const metadata: Metadata = {
   description: "Maison des Femmes — Emazteen Etxea",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = getDefaultLocaleFromHost((await headers()).get("host"));
   return (
-    <html lang="fr">
+    <html lang={locale}>
       <body className={beautifullyDelicious.variable}>
-        {children}
+        <LocaleProvider defaultLocale={locale}>{children}</LocaleProvider>
       </body>
     </html>
   );

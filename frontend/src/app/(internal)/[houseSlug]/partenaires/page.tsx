@@ -9,12 +9,13 @@ import {
 } from "@/lib/strapi/partners";
 
 import {
-  getDefaultLocaleFromHost,
+  resolveLocale,
 } from "@/lib/i18n/getDefaultLocale";
 
 import styles from "./page.module.css";
 
 type PartnersPageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -193,6 +194,7 @@ function PartnerGroup({
 
 export default async function PartnersPage({
   params,
+  searchParams,
 }: PartnersPageProps) {
   const { houseSlug } = await params;
 
@@ -200,7 +202,7 @@ export default async function PartnersPage({
   const host = headersList.get("host");
 
   const defaultLocale =
-    getDefaultLocaleFromHost(host);
+    resolveLocale(host, (await searchParams).lang);
 
   const partnersResponse =
     await getPartners("fr");

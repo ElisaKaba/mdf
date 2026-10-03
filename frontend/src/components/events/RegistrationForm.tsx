@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
 import { useState } from "react";
 
 import styles from "./RegistrationForm.module.css";
@@ -155,6 +155,7 @@ export default function RegistrationForm({
           headers: {
             "Content-Type":
               "application/json",
+            "X-MDF-Locale": locale,
           },
 
           body: JSON.stringify({
@@ -205,8 +206,7 @@ export default function RegistrationForm({
       }
 
       setSuccessMessage(
-        data.message ??
-          t.success
+        t.success
       );
 
       setForm(initialState);

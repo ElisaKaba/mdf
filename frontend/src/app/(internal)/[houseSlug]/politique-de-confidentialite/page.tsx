@@ -1,9 +1,16 @@
+import { headers } from "next/headers";
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
+import legalStyles from "../LegalPages.module.css";
 import styles from "./PolitiqueConfidentialite.module.css";
 
-export default function PolitiqueConfidentialitePage() {
-  return (
-    <main className={styles.page}>
-      <section className={styles.container}>
+type PageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
+};
+
+export default async function PolitiqueConfidentialitePage({ searchParams }: PageProps) {
+  const locale = resolveLocale((await headers()).get("host"), (await searchParams).lang);
+  const frenchContent = (
+<section lang="fr" className={styles.container}>
         <h1>Politique de confidentialité</h1>
 
         <p className={styles.intro}>
@@ -473,6 +480,262 @@ export default function PolitiqueConfidentialitePage() {
           </p>
         </section>
       </section>
-    </main>
+  );
+  const basqueContent = (
+<section lang="eu" className={styles.container}>
+        <h1> Pribatutasun-politika </h1>
+
+        <p className={styles.intro}> Iparraldeko Emazteen Etxeak – Maison des Femmes d’Iparralde-k arreta berezia jartzen du bere webgunea erabiltzen duten pertsonen datu pertsonalak babesteko. </p>
+
+        <p> Politika honek azaltzen du zer datu biltzen diren, zertarako erabiltzen diren, nork eskura ditzakeen, zenbat denboraz gordetzen diren eta zer eskubide dituzun. </p>
+
+        <section>
+          <h2> 1. Tratamenduaren arduraduna </h2>
+
+          <p> Tratamenduaren arduraduna hau da: </p>
+
+          <p>
+            <strong> Iparraldeko Emazteen Etxea – Maison des Femmes d’Iparralde </strong>
+            <br /> 100 allée de Oihangaray <br /> 64122 Urrugne <br /> Frantzia </p>
+
+          <p> Datu pertsonalei buruzko edozein galderatarako edo zure eskubideak baliatzeko: </p>
+
+          <p>
+            <a href="mailto:emazteen.etxea@gmail.com"> emazteen.etxea@gmail.com </a>
+          </p>
+        </section>
+
+        <section>
+          <h2> 2. Bildutako datuak </h2>
+
+          <h3> Jarduera edo ekitaldi batean izena ematea </h3>
+
+          <p> Izena ematean, honako datu hauek bil daitezke: </p>
+
+          <ul>
+            <li> deitura; </li>
+            <li> izena; </li>
+            <li> helbide elektronikoa; </li>
+            <li> telefono zenbakia, ematen denean; </li>
+            <li> izena emandako parte-hartzaile kopurua; </li>
+            <li> dagokion jarduera edo ekitaldia; </li>
+            <li> izen-ematearekin batera bidalitako aukerako mezuaren edukia. </li>
+          </ul>
+
+          <p> Telefono zenbakia eta mezua aukerakoak dira. </p>
+
+          <p> Izen-emateko formularioan ez da datu sentikorrik eskatzen. Erabiltzaileei eskatzen zaie testu libreko eremuan ez bidaltzeko izen-ematea kudeatzeko beharrezkoak ez diren informazio sentikorrak. </p>
+
+          <h3> Harremanetarako formularioa </h3>
+
+          <p> Harremanetarako formularioa erabiltzean, honako datu hauek biltzen dira: </p>
+
+          <ul>
+            <li> deitura; </li>
+            <li> izena; </li>
+            <li> helbide elektronikoa; </li>
+            <li> eskaeraren gaia; </li>
+            <li> mezuaren edukia. </li>
+          </ul>
+
+          <p> Erabiltzaileei eskatzen zaie testu libreko eremuan ez bidaltzeko beren eskaera tratatzeko beharrezkoak ez diren informazio sentikorrak. </p>
+        </section>
+
+        <section>
+          <h2> 3. Tratamenduen helburuak </h2>
+
+          <h3> Izen-emateen kudeaketa </h3>
+
+          <p> Izen-emateko datuak honako hauetarako erabiltzen dira: </p>
+
+          <ul>
+            <li> jarduera edo ekitaldi batean parte-hartzaileak erregistratzeko; </li>
+
+            <li> libre dauden lekuen kopurua kudeatzeko; </li>
+
+            <li> izena emandako pertsonekin harremanetan jartzeko, jarduera ongi gauzatzeko beharrezkoa denean; </li>
+
+            <li> izen-ematearekin batera emandako aukerako informazioa kontuan hartzeko; </li>
+
+            <li> izen-emateen jarraipen administratiboa egiteko. </li>
+          </ul>
+
+          <p> Tratamendu honen lege-oinarria interesdunak eskatutako neurriak gauzatzea da, jardueran izena eman eta parte hartu ahal izateko. </p>
+
+          <h3> Jarduera-balantzeak </h3>
+
+          <p> Izen-emateei buruzko informazioa elkartearen jarduera-balantzeak egiteko eta haren ekintzen bilakaeraren jarraipena egiteko ere erabil daiteke. </p>
+
+          <p> Iparraldeko Emazteen Etxeak bere elkarte-jarduera dokumentatzeko, ebaluatzeko eta haren berri emateko interes legitimoa du. </p>
+
+          <p> Pertsonak identifikatzea beharrezkoa ez denean, datuak anonimizatzen dira. </p>
+
+          <h3> Harremanetarako eskaeren kudeaketa </h3>
+
+          <p> Harremanetarako formularioaren datuak Iparraldeko Emazteen Etxeari zuzendutako eskaerak jasotzeko, bideratzeko eta tratatzeko erabiltzen dira soilik, eta, beharrezkoa denean, erantzuteko. </p>
+
+          <p> Tratamendu honen oinarria elkartearekin harremanetan jartzen diren pertsonei erantzuteko duen interes legitimoa da. </p>
+        </section>
+
+        <section>
+          <h2> 4. Nahitaezko informazioa </h2>
+
+          <p> Nahitaezko gisa adierazitako eremuak beharrezkoak dira izen-ematea edo eskaera tratatzeko. </p>
+
+          <p> Informazio hori eman ezean, ezin izango da izen-ematea edo bidalitako formularioa tratatu. </p>
+        </section>
+
+        <section>
+          <h2> 5. Datuen hartzaileak </h2>
+
+          <p> Datu pertsonalak beren eginkizunak betetzeko behar dituzten pertsonek soilik eskura ditzakete. </p>
+
+          <p> Besteak beste, honako hauek izan dezakete sarbidea: </p>
+
+          <ul>
+            <li> Iparraldeko Emazteen Etxeko langile baimenduek; </li>
+
+            <li> dagokion jarduera edo eskaera kudeatzeko berariazko baimena duten boluntarioek; </li>
+
+            <li> webgunearen mantentze teknikoaz arduratzen den pertsonak, esku-hartze baterako sarbidea ezinbestekoa denean. </li>
+          </ul>
+
+          <p> Sarbide teknikoak eta administratiboak gutxieneko pribilegioaren printzipioaren arabera mugatzen dira. </p>
+        </section>
+
+        <section>
+          <h2> 6. Zerbitzu teknikoen hornitzaileak </h2>
+
+          <p> Webguneak bere funtzionamendurako beharrezkoak diren hainbat zerbitzu teknikoen hornitzaile erabiltzen ditu edo erabil ditzake. </p>
+
+          <h3> DigitalOcean </h3>
+
+          <p> DigitalOcean webgunearen aplikazioak, datu-basea eta multimedia-fitxategiak ostatatzeko erabiltzen da. Produkzioko baliabideak Europar Batasunean kokatutako eskualde batean konfiguratuta daude. </p>
+
+          <h3> Supabase </h3>
+
+          <p> Supabase aldi baterako erabil daiteke formularioetatik datozen datu batzuk teknikoki gordetzeko, produkzioko azpiegiturara igarotzeko fasean. </p>
+
+          <h3> Google – Gmail </h3>
+
+          <p> Elkarteak Gmail erabiltzen du honako helbide honetara bidalitako mezu elektronikoak jasotzeko eta tratatzeko: {" "}
+            <a href="mailto:emazteen.etxea@gmail.com"> emazteen.etxea@gmail.com </a> . </p>
+
+          <h3> OVHcloud </h3>
+
+          <p> OVHcloud, bereziki, elkartearen domeinu-izenak eta domeinu horiei lotutako posta elektronikoaren zerbitzuak kudeatzeko erabiltzen da. </p>
+        </section>
+
+        <section>
+          <h2> 7. Datuen transferentziak Europar Batasunetik kanpo </h2>
+
+          <p> Elkarteak erabiltzen dituen hornitzaile batzuk Europar Batasunetik kanpo egon daitezke, edo Europako Esparru Ekonomikotik kanpo dauden azpikontratistak erabil ditzakete. </p>
+
+          <p> Datu pertsonalen nazioarteko transferentziak egiten direnean, aplikatzekoa den araudiaren arabera arautzen dira. </p>
+
+          <p> Ahal denean, elkarteak datuen biltegiratze nagusia Europar Batasunean kokatutako eskualde batean egitea lehenesten du. </p>
+        </section>
+
+        <section>
+          <h2> 8. Gordetzeko epeak </h2>
+
+          <h3> Jardueretarako izen-emateak </h3>
+
+          <p> Izen-emateei lotutako datu nominalak gehienez honako epe honetan gordetzen dira: {" "}
+            <strong> bi urte </strong> , dagokion ekitaldia edo jarduera egiten denetik zenbatuta. </p>
+
+          <p> Epe horrek elkarteari aukera ematen dio bere jardueren jarraipena egiteko eta balantzeak prestatzeko. </p>
+
+          <p> Epe hori amaitzean, pertsonak zuzenean identifikatzeko aukera ematen duen informazioa ezabatu edo anonimizatu egiten da. </p>
+
+          <p> Benetan anonimizatutako estatistikak denbora luzeagoz gorde daitezke. </p>
+
+          <h3> Harremanetarako eskaerak </h3>
+
+          <p> Harremanetarako formularioaren informazioa gehienez honako epe honetan gordetzen da: {" "}
+            <strong> urte bat </strong> , interesdunarekin izandako azken komunikaziotik zenbatuta. </p>
+        </section>
+
+        <section>
+          <h2> 9. Segurtasuna </h2>
+
+          <p> Iparraldeko Emazteen Etxeak datu pertsonalak babesteko neurri teknikoak eta antolakuntzakoak ezartzen ditu. </p>
+
+          <p> Neurri horien artean daude, besteak beste: </p>
+
+          <ul>
+            <li> HTTPS konexioak erabiltzea; </li>
+            <li> administrazio-tresnetarako sarbide indibidualak; </li>
+            <li> sarbide-eskubideak eginkizunen arabera mugatzea; </li>
+            <li> administratzaile-kontuak ez partekatzea; </li>
+            <li> pasahitz sendoak erabiltzea; </li>
+            <li> bi faktoreko autentifikazioa aktibatzea, erabilgarri dagoenean; </li>
+            <li> aldizkako babeskopiak egitea; </li>
+            <li> erabiltzen diren programen mantentzea eta segurtasun-eguneraketak egitea. </li>
+          </ul>
+        </section>
+
+        <section>
+          <h2> 10. Cookieak eta jarraipen-tresnak </h2>
+
+          <p> Webguneak gaur egun ez du publizitate-tresnarik, jarraipen-pixelik edo erabiltzaileen baimena behar duen audientzia neurtzeko tresnarik erabiltzen. </p>
+
+          <p> Webgunearen funtzionamendurako edo erabiltzaileak egindako hautu bat gogoratzeko beharrezkoak diren elementu teknikoak soilik erabil ditzake, adibidez hizkuntza-hautua gordetzeko. </p>
+
+          <p> Elementu horiek ez dira publizitaterako edo profilak egiteko erabiltzen. </p>
+
+          <p> Ondorioz, webgunearen egungo konfigurazioan ez da beharrezkoa cookieak onartzeko baimen-banderolarik. </p>
+        </section>
+
+        <section>
+          <h2> 11. Zure eskubideak </h2>
+
+          <p> Interesdun orok honako eskubide hauek ditu, araudiak ezarritako baldintzetan: </p>
+
+          <ul>
+            <li> bere datuak eskuratzeko eskubidea; </li>
+            <li> datuak zuzentzeko eskubidea; </li>
+            <li> datuak ezabatzeko eskubidea; </li>
+            <li> tratamendua mugatzeko eskubidea; </li>
+            <li> interes legitimoan oinarritutako tratamenduei aurka egiteko eskubidea; </li>
+            <li> datuen eramangarritasunerako eskubidea, Datuak Babesteko Erregelamendu Orokorrak (DBEO) ezarritako baldintzak betetzen direnean. </li>
+          </ul>
+
+          <p> Eskubide horiek baliatzeko: </p>
+
+          <p>
+            <a href="mailto:emazteen.etxea@gmail.com"> emazteen.etxea@gmail.com </a>
+          </p>
+
+          <p> Iparraldeko Emazteen Etxeak ahalik eta lasterren erantzuten die eskaerei, eta gehienez hilabeteko epean, jasotzen dituenetik zenbatuta. </p>
+
+          <p> Pertsona orok eskubidea du, halaber, erreklamazio bat aurkezteko Informatikaren eta Askatasunen Batzorde Nazionalean (CNIL). </p>
+        </section>
+
+        <section>
+          <h2> 12. Datuak ez saltzea eta merkataritza-prospekziorik ez egitea </h2>
+
+          <p> Webgunean bildutako datuak ez zaizkie hirugarrenei saltzen edo alokatzen. </p>
+
+          <p> Ez dira merkataritza-prospekziorako edo publizitaterako erabiltzen. </p>
+        </section>
+
+        <section>
+          <h2> 13. Eguneratzea </h2>
+
+          <p> Politika hau eguneratzen da webguneak erabiltzen dituen datu-tratamenduak, arkitektura teknikoa edo hornitzaileak aldatzen direnean. </p>
+
+          <p>
+            <strong> Azken eguneratzea: 2026ko iraila. </strong>
+          </p>
+        </section>
+      </section>
+  );
+  return (
+    <div className={legalStyles.page}>
+      <div className={legalStyles.columns}>
+        {locale === "eu" ? <>{basqueContent}{frenchContent}</> : <>{frenchContent}{basqueContent}</>}
+      </div>
+    </div>
   );
 }

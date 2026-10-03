@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { localizeFormResponse } from "@/lib/i18n/formResponse";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/lib/supabase/server";
@@ -83,6 +84,9 @@ function getSubjectLabel(
 }
 
 export async function POST(request: Request) {
+  const locale = request.headers.get("x-mdf-locale") === "eu" ? "eu" : "fr";
+  const respond = (body: Parameters<typeof localizeFormResponse>[0], init?: ResponseInit) =>
+    NextResponse.json(localizeFormResponse(body, locale), init);
   try {
     const body = await request.json();
 
@@ -108,7 +112,7 @@ export async function POST(request: Request) {
         }
       }
 
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "validation",
@@ -161,7 +165,7 @@ export async function POST(request: Request) {
         error
       );
 
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "server",
@@ -174,7 +178,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(
+    return respond(
       {
         success: true,
         message:
@@ -190,7 +194,7 @@ export async function POST(request: Request) {
       error
     );
 
-    return NextResponse.json(
+    return respond(
       {
         success: false,
         type: "server",

@@ -7,6 +7,7 @@ import styles from "./ResourceDetail.module.css";
 
 type ResourceDetailProps = {
   resourceFr: StrapiResource;
+  defaultLocale?: "fr" | "eu";
   resourceEu?: StrapiResource;
 };
 
@@ -31,30 +32,13 @@ function getMediaUrl(path?: string) {
 export default function ResourceDetail({
   resourceFr,
   resourceEu,
+  defaultLocale = "fr",
 }: ResourceDetailProps) {
   const imageUrl = getMediaUrl(
     resourceFr.image?.url
   );
 
-  return (
-    <section className={styles.wrapper}>
-      {imageUrl && (
-        <div className={styles.imageWrapper}>
-          <Image
-            src={imageUrl}
-            alt={
-              resourceFr.image?.alternativeText?.trim() ||
-              resourceFr.title
-            }
-            width={1200}
-            height={600}
-            className={styles.image}
-          />
-        </div>
-      )}
-
-      <div className={styles.columns}>
-        <article className={styles.column}>
+  const frenchContent = (<article className={styles.column}>
       
 
           <h1>{resourceFr.title}</h1>
@@ -83,9 +67,8 @@ export default function ResourceDetail({
               Consulter la ressource
             </a>
           )}
-        </article>
-
-        <article className={styles.column}>
+        </article>);
+  const basqueContent = (<article className={styles.column}>
 
           {resourceEu ? (
             <>
@@ -121,7 +104,30 @@ export default function ResourceDetail({
               Euskarazko edukia ez dago oraindik erabilgarri.
             </p>
           )}
-        </article>
+        </article>);
+
+  return (
+    <section className={styles.wrapper}>
+      {imageUrl && (
+        <div className={styles.imageWrapper}>
+          <Image
+            src={imageUrl}
+            alt={
+              resourceFr.image?.alternativeText?.trim() ||
+              resourceFr.title
+            }
+            width={1200}
+            height={600}
+            className={styles.image}
+          />
+        </div>
+      )}
+
+      <div className={styles.columns}>
+        {defaultLocale === "eu" ? <>{basqueContent}{frenchContent}</> : <>{frenchContent}{basqueContent}</>}
+
+
+
       </div>
     </section>
   );

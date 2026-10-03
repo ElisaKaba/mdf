@@ -11,12 +11,13 @@ import {
 } from "@/lib/strapi/about";
 
 import {
-  getDefaultLocaleFromHost,
+  resolveLocale,
 } from "@/lib/i18n/getDefaultLocale";
 
 import styles from "./page.module.css";
 
 type AboutPageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -66,6 +67,7 @@ function AboutContent({
 
 export default async function AboutPage({
   params,
+  searchParams,
 }: AboutPageProps) {
   const { houseSlug } = await params;
 
@@ -73,7 +75,7 @@ export default async function AboutPage({
   const host = headersList.get("host");
 
   const defaultLocale =
-    getDefaultLocaleFromHost(host);
+    resolveLocale(host, (await searchParams).lang);
 
   const [
     responseFr,

@@ -33,6 +33,7 @@ export default async function ContactPage({
 
   return (
     <ContactForm
+      key={defaultLocale}
       houseSlug={houseSlug}
       defaultLocale={defaultLocale}
     />

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { localizeFormResponse } from "@/lib/i18n/formResponse";
 import { z } from "zod";
 
 import { supabaseAdmin } from "@/lib/supabase/server";
@@ -54,6 +55,9 @@ const registrationSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const locale = request.headers.get("x-mdf-locale") === "eu" ? "eu" : "fr";
+  const respond = (body: Parameters<typeof localizeFormResponse>[0], init?: ResponseInit) =>
+    NextResponse.json(localizeFormResponse(body, locale), init);
   try {
     const body = await request.json();
 
@@ -73,7 +77,7 @@ export async function POST(request: Request) {
         }
       }
 
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "validation",
@@ -99,7 +103,7 @@ export async function POST(request: Request) {
      * récupération directe d'un document grâce à son documentId.
      */
     const eventUrl =
-      `${strapiUrl}/api/events/${registration.eventId}?populate=house`;
+      `${strapiUrl}/api/events/${registration.eventId}?populate=house&locale=${locale}`;
 
     console.log(
       "STRAPI EVENT REQUEST :",
@@ -124,7 +128,7 @@ export async function POST(request: Request) {
         errorText
       );
 
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "server",
@@ -144,7 +148,7 @@ export async function POST(request: Request) {
       eventData.data;
 
     if (!strapiEvent) {
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "not_found",
@@ -164,7 +168,7 @@ export async function POST(request: Request) {
       strapiEvent.house?.slug !==
       registration.houseSlug
     ) {
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "invalid_house",
@@ -188,7 +192,7 @@ export async function POST(request: Request) {
       const now = new Date();
 
       if (now > deadline) {
-        return NextResponse.json(
+        return respond(
           {
             success: false,
             type: "registration_closed",
@@ -230,7 +234,7 @@ export async function POST(request: Request) {
           countError
         );
 
-        return NextResponse.json(
+        return respond(
           {
             success: false,
             type: "server",
@@ -257,7 +261,7 @@ export async function POST(request: Request) {
         registration.participants >
         remainingPlaces
       ) {
-        return NextResponse.json(
+        return respond(
           {
             success: false,
             type: "capacity",
@@ -325,7 +329,7 @@ export async function POST(request: Request) {
       );
 
       if (error.code === "23505") {
-        return NextResponse.json(
+        return respond(
           {
             success: false,
             type: "validation",
@@ -340,7 +344,7 @@ export async function POST(request: Request) {
         );
       }
 
-      return NextResponse.json(
+      return respond(
         {
           success: false,
           type: "server",
@@ -353,7 +357,7 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json(
+    return respond(
       {
         success: true,
         message:
@@ -369,7 +373,7 @@ export async function POST(request: Request) {
       error
     );
 
-    return NextResponse.json(
+    return respond(
       {
         success: false,
         type: "server",

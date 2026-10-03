@@ -1,4 +1,6 @@
-import Link from "next/link";
+import { headers } from "next/headers";
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
+import Link from "@/components/LocaleLink";
 import { notFound } from "next/navigation";
 
 import RegistrationForm from "@/components/events/RegistrationForm";
@@ -94,9 +96,7 @@ export default async function EventDetailPage({
     await searchParams;
 
   const locale: Locale =
-    lang === "eu"
-      ? "eu"
-      : "fr";
+    resolveLocale((await headers()).get("host"), lang);
 
   const response =
     await getEvents(locale);

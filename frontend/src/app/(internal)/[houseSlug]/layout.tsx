@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import Link from "next/link";
+import LegalFooterLinks from "@/components/layout/LegalFooterLinks";
 import Sidebar from "@/components/layout/Sidebar";
 import { getHouses } from "@/lib/strapi/houses";
 
@@ -90,27 +90,7 @@ export default async function HouseLayout({
     )}
   </div>
 
-  <nav aria-label="Navigation du pied de page">
-    <Link href={`/${houseSlug}/mentions-legales`}>
-      Mentions légales
-    </Link>
-
-    {" · "}
-
-    <Link
-      href={`/${houseSlug}/politique-de-confidentialite`}
-    >
-      Politique de confidentialité
-    </Link>
-
-    {" · "}
-
-    <Link
-      href={`/${houseSlug}/contact`}
-    >
-      Contact
-    </Link>
-  </nav>
+  <LegalFooterLinks houseSlug={houseSlug} />
 </footer>
     </div>
   );

@@ -13,10 +13,11 @@ import {
 } from "@/lib/strapi/houses";
 
 import {
-  getDefaultLocaleFromHost,
+  resolveLocale,
 } from "@/lib/i18n/getDefaultLocale";
 
 type SupportPageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -24,6 +25,7 @@ type SupportPageProps = {
 
 export default async function SupportPage({
   params,
+  searchParams,
 }: SupportPageProps) {
   const { houseSlug } = await params;
 
@@ -31,7 +33,7 @@ export default async function SupportPage({
   const host = headersList.get("host");
 
   const defaultLocale =
-    getDefaultLocaleFromHost(host);
+    resolveLocale(host, (await searchParams).lang);
 
 const [
   responseFr,

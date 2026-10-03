@@ -4,7 +4,7 @@
   "info": {
     "singularName": "resource",
     "pluralName": "resources",
-    "displayName": "Resource"
+    "displayName": "Ressources"
   },
   "options": {
     "draftAndPublish": true

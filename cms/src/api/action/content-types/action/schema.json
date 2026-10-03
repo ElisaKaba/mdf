@@ -4,7 +4,7 @@
   "info": {
     "singularName": "action",
     "pluralName": "actions",
-    "displayName": "Action"
+    "displayName": "Actions"
   },
   "options": {
     "draftAndPublish": true

@@ -1,3 +1,5 @@
+import { headers } from "next/headers";
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
 import ResourceDetail from "@/components/resources/ResourceDetail";
 import {
   getResources,
@@ -5,6 +7,7 @@ import {
 } from "@/lib/strapi/resources";
 
 type ResourcesPageProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -12,8 +15,10 @@ type ResourcesPageProps = {
 
 export default async function ResourcesPage({
   params,
+  searchParams,
 }: ResourcesPageProps) {
   const { houseSlug } = await params;
+  const defaultLocale = resolveLocale((await headers()).get("host"), (await searchParams).lang);
 
   const [responseFr, responseEu] = await Promise.all([
     getResources("fr"),
@@ -56,6 +61,7 @@ export default async function ResourcesPage({
 
         return (
           <ResourceDetail
+            defaultLocale={defaultLocale}
             key={resourceFr.documentId}
             resourceFr={resourceFr}
             resourceEu={resourceEu}

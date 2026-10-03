@@ -4,7 +4,7 @@
   "info": {
     "singularName": "about-page",
     "pluralName": "about-pages",
-    "displayName": "AboutPage"
+    "displayName": "Qui sommes-nous"
   },
   "options": {
     "draftAndPublish": true

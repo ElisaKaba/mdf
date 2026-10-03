@@ -1,6 +1,6 @@
 import AgendaPage from "@/components/events/AgendaPage";
 import { headers } from "next/headers";
-import { getDefaultLocaleFromHost } from "@/lib/i18n/getDefaultLocale";
+import { resolveLocale } from "@/lib/i18n/getDefaultLocale";
 import { getEvents } from "@/lib/strapi/events";
 import { getAgendaPage } from "@/lib/strapi/agendaPage";
 import { mapStrapiEvent } from "@/lib/strapi/mapEvent";
@@ -8,6 +8,7 @@ import { mapStrapiEvent } from "@/lib/strapi/mapEvent";
 import type { Event } from "@/types/event";
 
 type AgendaRouteProps = {
+  searchParams: Promise<{ lang?: string | string[] }>;
   params: Promise<{
     houseSlug: string;
   }>;
@@ -29,13 +30,14 @@ function sortEventsByDate(events: Event[]) {
 
 export default async function AgendaRoute({
   params,
+  searchParams,
 }: AgendaRouteProps) {
   const { houseSlug } = await params;
   const headersList = await headers();
 const host = headersList.get("host");
 
 const defaultLocale =
-  getDefaultLocaleFromHost(host);
+  resolveLocale(host, (await searchParams).lang);
 
   const [
     responseFr,
@@ -69,6 +71,7 @@ const defaultLocale =
 
   return (
    <AgendaPage
+  key={defaultLocale}
   eventsFr={eventsFr}
   eventsEu={eventsEu}
   agendaPageFr={agendaPageFrResponse.data}

@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/LocaleLink";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import styles from "./ContactForm.module.css";
@@ -165,6 +166,9 @@ export default function ContactForm({
   houseSlug,
   defaultLocale,
 }: ContactFormProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [locale, setLocale] =
     useState<Locale>(defaultLocale);
 
@@ -291,6 +295,7 @@ export default function ContactForm({
           headers: {
             "Content-Type":
               "application/json",
+            "X-MDF-Locale": locale,
           },
 
           body: JSON.stringify({
@@ -355,12 +360,11 @@ export default function ContactForm({
             styles.languageButton
           }
           onClick={() => {
-            setLocale(
-              (current) =>
-                current === "fr"
-                  ? "eu"
-                  : "fr"
-            );
+            const nextLocale = locale === "fr" ? "eu" : "fr";
+            setLocale(nextLocale);
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("lang", nextLocale);
+            router.replace(`${pathname}?${params.toString()}`, { scroll: false });
 
             setFieldErrors({});
             setGlobalError("");
