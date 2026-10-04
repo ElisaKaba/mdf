@@ -45,10 +45,7 @@ export async function GET(request: Request) {
     );
   }
 
-  const {
-    data,
-    error,
-  } = await supabaseAdmin
+  const { data, error } = await supabaseAdmin
     .from("event_registrations")
     .select(`
       id,
@@ -83,10 +80,6 @@ export async function GET(request: Request) {
   const registrations =
     (data ?? []) as Registration[];
 
-  /*
-   * Aucun nouvel inscrit :
-   * aucun email envoyé.
-   */
   if (registrations.length === 0) {
     return NextResponse.json({
       ok: true,
@@ -95,9 +88,6 @@ export async function GET(request: Request) {
     });
   }
 
-  /*
-   * Regroupement par activité.
-   */
   const grouped =
     registrations.reduce<
       Record<string, Registration[]>
@@ -336,10 +326,6 @@ export async function GET(request: Request) {
       body
     );
 
-    /*
-     * IMPORTANT :
-     * on ne marque rien comme envoyé.
-     */
     return NextResponse.json(
       {
         error:
@@ -349,11 +335,6 @@ export async function GET(request: Request) {
     );
   }
 
-  /*
-   * L'email est parti :
-   * seulement maintenant on marque
-   * les inscriptions comme traitées.
-   */
   const ids =
     registrations.map(
       (registration) =>
