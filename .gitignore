@@ -51,3 +51,8 @@ cms/node_modules/
 cms/.cache/
 cms/build/
 cms/dist/
+
+cms/backups-cache-strapi/
+
+cms/sauvegardes-techniques/
+cms/sauvegardes-locales/
