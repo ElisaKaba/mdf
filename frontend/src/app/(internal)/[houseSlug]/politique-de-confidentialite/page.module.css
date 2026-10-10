@@ -1,0 +1,97 @@
+.page {
+  width: 100%;
+  min-height: 100%;
+  padding: 3rem 2rem 4rem;
+  background: #f7f3f0;
+}
+
+.container {
+  width: min(100%, 900px);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(143, 90, 83, 0.25);
+}
+
+.title {
+  margin: 0;
+  color: #8f5a53;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.updated {
+  margin: 1rem 0 0;
+  color: #6f625f;
+  font-size: 0.95rem;
+}
+
+.content {
+  color: #2f2927;
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.content h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  color: #8f5a53;
+  font-size: 1.6rem;
+  line-height: 1.25;
+}
+
+.content h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #8f5a53;
+  font-size: 1.25rem;
+}
+
+.content p {
+  margin: 0 0 1rem;
+}
+
+.content ul,
+.content ol {
+  margin: 1rem 0 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.content li {
+  margin-bottom: 0.5rem;
+}
+
+.content a {
+  color: #8f5a53;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.content strong {
+  color: #3a302e;
+}
+
+.empty {
+  color: #6f625f;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 2rem 1.25rem 3rem;
+  }
+
+  .header {
+    margin-bottom: 2rem;
+  }
+
+  .content {
+    font-size: 0.97rem;
+    line-height: 1.7;
+  }
+}
