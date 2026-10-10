@@ -2,54 +2,95 @@ import { NextResponse } from "next/server";
 import { localizeFormResponse } from "@/lib/i18n/formResponse";
 import { z } from "zod";
 
-import { supabaseAdmin } from "@/lib/supabase/server";
+import { appDb } from "@/lib/db/appDb";
 
 const registrationSchema = z.object({
   eventId: z
     .string()
-    .min(1, "L’événement est introuvable."),
+    .min(
+      1,
+      "L’événement est introuvable."
+    ),
 
   eventTitle: z
     .string()
-    .min(1, "Le titre de l’événement est manquant."),
+    .min(
+      1,
+      "Le titre de l’événement est manquant."
+    ),
 
   houseSlug: z
     .string()
-    .min(1, "La Maison des Femmes est introuvable."),
+    .min(
+      1,
+      "La Maison des Femmes est introuvable."
+    ),
 
   firstName: z
     .string()
     .trim()
-    .min(2, "Le prénom doit contenir au moins 2 caractères.")
-    .max(80, "Le prénom est trop long."),
+    .min(
+      2,
+      "Le prénom doit contenir au moins 2 caractères."
+    )
+    .max(
+      80,
+      "Le prénom est trop long."
+    ),
 
   lastName: z
     .string()
     .trim()
-    .min(2, "Le nom doit contenir au moins 2 caractères.")
-    .max(80, "Le nom est trop long."),
+    .min(
+      2,
+      "Le nom doit contenir au moins 2 caractères."
+    )
+    .max(
+      80,
+      "Le nom est trop long."
+    ),
 
   email: z
     .string()
     .trim()
-    .min(1, "L’adresse e-mail est obligatoire.")
-    .email("Saisissez une adresse e-mail valide."),
+    .min(
+      1,
+      "L’adresse e-mail est obligatoire."
+    )
+    .email(
+      "Saisissez une adresse e-mail valide."
+    ),
 
   phone: z
     .string()
     .trim()
-    .max(30, "Le numéro de téléphone est trop long.")
+    .max(
+      30,
+      "Le numéro de téléphone est trop long."
+    )
     .optional(),
 
   participants: z
     .number()
-    .int("Le nombre de participantes doit être un nombre entier.")
-    .min(1, "Il faut au moins 1 participante."),
+    .int(
+      "Le nombre de participantes doit être un nombre entier."
+    )
+    .min(
+      1,
+      "Il faut au moins 1 participante."
+    ),
 
   message: z
     .string()
     .trim()
-    .max(1000, "Le message ne peut pas dépasser 1000 caractères.")
+    .max(
+      1000,
+      "Le message ne peut pas dépasser 1000 caractères."
+    )
+    .optional(),
+
+  consent: z
+    .boolean()
     .optional(),
 });
 
@@ -74,7 +115,11 @@ function formatEventDate(
 
   const date = new Date(value);
 
-  if (Number.isNaN(date.getTime())) {
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
     return null;
   }
 
@@ -161,11 +206,6 @@ export async function POST(
     const registration =
       result.data;
 
-    /*
-     * URL Strapi
-     * Suppression du slash final
-     * pour éviter //api/...
-     */
     const strapiUrl =
       (
         process.env
@@ -173,10 +213,6 @@ export async function POST(
         "http://localhost:1337"
       ).replace(/\/+$/, "");
 
-    /*
-     * Récupération de l'événement
-     * depuis Strapi.
-     */
     const eventUrl =
       `${strapiUrl}/api/events/` +
       `${registration.eventId}` +
@@ -195,7 +231,9 @@ export async function POST(
         }
       );
 
-    if (!eventResponse.ok) {
+    if (
+      !eventResponse.ok
+    ) {
       const errorText =
         await eventResponse.text();
 
@@ -239,9 +277,6 @@ export async function POST(
       );
     }
 
-    /*
-     * Vérification maison
-     */
     if (
       strapiEvent.house?.slug !==
       registration.houseSlug
@@ -259,9 +294,6 @@ export async function POST(
       );
     }
 
-    /*
-     * Vérification date limite
-     */
     if (
       strapiEvent
         .registrationDeadline
@@ -272,10 +304,10 @@ export async function POST(
             .registrationDeadline
         );
 
-      const now =
-        new Date();
-
-      if (now > deadline) {
+      if (
+        new Date() >
+        deadline
+      ) {
         return respond(
           {
             success: false,
@@ -291,68 +323,38 @@ export async function POST(
       }
     }
 
-    /*
-     * Vérification capacité
-     */
     const capacity:
       | number
       | undefined =
       strapiEvent.capacity;
 
     if (capacity) {
-      const {
-        data:
-          existingRegistrations,
-        error: countError,
-      } = await supabaseAdmin
-        .from(
-          "event_registrations"
-        )
-        .select("participants")
-        .eq(
-          "event_id",
-          registration.eventId
-        )
-        .in(
-          "status",
+      const countResult =
+        await appDb.query(
+          `
+          select
+            coalesce(
+              sum(participants),
+              0
+            )::integer
+              as registered
+          from event_registrations
+          where event_id = $1
+          and status in (
+            'pending',
+            'confirmed'
+          )
+          `,
           [
-            "pending",
-            "confirmed",
+            registration.eventId,
           ]
         );
 
-      if (countError) {
-        console.error(
-          "SUPABASE COUNT ERROR:",
-          countError
-        );
-
-        return respond(
-          {
-            success: false,
-            type: "server",
-            message:
-              "Impossible de vérifier les places disponibles pour le moment.",
-          },
-          {
-            status: 500,
-          }
-        );
-      }
-
       const registeredParticipants =
-        existingRegistrations?.reduce(
-          (
-            total,
-            item
-          ) =>
-            total +
-            (
-              item.participants ??
-              0
-            ),
-          0
-        ) ?? 0;
+        Number(
+          countResult.rows[0]
+            ?.registered ?? 0
+        );
 
       const remainingPlaces =
         capacity -
@@ -370,13 +372,11 @@ export async function POST(
               remainingPlaces <= 0
                 ? "Cette activité est complète."
                 : `Il ne reste que ${remainingPlaces} place${
-                    remainingPlaces >
-                    1
+                    remainingPlaces > 1
                       ? "s"
                       : ""
                   } disponible${
-                    remainingPlaces >
-                    1
+                    remainingPlaces > 1
                       ? "s"
                       : ""
                   }.`,
@@ -388,56 +388,67 @@ export async function POST(
       }
     }
 
-    /*
-     * Enregistrement Supabase
-     */
-    const { error } =
-      await supabaseAdmin
-        .from(
-          "event_registrations"
+    try {
+      await appDb.query(
+        `
+        insert into
+          event_registrations (
+            house_slug,
+            event_id,
+            event_title,
+            first_name,
+            last_name,
+            email,
+            phone,
+            participants,
+            message,
+            consent,
+            status
+          )
+        values (
+          $1,
+          $2,
+          $3,
+          $4,
+          $5,
+          $6,
+          $7,
+          $8,
+          $9,
+          $10,
+          'pending'
         )
-        .insert({
-          house_slug:
-            registration.houseSlug,
-
-          event_id:
-            registration.eventId,
-
-          event_title:
-            strapiEvent.title,
-
-          first_name:
-            registration.firstName,
-
-          last_name:
-            registration.lastName,
-
-          email:
-            registration.email,
-
-          phone:
-            registration.phone ??
+        `,
+        [
+          registration.houseSlug,
+          registration.eventId,
+          strapiEvent.title,
+          registration.firstName,
+          registration.lastName,
+          registration.email,
+          registration.phone ??
             null,
-
-          participants:
-            registration.participants,
-
-          message:
-            registration.message ??
+          registration.participants,
+          registration.message ??
             null,
+          registration.consent ??
+            false,
+        ]
+      );
+    } catch (error: unknown) {
+      const pgError =
+        error as {
+          code?: string;
+        };
 
-          status:
-            "pending",
-        });
-
-    if (error) {
       console.error(
-        "SUPABASE ERROR:",
+        "POSTGRES REGISTRATION ERROR:",
         error
       );
 
       if (
-        error.code === "23505"
+        pgError.code ===
+        "23505"
       ) {
         return respond(
           {
@@ -468,13 +479,11 @@ export async function POST(
     }
 
     /*
-     * Mail de confirmation Brevo
-     *
-     * Une erreur Brevo ne supprime
-     * jamais l'inscription.
+     * Confirmation Brevo
      */
     if (
-      process.env.BREVO_API_KEY &&
+      process.env
+        .BREVO_API_KEY &&
       process.env
         .BREVO_SENDER_EMAIL
     ) {
@@ -510,164 +519,128 @@ export async function POST(
       const confirmationHtml =
         locale === "eu"
           ? `
-          <!DOCTYPE html>
-          <html lang="eu">
-            <body
-              style="
-                font-family:Arial,sans-serif;
-                color:#333;
-                max-width:700px;
-                margin:auto;
-              "
-            >
-              <h1
-                style="
-                  color:#8F5A53;
-                "
-              >
-                Zure izen-ematea jaso dugu
-              </h1>
+            <h1 style="color:#8F5A53;">
+              Zure izen-ematea jaso dugu
+            </h1>
 
-              <p>
-                Kaixo ${safeFirstName},
-              </p>
+            <p>
+              Kaixo ${safeFirstName},
+            </p>
 
-              <p>
-                Zure izen-ematea behar bezala
-                jaso dugu honako jarduerarako:
-              </p>
+            <p>
+              Zure izen-ematea
+              behar bezala jaso dugu:
+            </p>
 
-              <p>
-                <strong>
-                  ${safeEventTitle}
-                </strong>
-              </p>
+            <p>
+              <strong>
+                ${safeEventTitle}
+              </strong>
+            </p>
 
-              ${
-                eventDate
-                  ? `
-                    <p>
-                      <strong>Data:</strong>
-                      ${escapeHtml(
-                        eventDate
-                      )}
-                    </p>
-                  `
-                  : ""
-              }
+            ${
+              eventDate
+                ? `
+                  <p>
+                    <strong>
+                      Data:
+                    </strong>
+                    ${escapeHtml(
+                      eventDate
+                    )}
+                  </p>
+                `
+                : ""
+            }
 
-              ${
-                safeLocation
-                  ? `
-                    <p>
-                      <strong>Lekua:</strong>
-                      ${safeLocation}
-                    </p>
-                  `
-                  : ""
-              }
+            ${
+              safeLocation
+                ? `
+                  <p>
+                    <strong>
+                      Lekua:
+                    </strong>
+                    ${safeLocation}
+                  </p>
+                `
+                : ""
+            }
 
-              <p>
-                <strong>
-                  Parte-hartzaile kopurua:
-                </strong>
-                ${registration.participants}
-              </p>
+            <p>
+              <strong>
+                Parte-hartzaile kopurua:
+              </strong>
+              ${registration.participants}
+            </p>
 
-              <p>
-                Zure izen-ematea une honetan
-                zain dago eta Emazteen Etxeko
-                taldeak kudeatuko du.
-              </p>
-
-              <p>
-                Laster arte,<br />
-                Maison des Femmes —
-                Emazteen Etxea
-              </p>
-            </body>
-          </html>
-        `
+            <p>
+              Laster arte,<br />
+              Maison des Femmes —
+              Emazteen Etxea
+            </p>
+          `
           : `
-          <!DOCTYPE html>
-          <html lang="fr">
-            <body
-              style="
-                font-family:Arial,sans-serif;
-                color:#333;
-                max-width:700px;
-                margin:auto;
-              "
-            >
-              <h1
-                style="
-                  color:#8F5A53;
-                "
-              >
-                Votre inscription a bien été enregistrée
-              </h1>
+            <h1 style="color:#8F5A53;">
+              Votre inscription
+              a bien été enregistrée
+            </h1>
 
-              <p>
-                Bonjour ${safeFirstName},
-              </p>
+            <p>
+              Bonjour ${safeFirstName},
+            </p>
 
-              <p>
-                Nous avons bien reçu votre
-                inscription à l’activité :
-              </p>
+            <p>
+              Nous avons bien reçu
+              votre inscription à :
+            </p>
 
-              <p>
-                <strong>
-                  ${safeEventTitle}
-                </strong>
-              </p>
+            <p>
+              <strong>
+                ${safeEventTitle}
+              </strong>
+            </p>
 
-              ${
-                eventDate
-                  ? `
-                    <p>
-                      <strong>Date :</strong>
-                      ${escapeHtml(
-                        eventDate
-                      )}
-                    </p>
-                  `
-                  : ""
-              }
+            ${
+              eventDate
+                ? `
+                  <p>
+                    <strong>
+                      Date :
+                    </strong>
+                    ${escapeHtml(
+                      eventDate
+                    )}
+                  </p>
+                `
+                : ""
+            }
 
-              ${
-                safeLocation
-                  ? `
-                    <p>
-                      <strong>Lieu :</strong>
-                      ${safeLocation}
-                    </p>
-                  `
-                  : ""
-              }
+            ${
+              safeLocation
+                ? `
+                  <p>
+                    <strong>
+                      Lieu :
+                    </strong>
+                    ${safeLocation}
+                  </p>
+                `
+                : ""
+            }
 
-              <p>
-                <strong>
-                  Nombre de participantes :
-                </strong>
-                ${registration.participants}
-              </p>
+            <p>
+              <strong>
+                Nombre de participantes :
+              </strong>
+              ${registration.participants}
+            </p>
 
-              <p>
-                Votre inscription est
-                actuellement enregistrée
-                et sera suivie par l’équipe
-                de la Maison des Femmes.
-              </p>
-
-              <p>
-                À bientôt,<br />
-                Maison des Femmes —
-                Emazteen Etxea
-              </p>
-            </body>
-          </html>
-        `;
+            <p>
+              À bientôt,<br />
+              Maison des Femmes —
+              Emazteen Etxea
+            </p>
+          `;
 
       const brevoResponse =
         await fetch(
@@ -722,19 +695,12 @@ export async function POST(
       if (
         !brevoResponse.ok
       ) {
-        const brevoError =
-          await brevoResponse.text();
-
         console.error(
           "BREVO REGISTRATION CONFIRMATION ERROR:",
           brevoResponse.status,
-          brevoError
+          await brevoResponse.text()
         );
       }
-    } else {
-      console.warn(
-        "BREVO REGISTRATION WARNING: configuration incomplète"
-      );
     }
 
     return respond(
