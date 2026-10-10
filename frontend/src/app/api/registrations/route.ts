@@ -44,8 +44,7 @@ const registrationSchema = z.object({
   participants: z
     .number()
     .int("Le nombre de participantes doit être un nombre entier.")
-    .min(1, "Il faut au moins 1 participante.")
-    .max(10, "Vous pouvez inscrire au maximum 10 participantes."),
+    .min(1, "Il faut au moins 1 participante."),
 
   message: z
     .string()
@@ -54,26 +53,96 @@ const registrationSchema = z.object({
     .optional(),
 });
 
-export async function POST(request: Request) {
-  const locale = request.headers.get("x-mdf-locale") === "eu" ? "eu" : "fr";
-  const respond = (body: Parameters<typeof localizeFormResponse>[0], init?: ResponseInit) =>
-    NextResponse.json(localizeFormResponse(body, locale), init);
-  try {
-    const body = await request.json();
+function escapeHtml(
+  value: string | null | undefined
+) {
+  return (value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-    const result = registrationSchema.safeParse(body);
+function formatEventDate(
+  value: string | null | undefined,
+  locale: "fr" | "eu"
+) {
+  if (!value) {
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+
+  return new Intl.DateTimeFormat(
+    locale === "eu"
+      ? "eu-ES"
+      : "fr-FR",
+    {
+      dateStyle: "long",
+      timeStyle: "short",
+      timeZone: "Europe/Paris",
+    }
+  ).format(date);
+}
+
+export async function POST(
+  request: Request
+) {
+  const locale =
+    request.headers.get(
+      "x-mdf-locale"
+    ) === "eu"
+      ? "eu"
+      : "fr";
+
+  const respond = (
+    body: Parameters<
+      typeof localizeFormResponse
+    >[0],
+    init?: ResponseInit
+  ) =>
+    NextResponse.json(
+      localizeFormResponse(
+        body,
+        locale
+      ),
+      init
+    );
+
+  try {
+    const body =
+      await request.json();
+
+    const result =
+      registrationSchema.safeParse(
+        body
+      );
 
     if (!result.success) {
-      const fieldErrors: Record<string, string> = {};
+      const fieldErrors: Record<
+        string,
+        string
+      > = {};
 
-      for (const issue of result.error.issues) {
-        const field = issue.path[0];
+      for (
+        const issue of result.error
+          .issues
+      ) {
+        const field =
+          issue.path[0];
 
         if (
-          typeof field === "string" &&
+          typeof field ===
+            "string" &&
           !fieldErrors[field]
         ) {
-          fieldErrors[field] = issue.message;
+          fieldErrors[field] =
+            issue.message;
         }
       }
 
@@ -89,40 +158,49 @@ export async function POST(request: Request) {
       );
     }
 
-    const registration = result.data;
+    const registration =
+      result.data;
 
     /*
-     * URL publique de Strapi.
+     * URL Strapi
+     * Suppression du slash final
+     * pour éviter //api/...
      */
     const strapiUrl =
-      process.env.NEXT_PUBLIC_STRAPI_URL ??
-      "http://localhost:1337";
+      (
+        process.env
+          .NEXT_PUBLIC_STRAPI_URL ??
+        "http://localhost:1337"
+      ).replace(/\/+$/, "");
 
     /*
-     * Strapi 5 :
-     * récupération directe d'un document grâce à son documentId.
+     * Récupération de l'événement
+     * depuis Strapi.
      */
     const eventUrl =
-      `${strapiUrl}/api/events/${registration.eventId}?populate=house&locale=${locale}`;
+      `${strapiUrl}/api/events/` +
+      `${registration.eventId}` +
+      `?populate=house&locale=${locale}`;
 
     console.log(
-      "STRAPI EVENT REQUEST :",
+      "STRAPI EVENT REQUEST:",
       eventUrl
     );
 
-    const eventResponse = await fetch(
-      eventUrl,
-      {
-        cache: "no-store",
-      }
-    );
+    const eventResponse =
+      await fetch(
+        eventUrl,
+        {
+          cache: "no-store",
+        }
+      );
 
     if (!eventResponse.ok) {
       const errorText =
         await eventResponse.text();
 
       console.error(
-        "STRAPI EVENT ERROR :",
+        "STRAPI EVENT ERROR:",
         eventResponse.status,
         eventResponse.statusText,
         errorText
@@ -162,7 +240,7 @@ export async function POST(request: Request) {
     }
 
     /*
-     * Vérification de la maison.
+     * Vérification maison
      */
     if (
       strapiEvent.house?.slug !==
@@ -182,20 +260,27 @@ export async function POST(request: Request) {
     }
 
     /*
-     * Vérification de la date limite d'inscription.
+     * Vérification date limite
      */
-    if (strapiEvent.registrationDeadline) {
-      const deadline = new Date(
-        strapiEvent.registrationDeadline
-      );
+    if (
+      strapiEvent
+        .registrationDeadline
+    ) {
+      const deadline =
+        new Date(
+          strapiEvent
+            .registrationDeadline
+        );
 
-      const now = new Date();
+      const now =
+        new Date();
 
       if (now > deadline) {
         return respond(
           {
             success: false,
-            type: "registration_closed",
+            type:
+              "registration_closed",
             message:
               "Les inscriptions à cette activité sont maintenant closes.",
           },
@@ -207,17 +292,22 @@ export async function POST(request: Request) {
     }
 
     /*
-     * Vérification de la capacité.
+     * Vérification capacité
      */
-    const capacity: number | undefined =
+    const capacity:
+      | number
+      | undefined =
       strapiEvent.capacity;
 
     if (capacity) {
       const {
-        data: existingRegistrations,
+        data:
+          existingRegistrations,
         error: countError,
       } = await supabaseAdmin
-        .from("event_registrations")
+        .from(
+          "event_registrations"
+        )
         .select("participants")
         .eq(
           "event_id",
@@ -225,12 +315,15 @@ export async function POST(request: Request) {
         )
         .in(
           "status",
-          ["pending", "confirmed"]
+          [
+            "pending",
+            "confirmed",
+          ]
         );
 
       if (countError) {
         console.error(
-          "SUPABASE COUNT ERROR :",
+          "SUPABASE COUNT ERROR:",
           countError
         );
 
@@ -249,13 +342,21 @@ export async function POST(request: Request) {
 
       const registeredParticipants =
         existingRegistrations?.reduce(
-          (total, item) =>
-            total + item.participants,
+          (
+            total,
+            item
+          ) =>
+            total +
+            (
+              item.participants ??
+              0
+            ),
           0
         ) ?? 0;
 
       const remainingPlaces =
-        capacity - registeredParticipants;
+        capacity -
+        registeredParticipants;
 
       if (
         registration.participants >
@@ -269,11 +370,13 @@ export async function POST(request: Request) {
               remainingPlaces <= 0
                 ? "Cette activité est complète."
                 : `Il ne reste que ${remainingPlaces} place${
-                    remainingPlaces > 1
+                    remainingPlaces >
+                    1
                       ? "s"
                       : ""
                   } disponible${
-                    remainingPlaces > 1
+                    remainingPlaces >
+                    1
                       ? "s"
                       : ""
                   }.`,
@@ -286,49 +389,56 @@ export async function POST(request: Request) {
     }
 
     /*
-     * Enregistrement dans Supabase.
+     * Enregistrement Supabase
      */
-    const { error } = await supabaseAdmin
-      .from("event_registrations")
-      .insert({
-        house_slug:
-          registration.houseSlug,
+    const { error } =
+      await supabaseAdmin
+        .from(
+          "event_registrations"
+        )
+        .insert({
+          house_slug:
+            registration.houseSlug,
 
-        event_id:
-          registration.eventId,
+          event_id:
+            registration.eventId,
 
-        event_title:
-          strapiEvent.title,
+          event_title:
+            strapiEvent.title,
 
-        first_name:
-          registration.firstName,
+          first_name:
+            registration.firstName,
 
-        last_name:
-          registration.lastName,
+          last_name:
+            registration.lastName,
 
-        email:
-          registration.email,
+          email:
+            registration.email,
 
-        phone:
-          registration.phone ?? null,
+          phone:
+            registration.phone ??
+            null,
 
-        participants:
-          registration.participants,
+          participants:
+            registration.participants,
 
-        message:
-          registration.message ?? null,
+          message:
+            registration.message ??
+            null,
 
-        status:
-          "pending",
-      });
+          status:
+            "pending",
+        });
 
     if (error) {
       console.error(
-        "SUPABASE ERROR :",
+        "SUPABASE ERROR:",
         error
       );
 
-      if (error.code === "23505") {
+      if (
+        error.code === "23505"
+      ) {
         return respond(
           {
             success: false,
@@ -357,11 +467,283 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * Mail de confirmation Brevo
+     *
+     * Une erreur Brevo ne supprime
+     * jamais l'inscription.
+     */
+    if (
+      process.env.BREVO_API_KEY &&
+      process.env
+        .BREVO_SENDER_EMAIL
+    ) {
+      const safeFirstName =
+        escapeHtml(
+          registration.firstName
+        );
+
+      const safeEventTitle =
+        escapeHtml(
+          strapiEvent.title
+        );
+
+      const safeLocation =
+        escapeHtml(
+          strapiEvent.location ??
+            ""
+        );
+
+      const eventDate =
+        formatEventDate(
+          strapiEvent.startDate ??
+            strapiEvent.start ??
+            null,
+          locale
+        );
+
+      const confirmationSubject =
+        locale === "eu"
+          ? `Izen-ematea baieztatuta — ${strapiEvent.title}`
+          : `Inscription enregistrée — ${strapiEvent.title}`;
+
+      const confirmationHtml =
+        locale === "eu"
+          ? `
+          <!DOCTYPE html>
+          <html lang="eu">
+            <body
+              style="
+                font-family:Arial,sans-serif;
+                color:#333;
+                max-width:700px;
+                margin:auto;
+              "
+            >
+              <h1
+                style="
+                  color:#8F5A53;
+                "
+              >
+                Zure izen-ematea jaso dugu
+              </h1>
+
+              <p>
+                Kaixo ${safeFirstName},
+              </p>
+
+              <p>
+                Zure izen-ematea behar bezala
+                jaso dugu honako jarduerarako:
+              </p>
+
+              <p>
+                <strong>
+                  ${safeEventTitle}
+                </strong>
+              </p>
+
+              ${
+                eventDate
+                  ? `
+                    <p>
+                      <strong>Data:</strong>
+                      ${escapeHtml(
+                        eventDate
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+              ${
+                safeLocation
+                  ? `
+                    <p>
+                      <strong>Lekua:</strong>
+                      ${safeLocation}
+                    </p>
+                  `
+                  : ""
+              }
+
+              <p>
+                <strong>
+                  Parte-hartzaile kopurua:
+                </strong>
+                ${registration.participants}
+              </p>
+
+              <p>
+                Zure izen-ematea une honetan
+                zain dago eta Emazteen Etxeko
+                taldeak kudeatuko du.
+              </p>
+
+              <p>
+                Laster arte,<br />
+                Maison des Femmes —
+                Emazteen Etxea
+              </p>
+            </body>
+          </html>
+        `
+          : `
+          <!DOCTYPE html>
+          <html lang="fr">
+            <body
+              style="
+                font-family:Arial,sans-serif;
+                color:#333;
+                max-width:700px;
+                margin:auto;
+              "
+            >
+              <h1
+                style="
+                  color:#8F5A53;
+                "
+              >
+                Votre inscription a bien été enregistrée
+              </h1>
+
+              <p>
+                Bonjour ${safeFirstName},
+              </p>
+
+              <p>
+                Nous avons bien reçu votre
+                inscription à l’activité :
+              </p>
+
+              <p>
+                <strong>
+                  ${safeEventTitle}
+                </strong>
+              </p>
+
+              ${
+                eventDate
+                  ? `
+                    <p>
+                      <strong>Date :</strong>
+                      ${escapeHtml(
+                        eventDate
+                      )}
+                    </p>
+                  `
+                  : ""
+              }
+
+              ${
+                safeLocation
+                  ? `
+                    <p>
+                      <strong>Lieu :</strong>
+                      ${safeLocation}
+                    </p>
+                  `
+                  : ""
+              }
+
+              <p>
+                <strong>
+                  Nombre de participantes :
+                </strong>
+                ${registration.participants}
+              </p>
+
+              <p>
+                Votre inscription est
+                actuellement enregistrée
+                et sera suivie par l’équipe
+                de la Maison des Femmes.
+              </p>
+
+              <p>
+                À bientôt,<br />
+                Maison des Femmes —
+                Emazteen Etxea
+              </p>
+            </body>
+          </html>
+        `;
+
+      const brevoResponse =
+        await fetch(
+          "https://api.brevo.com/v3/smtp/email",
+          {
+            method: "POST",
+
+            headers: {
+              "api-key":
+                process.env
+                  .BREVO_API_KEY,
+
+              accept:
+                "application/json",
+
+              "content-type":
+                "application/json",
+            },
+
+            body:
+              JSON.stringify({
+                sender: {
+                  name:
+                    process.env
+                      .BREVO_SENDER_NAME ??
+                    "Maison des Femmes",
+
+                  email:
+                    process.env
+                      .BREVO_SENDER_EMAIL,
+                },
+
+                to: [
+                  {
+                    email:
+                      registration.email,
+
+                    name:
+                      `${registration.firstName} ${registration.lastName}`,
+                  },
+                ],
+
+                subject:
+                  confirmationSubject,
+
+                htmlContent:
+                  confirmationHtml,
+              }),
+          }
+        );
+
+      if (
+        !brevoResponse.ok
+      ) {
+        const brevoError =
+          await brevoResponse.text();
+
+        console.error(
+          "BREVO REGISTRATION CONFIRMATION ERROR:",
+          brevoResponse.status,
+          brevoError
+        );
+      }
+    } else {
+      console.warn(
+        "BREVO REGISTRATION WARNING: configuration incomplète"
+      );
+    }
+
     return respond(
       {
         success: true,
         message:
-          "Votre inscription a bien été enregistrée.",
+          locale === "eu"
+            ? "Zure izen-ematea behar bezala erregistratu da."
+            : "Votre inscription a bien été enregistrée.",
       },
       {
         status: 201,
@@ -369,7 +751,7 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error(
-      "REGISTRATION ERROR :",
+      "REGISTRATION ERROR:",
       error
     );
 
