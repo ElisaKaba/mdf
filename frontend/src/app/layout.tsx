@@ -1,43 +1,73 @@
-import { headers } from "next/headers";
-import LocaleProvider from "@/components/LocaleProvider";
-import { getDefaultLocaleFromHost } from "@/lib/i18n/getDefaultLocale";
-import type { Metadata, Viewport  } from "next";
-import localFont from "next/font/local";
+import type { Metadata } from "next";
+
 import "./globals.css";
 
-
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-};
-
-const beautifullyDelicious = localFont({
-  src: "../fonts/BDSans-Black.woff2",
-  variable: "--font-beautifully-delicious",
-  display: "swap",
-});
-
-const beautifullyDeliciousBold = localFont({
-  src: "../fonts/BDScript-Bold.woff2",
-  variable: "--font-beautifully-delicious-bold",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  title: "Maison des Femmes",
-  description: "Maison des Femmes — Emazteen Etxea",
+  title: {
+    default:
+      "Maison des Femmes — Emazteen Etxea",
+    template:
+      "%s | Maison des Femmes — Emazteen Etxea",
+  },
+
+  description:
+    "Maison des Femmes — Emazteen Etxea : accueil, accompagnement, activités, événements et ressources au Pays Basque.",
+
+  robots: {
+    index: true,
+    follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+
+  openGraph: {
+    type: "website",
+
+    siteName:
+      "Maison des Femmes — Emazteen Etxea",
+
+    title:
+      "Maison des Femmes — Emazteen Etxea",
+
+    description:
+      "Accueil, accompagnement, activités, événements et ressources de la Maison des Femmes — Emazteen Etxea au Pays Basque.",
+
+    locale: "fr_FR",
+
+    alternateLocale: [
+      "eu_ES",
+    ],
+  },
+
+  alternates: {
+    languages: {
+      fr: "https://mdf-ee.fr",
+      eu: "https://mdf-ee.eus",
+    },
+  },
+
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
+type RootLayoutProps = {
   children: React.ReactNode;
-}>) {
-  const locale = getDefaultLocaleFromHost((await headers()).get("host"));
+};
+
+export default function RootLayout({
+  children,
+}: RootLayoutProps) {
   return (
-    <html lang={locale}>
-      <body className={beautifullyDelicious.variable}>
-        <LocaleProvider defaultLocale={locale}>{children}</LocaleProvider>
+    <html lang="fr">
+      <body>
+        {children}
       </body>
     </html>
   );
