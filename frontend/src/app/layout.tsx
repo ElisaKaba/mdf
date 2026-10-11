@@ -4,7 +4,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 const beautifullyDelicious = localFont({
-  src: "./fonts/BDSans-Black.woff2",
+  src: "../fonts/BDSans-Black.woff2",
   variable: "--font-beautifully-delicious",
   display: "swap",
 });
