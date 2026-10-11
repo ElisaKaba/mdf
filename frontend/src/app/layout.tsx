@@ -1,13 +1,18 @@
 import type { Metadata } from "next";
+import localFont from "next/font/local";
 
 import "./globals.css";
 
+const beautifullyDelicious = localFont({
+  src: "./fonts/BDSans-Black.woff2",
+  variable: "--font-beautifully-delicious",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default:
-      "Maison des Femmes — Emazteen Etxea",
-    template:
-      "%s | Maison des Femmes — Emazteen Etxea",
+    default: "Maison des Femmes — Emazteen Etxea",
+    template: "%s | Maison des Femmes — Emazteen Etxea",
   },
 
   description:
@@ -28,21 +33,12 @@ export const metadata: Metadata = {
 
   openGraph: {
     type: "website",
-
-    siteName:
-      "Maison des Femmes — Emazteen Etxea",
-
-    title:
-      "Maison des Femmes — Emazteen Etxea",
-
+    siteName: "Maison des Femmes — Emazteen Etxea",
+    title: "Maison des Femmes — Emazteen Etxea",
     description:
       "Accueil, accompagnement, activités, événements et ressources de la Maison des Femmes — Emazteen Etxea au Pays Basque.",
-
     locale: "fr_FR",
-
-    alternateLocale: [
-      "eu_ES",
-    ],
+    alternateLocale: ["eu_ES"],
   },
 
   alternates: {
@@ -66,7 +62,7 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="fr">
-      <body>
+      <body className={beautifullyDelicious.variable}>
         {children}
       </body>
     </html>
