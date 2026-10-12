@@ -584,6 +584,8 @@ dans le code source
 
 Les fichiers `.env` présents dans le projet doivent être protégés par `.gitignore`.
 
+
+Les identifiants et secrets techniques sont conservés dans un fichier chiffré distinct de la documentation.
 ---
 
 # 18. Rotation des secrets
